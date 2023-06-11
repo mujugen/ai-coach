@@ -44,8 +44,10 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.example.test3.presentation.theme.Test3Theme
 import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material.Button
 
 class MainActivity : ComponentActivity() {
     private lateinit var sensorManager: SensorManager
@@ -55,7 +57,9 @@ class MainActivity : ComponentActivity() {
     private var heartRateValue = mutableStateOf("Awaiting sensor data...")
     private var velocityValue = mutableStateOf("Awaiting sensor data...")
     private var rotationValue = mutableStateOf("Awaiting sensor data...")
-
+    fun onButtonClick() {
+        println("button clicked")
+    }
     private val sensorEventListener = object : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent?) {
             event?.let {
@@ -117,7 +121,8 @@ class MainActivity : ComponentActivity() {
             WearApp(
                 heartRate = heartRateValue.value,
                 velocity = velocityValue.value,
-                rotation = rotationValue.value
+                rotation = rotationValue.value,
+                onClick = {onButtonClick()}
             )
         }
     }
@@ -129,7 +134,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun WearApp(heartRate: String, velocity: String, rotation: String) {
+fun WearApp(
+    heartRate: String,
+    velocity: String,
+    rotation: String,
+    onClick: () -> Unit  // Add onClick parameter
+) {
     Test3Theme {
         Column(
             modifier = Modifier
@@ -138,6 +148,14 @@ fun WearApp(heartRate: String, velocity: String, rotation: String) {
             verticalArrangement = Arrangement.Center
         ) {
             Greeting(heartRate = heartRate, velocity = velocity, rotation = rotation)
+            Button(
+                onClick = onClick,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 16.dp)
+            ) {
+                Text(text = "Click Me")
+            }
         }
     }
 }
@@ -155,8 +173,8 @@ fun Greeting(heartRate: String, velocity: String, rotation: String) {
     )
 }
 
-@Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
-@Composable
-fun DefaultPreview() {
-    WearApp("Preview heart rate", "Preview velocity", "Preview rotation")
+
+interface Clickable {
+    fun onButtonClick()
 }
+
