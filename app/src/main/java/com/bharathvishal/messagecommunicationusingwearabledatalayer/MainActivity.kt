@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         wearableDeviceConnected = false
 
 
-        binding.checkwearablesButton.setOnClickListener {
+        binding.connectBtn.setOnClickListener {
             if (!wearableDeviceConnected) {
                 val tempAct: Activity = activityContext as MainActivity
                 //Couroutine

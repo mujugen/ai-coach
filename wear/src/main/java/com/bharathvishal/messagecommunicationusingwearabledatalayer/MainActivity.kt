@@ -20,7 +20,9 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Handler
 import android.os.Looper
+import android.view.WindowManager
 import android.widget.TextView
+import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider,
     DataClient.OnDataChangedListener,
@@ -32,7 +34,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
     private val TAG_MESSAGE_RECEIVED = "receive1"
     private val APP_OPEN_WEARABLE_PAYLOAD_PATH = "/APP_OPEN_WEARABLE_PAYLOAD"
-
+    private val decimalFormat = DecimalFormat("#.##")
     private var mobileDeviceConnected: Boolean = false
     private lateinit var sensorManager: SensorManager
     private lateinit var heartRateSensor: Sensor
@@ -100,55 +102,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         ambientController = AmbientModeSupport.attach(this)
 
 
-        //On click listener for sendmessage button
-        binding.sendmessageButton.setOnClickListener {
-            println("button clicked")
-            if (mobileDeviceConnected) {
-                if (binding.messagecontentEditText.text!!.isNotEmpty()) {
-                    println("message sent")
 
-                    val nodeId: String = messageEvent?.sourceNodeId!!
-                    // Set the data of the message to be the bytes of the Uri.
-                    val payload: ByteArray =
-                        binding.messagecontentEditText.text.toString().toByteArray()
-
-                    // Send the rpc
-                    // Instantiates clients without member variables, as clients are inexpensive to
-                    // create. (They are cached and shared between GoogleApi instances.)
-                    val sendMessageTask =
-                        Wearable.getMessageClient(activityContext!!)
-                            .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
-
-                    binding.deviceconnectionStatusTv.visibility = View.GONE
-
-                    sendMessageTask.addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            Log.d("send1", "Message sent successfully")
-                            val sbTemp = StringBuilder()
-                            sbTemp.append("\n")
-                            sbTemp.append(binding.messagecontentEditText.text.toString())
-                            sbTemp.append(" (Sent to mobile)")
-                            Log.d("receive1", " $sbTemp")
-                            binding.messagelogTextView.append(sbTemp)
-                            mobileDeviceConnected = true
-
-                            binding.scrollviewTextMessageLog.requestFocus()
-                            binding.scrollviewTextMessageLog.post {
-                                binding.scrollviewTextMessageLog.fullScroll(ScrollView.FOCUS_DOWN)
-                            }
-                        } else {
-                            Log.d("send1", "Message failed.")
-                        }
-                    }
-                } else {
-                    Toast.makeText(
-                        activityContext,
-                        "Message content is empty. Please enter some message and proceed",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         heartRateSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
@@ -158,15 +112,33 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         sensorManager.registerListener(velocityListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL)
         sensorManager.registerListener(rotationListener, rotationSensor, SensorManager.SENSOR_DELAY_NORMAL)
 
+        // Set click listener for start button
+        binding.startBtn.setOnClickListener {
+            binding.startPage.visibility = View.GONE
+            binding.connectPage.visibility = View.VISIBLE
+        }
+
+        // Set click listener for connect button
+        binding.connectBtn.setOnClickListener {
+            if(mobileDeviceConnected == true){
+                binding.connectPage.visibility = View.GONE
+                binding.mainPage.visibility = View.VISIBLE
+            }
+
+        }
+
         // Send sensor data every second
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
             override fun run() {
-
+                binding.hrVal.text = decimalFormat.format(heartRateValue.toDouble())
+                binding.velocityVal.text = velocityValues?.joinToString { decimalFormat.format(it) }
+                binding.rotationVal.text = rotationValues?.joinToString { decimalFormat.format(it) }
                 println("1trying to send sensor data")
                 if (mobileDeviceConnected && messageEvent != null) {
                     println("2trying to send sensor data")
-                    binding.sensorData.text = "hello"
+
+
                     val nodeId: String = messageEvent?.sourceNodeId!!
                     if (nodeId != null) {
                         val sensorData = "HeartRate: $heartRateValue, " +
@@ -183,7 +155,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                         Log.e("send1", "Failed to send sensor data: nodeID is null.")
                     }
                 }
-                handler.postDelayed(this, 1000) // Re-run every 1 second
+                handler.postDelayed(this, 2000) // Re-run every 1 second
             }
         }, 1000)
 
@@ -225,16 +197,10 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             //This acknowledges that the receiver activity is open
             if (messageEventPath.isNotEmpty() && messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
                 try {
-                    // Get the node id of the node that created the data item from the host portion of
-                    // the uri.
                     val nodeId: String = p0.sourceNodeId.toString()
-                    // Set the data of the message to be the bytes of the Uri.
                     val returnPayloadAck = wearableAppCheckPayloadReturnACK
                     val payload: ByteArray = returnPayloadAck.toByteArray()
 
-                    // Send the rpc
-                    // Instantiates clients without member variables, as clients are inexpensive to
-                    // create. (They are cached and shared between GoogleApi instances.)
                     val sendMessageTask =
                         Wearable.getMessageClient(activityContext!!)
                             .sendMessage(nodeId, APP_OPEN_WEARABLE_PAYLOAD_PATH, payload)
@@ -250,19 +216,15 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                     sendMessageTask.addOnCompleteListener {
                         if (it.isSuccessful) {
                             Log.d(TAG_MESSAGE_RECEIVED, "Message sent successfully")
-                            binding.messagelogTextView.visibility = View.VISIBLE
 
                             val sbTemp = StringBuilder()
                             sbTemp.append("\nMobile device connected.")
                             Log.d("receive1", " $sbTemp")
-                            binding.messagelogTextView.append(sbTemp)
 
                             mobileDeviceConnected = true
+                            binding.connectionStatus.text = "Status: Connected"
 
-                            binding.textInputLayout.visibility = View.VISIBLE
-                            binding.sendmessageButton.visibility = View.VISIBLE
-                            binding.deviceconnectionStatusTv.visibility = View.VISIBLE
-                            binding.deviceconnectionStatusTv.text = "Mobile device is connected"
+
                         } else {
                             Log.d(TAG_MESSAGE_RECEIVED, "Message failed.")
                         }
@@ -273,24 +235,15 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             }//emd of if
             else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
                 try {
-                    binding.messagelogTextView.visibility = View.VISIBLE
-                    binding.textInputLayout.visibility = View.VISIBLE
-                    binding.sendmessageButton.visibility = View.VISIBLE
-                    binding.deviceconnectionStatusTv.visibility = View.GONE
 
                     val sbTemp = StringBuilder()
                     sbTemp.append("\n")
                     sbTemp.append(s1)
                     sbTemp.append(" - (Received from mobile)")
                     Log.d("receive1", " $sbTemp")
-                    binding.messagelogTextView.append(sbTemp)
                     mobileDeviceConnected = true
+                    binding.connectionStatus.text = "Status: Connected"
 
-
-                    binding.scrollviewTextMessageLog.requestFocus()
-                    binding.scrollviewTextMessageLog.post {
-                        binding.scrollviewTextMessageLog.fullScroll(ScrollView.FOCUS_DOWN)
-                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
