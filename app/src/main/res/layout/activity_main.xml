@@ -25,10 +25,10 @@
         android:id="@+id/summaryPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:layout_editor_absoluteX="-113dp"
         tools:layout_editor_absoluteY="-229dp"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <TextView
             android:id="@+id/workoutSummaryText"
@@ -391,7 +391,7 @@
         android:visibility="gone"
         tools:layout_editor_absoluteX="-113dp"
         tools:layout_editor_absoluteY="-229dp"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <ImageView
             android:id="@+id/imageView7"
@@ -888,7 +888,7 @@
             android:text="Select Exercise"
             android:textColor="#000000"
             android:textSize="34sp"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintBottom_toTopOf="@+id/exerciseLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.538"
             app:layout_constraintStart_toStartOf="parent"
@@ -909,7 +909,7 @@
             app:srcCompat="@drawable/logo" />
 
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/exerciseLayout"
             android:layout_width="350dp"
             android:layout_height="450dp"
             android:layout_marginBottom="150dp"
@@ -1087,7 +1087,7 @@
         android:id="@+id/connectPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:visibility="gone">
 
         <Button
@@ -1145,7 +1145,7 @@
             app:srcCompat="@drawable/logo" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/connectionStatusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="45dp"
@@ -1167,7 +1167,7 @@
         android:id="@+id/startPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:visibility="gone">
 
         <ImageView

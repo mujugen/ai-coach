@@ -1,21 +1,3 @@
-/**
- *
- * Copyright 2019-2023 Bharath Vishal G.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- **/
-
 package com.bharathvishal.messagecommunicationusingwearabledatalayer
 
 import android.annotation.SuppressLint
@@ -25,6 +7,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bharathvishal.messagecommunicationusingwearabledatalayer.databinding.ActivityMainBinding
@@ -33,6 +19,7 @@ import com.google.android.gms.wearable.*
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
 import java.util.*
+
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
@@ -54,6 +41,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private var messageEvent: MessageEvent? = null
     private var wearableNodeUri: String? = null
 
+    private var exerciseSelected: String = "None"
+
+    private var startingLoad: Int = 0
+    private var startingReps: Int = 0
+    private var numberOfSets: Int = 0
+    private lateinit var fadeInAnimation: Animation
+    private lateinit var fadeOutAnimation: Animation
     private lateinit var binding: ActivityMainBinding
 
     @SuppressLint("SetTextI18n")
@@ -63,60 +57,177 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         val view = binding.root
         setContentView(view)
 
+        fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
+        fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
         activityContext = this
         wearableDeviceConnected = false
 
-
+        binding.startBtn.setOnClickListener {
+            binding.startPage.startAnimation(fadeOutAnimation)
+            binding.startPage.visibility = View.GONE
+            binding.connectPage.startAnimation(fadeInAnimation)
+            binding.connectPage.visibility = View.VISIBLE
+        }
         binding.connectBtn.setOnClickListener {
             if (!wearableDeviceConnected) {
                 val tempAct: Activity = activityContext as MainActivity
                 //Couroutine
                 initialiseDevicePairing(tempAct)
+            }else{
+                binding.connectPage.startAnimation(fadeOutAnimation)
+                binding.connectPage.visibility = View.GONE
+                binding.exerciseSelectionPage.startAnimation(fadeInAnimation)
+                binding.exerciseSelectionPage.visibility = View.VISIBLE
+
             }
         }
 
 
+        setButtonListeners(binding.exerciseLayout)
 
-        binding.sendmessageButton.setOnClickListener {
-            if (wearableDeviceConnected) {
-                if (binding.messagecontentEditText.text!!.isNotEmpty()) {
+        binding.plusLoadBtn.setOnClickListener {
+            startingLoad += 1
+            binding.loadText.text = "$startingLoad"
+            binding.load2Text.text = "$startingLoad"
+        }
+        binding.plusSetsBtn.setOnClickListener {
+            numberOfSets += 1
+            binding.setsText.text = "$numberOfSets"
+            binding.sets2Text.text = "$numberOfSets"
+        }
+        binding.plusRepsBtn.setOnClickListener {
+            startingReps += 1
+            binding.repsText.text = "$startingReps"
+            binding.reps2Text.text = "$startingReps"
+        }
+        binding.minusLoadBtn.setOnClickListener {
+            if(startingLoad>1){
+                startingLoad -= 1
+            }
+            binding.loadText.text = "$startingLoad"
+            binding.load2Text.text = "$startingLoad"
+        }
+        binding.minusSetsBtn.setOnClickListener {
+            if(numberOfSets>1){
+                numberOfSets -= 1
+            }
+            binding.setsText.text = "$numberOfSets"
+            binding.sets2Text.text = "$numberOfSets"
+        }
+        binding.minusRepsBtn.setOnClickListener {
+            if(startingReps>1) {
+                startingReps -= 1
+            }
+            binding.repsText.text = "$startingReps"
+            binding.reps2Text.text = "$startingReps"
+        }
+        binding.proceedBtn.setOnClickListener {
+            binding.exerciseSettingsPage.startAnimation(fadeOutAnimation)
+            binding.exerciseSettingsPage.visibility = View.GONE
+            binding.exercisePage.startAnimation(fadeInAnimation)
+            binding.exercisePage.visibility = View.VISIBLE
+        }
 
-                    val nodeId: String = messageEvent?.sourceNodeId!!
-                    // Set the data of the message to be the bytes of the Uri.
-                    val payload: ByteArray =
-                        binding.messagecontentEditText.text.toString().toByteArray()
+        binding.finishBtn.setOnClickListener {
+            binding.exercisePage.startAnimation(fadeOutAnimation)
+            binding.exercisePage.visibility = View.GONE
+            binding.summaryPage.startAnimation(fadeInAnimation)
+            binding.summaryPage.visibility = View.VISIBLE
+        }
+        binding.backBtn.setOnClickListener {
+            binding.exercisePage.startAnimation(fadeOutAnimation)
+            binding.exercisePage.visibility = View.GONE
+            binding.exerciseSelectionPage.startAnimation(fadeInAnimation)
+            binding.exerciseSelectionPage.visibility = View.VISIBLE
+        }
+        binding.finishBtn2.setOnClickListener {
+            binding.summaryPage.startAnimation(fadeOutAnimation)
+            binding.summaryPage.visibility = View.GONE
+            binding.exerciseSelectionPage.startAnimation(fadeInAnimation)
+            binding.exerciseSelectionPage.visibility = View.VISIBLE
+        }
+        binding.backBtn2.setOnClickListener {
+            binding.summaryPage.startAnimation(fadeOutAnimation)
+            binding.summaryPage.visibility = View.GONE
+            binding.exercisePage.startAnimation(fadeInAnimation)
+            binding.exercisePage.visibility = View.VISIBLE
+        }
 
-                    // Send the rpc
-                    // Instantiates clients without member variables, as clients are inexpensive to
-                    // create. (They are cached and shared between GoogleApi instances.)
-                    val sendMessageTask =
-                        Wearable.getMessageClient(activityContext!!)
-                            .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
 
-                    sendMessageTask.addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            Log.d("send1", "Message sent successfully")
-                            val sbTemp = StringBuilder()
-                            sbTemp.append("\n")
-                            sbTemp.append(binding.messagecontentEditText.text.toString())
-                            sbTemp.append(" (Sent to Wearable)")
-                            Log.d("receive1", " $sbTemp")
-                            binding.messagelogTextView.append(sbTemp)
 
-                            binding.scrollviewText.requestFocus()
-                            binding.scrollviewText.post {
-                                binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
-                            }
-                        } else {
-                            Log.d("send1", "Message failed.")
-                        }
-                    }
-                } else {
-                    Toast.makeText(
-                        activityContext,
-                        "Message content is empty. Please enter some message and proceed",
-                        Toast.LENGTH_SHORT
-                    ).show()
+
+
+//        binding.sendmessageButton.setOnClickListener {
+//            if (wearableDeviceConnected) {
+//                if (binding.messagecontentEditText.text!!.isNotEmpty()) {
+//
+//                    val nodeId: String = messageEvent?.sourceNodeId!!
+//                    // Set the data of the message to be the bytes of the Uri.
+//                    val payload: ByteArray =
+//                        binding.messagecontentEditText.text.toString().toByteArray()
+//
+//                    // Send the rpc
+//                    // Instantiates clients without member variables, as clients are inexpensive to
+//                    // create. (They are cached and shared between GoogleApi instances.)
+//                    val sendMessageTask =
+//                        Wearable.getMessageClient(activityContext!!)
+//                            .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+//
+//                    sendMessageTask.addOnCompleteListener {
+//                        if (it.isSuccessful) {
+//                            Log.d("send1", "Message sent successfully")
+//                            val sbTemp = StringBuilder()
+//                            sbTemp.append("\n")
+//                            sbTemp.append(binding.messagecontentEditText.text.toString())
+//                            sbTemp.append(" (Sent to Wearable)")
+//                            Log.d("receive1", " $sbTemp")
+//                            binding.messagelogTextView.append(sbTemp)
+//
+//                            binding.scrollviewText.requestFocus()
+//                            binding.scrollviewText.post {
+//                                binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
+//                            }
+//                        } else {
+//                            Log.d("send1", "Message failed.")
+//                        }
+//                    }
+//                } else {
+//                    Toast.makeText(
+//                        activityContext,
+//                        "Message content is empty. Please enter some message and proceed",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//            }
+//        }
+    }
+    private fun setButtonListeners(viewGroup: ViewGroup) {
+        for (i in 0 until viewGroup.childCount) {
+            val child = viewGroup.getChildAt(i)
+
+            if (child is ViewGroup) {
+                setButtonListeners(child)
+            } else if (child is Button) {
+                child.setOnClickListener {
+                    // Handle button click here
+                    val buttonText = (child as Button).text.toString()
+                    exerciseSelected = buttonText
+                    println("exercise selected: ${exerciseSelected}")
+                    binding.exerciseType.text = exerciseSelected
+                    binding.exerciseText.text = exerciseSelected
+                    startingReps = 10
+                    startingLoad = 20
+                    numberOfSets = 4
+                    binding.repsText.text = "$startingReps"
+                    binding.loadText.text = "$startingLoad"
+                    binding.setsText.text = "$numberOfSets"
+                    binding.reps2Text.text = "Reps: $startingReps"
+                    binding.load2Text.text = "Load: $startingLoad"
+                    binding.sets2Text.text = "Sets: $numberOfSets"
+                    binding.exerciseSelectionPage.startAnimation(fadeOutAnimation)
+                    binding.exerciseSelectionPage.visibility = View.GONE
+                    binding.exerciseSettingsPage.startAnimation(fadeInAnimation)
+                    binding.exerciseSettingsPage.visibility = View.VISIBLE
                 }
             }
         }
@@ -143,37 +254,29 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     if (getNodesResBool[1]) {
                         Toast.makeText(
                             activityContext,
-                            "Wearable device paired and app is open. Tap the \"Send Message to Wearable\" button to send the message to your wearable device.",
+                            "Wearable device paired and app is open",
                             Toast.LENGTH_LONG
                         ).show()
-                        binding.deviceconnectionStatusTv.text =
-                            "Wearable device paired and app is open."
-                        binding.deviceconnectionStatusTv.visibility = View.VISIBLE
+                        binding.connectionStatusText.text =
+                            "Status: Connected"
+
+                        binding.connectBtn.text = "Next"
                         wearableDeviceConnected = true
-                        binding.sendmessageButton.visibility = View.VISIBLE
                     } else {
                         Toast.makeText(
                             activityContext,
-                            "A wearable device is paired but the wearable app on your watch isn't open. Launch the wearable app and try again.",
+                            "A wearable device is paired but the wearable app on your watch isn't open.",
                             Toast.LENGTH_LONG
                         ).show()
-                        binding.deviceconnectionStatusTv.text =
-                            "Wearable device paired but app isn't open."
-                        binding.deviceconnectionStatusTv.visibility = View.VISIBLE
                         wearableDeviceConnected = false
-                        binding.sendmessageButton.visibility = View.GONE
                     }
                 } else {
                     Toast.makeText(
                         activityContext,
-                        "No wearable device paired. Pair a wearable device to your phone using the Wear OS app and try again.",
+                        "No wearable device paired.",
                         Toast.LENGTH_LONG
                     ).show()
-                    binding.deviceconnectionStatusTv.text =
-                        "Wearable device not paired and connected."
-                    binding.deviceconnectionStatusTv.visibility = View.VISIBLE
                     wearableDeviceConnected = false
-                    binding.sendmessageButton.visibility = View.GONE
                 }
             }
         }
@@ -269,53 +372,51 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     override fun onMessageReceived(p0: MessageEvent) {
         println("message received")
         try {
-            val s =
-                String(p0.data, StandardCharsets.UTF_8)
+            val s = String(p0.data, StandardCharsets.UTF_8)
             val messageEventPath: String = p0.path
-            Log.d(
-                TAG_MESSAGE_RECEIVED,
-                "onMessageReceived() Received a message from watch:"
-                        + p0.requestId
-                        + " "
-                        + messageEventPath
-                        + " "
-                        + s
+            Log.d(TAG_MESSAGE_RECEIVED, "onMessageReceived() Received a message from watch:"
+                    + p0.requestId
+                    + " "
+                    + messageEventPath
+                    + " "
+                    + s
             )
             if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
                 currentAckFromWearForAppOpenCheck = s
-                Log.d(
-                    TAG_MESSAGE_RECEIVED,
-                    "Received acknowledgement message that app is open in wear"
-                )
+                Log.d(TAG_MESSAGE_RECEIVED, "Received acknowledgement message that app is open in wear")
 
                 val sbTemp = StringBuilder()
-                sbTemp.append(binding.messagelogTextView.text.toString())
-                sbTemp.append("\nWearable device connected.")
                 Log.d("receive1", " $sbTemp")
-                binding.messagelogTextView.text = sbTemp
-                binding.textInputLayout.visibility = View.VISIBLE
-
-                binding.checkwearablesButton.visibility = View.GONE
                 messageEvent = p0
                 wearableNodeUri = p0.sourceNodeId
             } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
 
                 try {
-                    binding.messagelogTextView.visibility = View.VISIBLE
-                    binding.textInputLayout.visibility = View.VISIBLE
-                    binding.sendmessageButton.visibility = View.VISIBLE
 
-                    val sbTemp = StringBuilder()
-                    sbTemp.append("\n")
-                    sbTemp.append(s)
-                    sbTemp.append(" - (Received from wearable)")
-                    Log.d("receive1", " $sbTemp")
-                    binding.messagelogTextView.append(sbTemp)
+                    val sensorDataParts = s.split("HeartRate:", "Velocity:", "Rotation:")
+                    val heartRate = sensorDataParts[1].trim()
+                    val velocity = sensorDataParts[2].trim().split(",").map { it.trim() }
+                    val rotation = sensorDataParts[3].trim().split(",").map { it.trim() }
 
-                    binding.scrollviewText.requestFocus()
-                    binding.scrollviewText.post {
-                        binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
-                    }
+
+                    println(sensorDataParts)
+                    println(heartRate)
+                    println(velocity)
+                    println(rotation)
+                    val velocityX = String.format("%.2f",velocity[0].toDouble())
+                    val velocityY = String.format("%.2f",velocity[1].toDouble())
+                    val velocityZ = String.format("%.2f",velocity[2].toDouble())
+                    val rotationX = String.format("%.2f",rotation[0].toDouble())
+                    val rotationY = String.format("%.2f",rotation[1].toDouble())
+                    val rotationZ = String.format("%.2f",rotation[2].toDouble())
+                    val rotationW = String.format("%.2f",rotation[3].toDouble())
+
+                    Log.d("receive1", "HeartRate: $heartRate, Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ, Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ, W=$rotationW")
+
+                    binding.hrText.text = "Heart Rate: $heartRate"
+                    binding.velocityText.text = "Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ"
+                    binding.rotationText.text = "Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ, W=$rotationW"
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -325,6 +426,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             Log.d("receive1", "Handled")
         }
     }
+
 
     override fun onCapabilityChanged(p0: CapabilityInfo) {
     }
@@ -354,3 +456,5 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
     }
 }
+
+
