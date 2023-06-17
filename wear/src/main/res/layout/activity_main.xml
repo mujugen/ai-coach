@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
                 android:fontFamily="@font/miriam_libre"
-                android:text="Velocity:"
+                android:text="Acceleration:"
                 android:textColor="#000000"
                 android:textSize="10sp" />
 

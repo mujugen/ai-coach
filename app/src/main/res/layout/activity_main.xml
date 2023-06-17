@@ -626,7 +626,7 @@
                 android:layout_marginStart="30dp"
                 android:fontFamily="@font/miriam_libre"
                 android:shadowColor="#000000"
-                android:text="Velocity:"
+                android:text="Acceleration:"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="normal" />

@@ -19,7 +19,7 @@ import com.google.android.gms.wearable.*
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
 import java.util.*
-
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
@@ -43,12 +43,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
     private var exerciseSelected: String = "None"
 
-    private var startingLoad: Int = 0
-    private var startingReps: Int = 0
-    private var numberOfSets: Int = 0
+    private var currentLoad: Int = 20
+    private var currentReps: Int = 10
+    private var numberOfSets: Int = 4
     private lateinit var fadeInAnimation: Animation
     private lateinit var fadeOutAnimation: Animation
     private lateinit var binding: ActivityMainBinding
+    private var exerciseStarted: Boolean = false
+    private var currentSet: Int = 1
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,9 +88,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         setButtonListeners(binding.exerciseLayout)
 
         binding.plusLoadBtn.setOnClickListener {
-            startingLoad += 1
-            binding.loadText.text = "$startingLoad"
-            binding.load2Text.text = "$startingLoad"
+            currentLoad += 1
+            binding.loadText.text = "$currentLoad kg"
+            binding.load2Text.text = "$currentLoad kg"
         }
         binding.plusSetsBtn.setOnClickListener {
             numberOfSets += 1
@@ -96,16 +98,16 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             binding.sets2Text.text = "$numberOfSets"
         }
         binding.plusRepsBtn.setOnClickListener {
-            startingReps += 1
-            binding.repsText.text = "$startingReps"
-            binding.reps2Text.text = "$startingReps"
+            currentReps += 1
+            binding.repsText.text = "$currentReps"
+            binding.reps2Text.text = "$currentReps"
         }
         binding.minusLoadBtn.setOnClickListener {
-            if(startingLoad>1){
-                startingLoad -= 1
+            if(currentLoad>1){
+                currentLoad -= 1
             }
-            binding.loadText.text = "$startingLoad"
-            binding.load2Text.text = "$startingLoad"
+            binding.loadText.text = "$currentLoad kg"
+            binding.load2Text.text = "$currentLoad kg"
         }
         binding.minusSetsBtn.setOnClickListener {
             if(numberOfSets>1){
@@ -115,11 +117,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             binding.sets2Text.text = "$numberOfSets"
         }
         binding.minusRepsBtn.setOnClickListener {
-            if(startingReps>1) {
-                startingReps -= 1
+            if(currentReps>1) {
+                currentReps -= 1
             }
-            binding.repsText.text = "$startingReps"
-            binding.reps2Text.text = "$startingReps"
+            binding.repsText.text = "$currentReps"
+            binding.reps2Text.text = "$currentReps"
         }
         binding.proceedBtn.setOnClickListener {
             binding.exerciseSettingsPage.startAnimation(fadeOutAnimation)
@@ -129,6 +131,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
 
         binding.finishBtn.setOnClickListener {
+            exerciseStarted = false
+            binding.goBtn.setBackgroundResource(R.drawable.circle_button)
             binding.exercisePage.startAnimation(fadeOutAnimation)
             binding.exercisePage.visibility = View.GONE
             binding.summaryPage.startAnimation(fadeInAnimation)
@@ -153,6 +157,31 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             binding.exercisePage.visibility = View.VISIBLE
         }
 
+        binding.goBtn.setOnClickListener {
+            if(exerciseStarted==false){
+                binding.goBtn.setBackgroundResource(R.drawable.red_circle_button)
+                exerciseStarted = true
+                binding.suggestedRepsText.text = "Suggested Reps:"
+                binding.suggestedLoadText.text = "Suggested Load:"
+                binding.predictedRPEText.text = "Predicted RPE:"
+                binding.reps2Text.text = "Reps: $currentReps"
+                binding.load2Text.text = "Load: $currentLoad kg"
+            }else{
+                binding.goBtn.setBackgroundResource(R.drawable.circle_button)
+                exerciseStarted = false
+                currentSet += 1
+                binding.setNumber.text = "Set $currentSet"
+                val RPE = Random.nextInt(1, 11)
+                binding.predictedRPEText.text = "Predicted RPE: $RPE"
+                currentLoad = calculateLoad(RPE)
+                currentReps = calculateReps(RPE)
+
+                binding.suggestedRepsText.text = "Suggested Reps: $currentReps"
+                binding.suggestedLoadText.text = "Suggested Load: $currentLoad kg"
+            }
+
+
+        }
 
 
 
@@ -215,14 +244,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     println("exercise selected: ${exerciseSelected}")
                     binding.exerciseType.text = exerciseSelected
                     binding.exerciseText.text = exerciseSelected
-                    startingReps = 10
-                    startingLoad = 20
-                    numberOfSets = 4
-                    binding.repsText.text = "$startingReps"
-                    binding.loadText.text = "$startingLoad"
+                    binding.repsText.text = "$currentReps"
+                    binding.loadText.text = "$currentLoad kg"
                     binding.setsText.text = "$numberOfSets"
-                    binding.reps2Text.text = "Reps: $startingReps"
-                    binding.load2Text.text = "Load: $startingLoad"
+                    binding.reps2Text.text = "Reps: $currentReps"
+                    binding.load2Text.text = "Load: $currentLoad kg"
                     binding.sets2Text.text = "Sets: $numberOfSets"
                     binding.exerciseSelectionPage.startAnimation(fadeOutAnimation)
                     binding.exerciseSelectionPage.visibility = View.GONE
@@ -409,13 +435,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     val rotationX = String.format("%.2f",rotation[0].toDouble())
                     val rotationY = String.format("%.2f",rotation[1].toDouble())
                     val rotationZ = String.format("%.2f",rotation[2].toDouble())
-                    val rotationW = String.format("%.2f",rotation[3].toDouble())
 
-                    Log.d("receive1", "HeartRate: $heartRate, Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ, Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ, W=$rotationW")
+                    Log.d("receive1", "HeartRate: $heartRate, Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ, Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ")
 
                     binding.hrText.text = "Heart Rate: $heartRate"
                     binding.velocityText.text = "Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ"
-                    binding.rotationText.text = "Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ, W=$rotationW"
+                    binding.rotationText.text = "Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ"
 
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -453,6 +478,24 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 .addListener(this, Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun calculateLoad(RPE: Int): Int{
+        val targetRPE = 7
+        val RPEDifference = targetRPE - RPE
+        val suggestedLoad = (((RPEDifference*0.04)+1)*currentLoad).toInt()
+
+        return suggestedLoad
+    }
+    private fun calculateReps(RPE: Int): Int{
+        val targetRPE = 7
+        val RPEDifference = targetRPE - RPE
+        if (currentReps > 15){
+            return currentReps
+        }else{
+            val suggestedReps = currentReps + RPEDifference
+            return suggestedReps
         }
     }
 }

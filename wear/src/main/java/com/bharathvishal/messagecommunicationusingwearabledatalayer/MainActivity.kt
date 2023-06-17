@@ -39,11 +39,11 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     private lateinit var sensorManager: SensorManager
     private lateinit var heartRateSensor: Sensor
     private lateinit var accelerometerSensor: Sensor
-    private lateinit var rotationSensor: Sensor
+    private lateinit var gyroSensor: Sensor
 
     private var heartRateValue: Float = 0f
     private var velocityValues: FloatArray? = null
-    private var rotationValues: FloatArray? = null
+    private var gyroValues: FloatArray? = null
 
 
     // Payload string items
@@ -77,12 +77,12 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         }
     }
 
-    private val rotationListener: SensorEventListener = object : SensorEventListener {
+    private val gyroListener: SensorEventListener = object : SensorEventListener {
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         }
 
         override fun onSensorChanged(event: SensorEvent?) {
-            rotationValues = event?.values
+            gyroValues = event?.values
         }
     }
 
@@ -106,11 +106,11 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         heartRateSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
-        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+        gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
 
         sensorManager.registerListener(heartRateListener, heartRateSensor, SensorManager.SENSOR_DELAY_NORMAL)
         sensorManager.registerListener(velocityListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL)
-        sensorManager.registerListener(rotationListener, rotationSensor, SensorManager.SENSOR_DELAY_NORMAL)
+        sensorManager.registerListener(gyroListener, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL)
 
         // Set click listener for start button
         binding.startBtn.setOnClickListener {
@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             override fun run() {
                 binding.hrVal.text = decimalFormat.format(heartRateValue.toDouble())
                 binding.velocityVal.text = velocityValues?.joinToString { decimalFormat.format(it) }
-                binding.rotationVal.text = rotationValues?.joinToString { decimalFormat.format(it) }
+                binding.rotationVal.text = gyroValues?.joinToString { decimalFormat.format(it) }
                 println("1trying to send sensor data")
                 if (mobileDeviceConnected && messageEvent != null) {
                     println("2trying to send sensor data")
@@ -143,19 +143,19 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                     if (nodeId != null) {
                         val sensorData = "HeartRate: $heartRateValue, " +
                                 "Velocity: ${velocityValues?.joinToString()}, " +
-                                "Rotation: ${rotationValues?.joinToString()}"
+                                "Rotation: ${gyroValues?.joinToString()}"
 
                         val payload: ByteArray = sensorData.toByteArray()
 
                         val sendMessageTask =
                             Wearable.getMessageClient(activityContext!!)
                                 .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
-                        // you can handle the result of the message here...
+                        println("Sent sensor data $sensorData")
                     } else {
                         Log.e("send1", "Failed to send sensor data: nodeID is null.")
                     }
                 }
-                handler.postDelayed(this, 2000) // Re-run every 1 second
+                handler.postDelayed(this, 1) // Re-run every 1 second
             }
         }, 1000)
 
