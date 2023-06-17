@@ -3,14 +3,19 @@ package com.mujugen.mypersonaltrainer
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.mujugen.mypersonaltrainer.databinding.ActivityMainBinding
@@ -19,6 +24,7 @@ import com.google.android.gms.wearable.*
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
 import java.util.*
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
@@ -130,6 +136,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             binding.exerciseSettingsPage.visibility = View.GONE
             binding.exercisePage.startAnimation(fadeInAnimation)
             binding.exercisePage.visibility = View.VISIBLE
+            binding.exerciseTypeText.text = "$exerciseSelected"
 
             sets = Array(numberOfSets) { index ->
                 Sets(
@@ -199,6 +206,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 println("sets = ${sets[currentSet-2]}")
                 if(currentSet > numberOfSets){
                     exerciseStarted = false
+                    addSetsToLayout()
                     binding.goBtn.setBackgroundResource(R.drawable.circle_button)
                     binding.exercisePage.startAnimation(fadeOutAnimation)
                     binding.exercisePage.visibility = View.GONE
@@ -542,6 +550,69 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         var sLoad: Int = 0,
         var sReps: Int = 0
     )
+    private fun addSetsToLayout() {
+        val parentLayout = binding.setsContainer
+
+        sets.forEachIndexed { index, set ->
+            // Create new LinearLayout
+            val newLayout = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                setBackgroundResource(R.drawable.square_button)
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+            }
+
+            // Create new TextViews
+            val setNumberTextView = createTextView("Set ${index + 1}", 24f, 20, Typeface.BOLD)
+            val loadTextView = createTextView("Load: ${set.load}", 18f)
+            val repsTextView = createTextView("Reps: ${set.reps}", 18f)
+            val rpeTextView = createTextView("RPE: ${set.rpe}", 18f)
+            val suggestedLoadTextView = createTextView("Suggested Load: ${set.sLoad}", 18f)
+            val suggestedRepsTextView = createTextView("Suggested Reps: ${set.sReps}", 18f, 0, Typeface.NORMAL, 20)
+
+            // Add TextViews to the new LinearLayout
+            newLayout.apply {
+                addView(setNumberTextView)
+                addView(loadTextView)
+                addView(repsTextView)
+                addView(rpeTextView)
+                addView(suggestedLoadTextView)
+                addView(suggestedRepsTextView)
+            }
+
+            // Add new LinearLayout to parent LinearLayout
+            parentLayout.addView(newLayout)
+        }
+    }
+
+    private fun createTextView(text: String, textSize: Float, marginTop: Int = 0, textStyle: Int = Typeface.NORMAL, marginBottom: Int = 0): TextView {
+        val marginLayoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            setMargins(dpToPx(30), dpToPx(marginTop), 0, dpToPx(marginBottom))
+        }
+
+        return TextView(this).apply {
+            this.text = text
+            this.textSize = textSize
+            this.typeface = Typeface.create("@font/miriam_libre", textStyle)
+            setTextColor(Color.BLACK)
+            ellipsize = TextUtils.TruncateAt.END
+            maxLines = 1
+            layoutParams = marginLayoutParams
+        }
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        val density = resources.displayMetrics.density
+        return (dp * density).roundToInt()
+    }
+
+
+
 }
 
 
