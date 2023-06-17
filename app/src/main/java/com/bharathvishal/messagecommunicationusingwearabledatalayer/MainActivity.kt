@@ -166,6 +166,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 binding.predictedRPEText.text = "Predicted RPE:"
                 binding.reps2Text.text = "Reps: $currentReps"
                 binding.load2Text.text = "Load: $currentLoad kg"
+                binding.goBtn.text = "STOP"
             }else{
                 binding.goBtn.setBackgroundResource(R.drawable.circle_button)
                 exerciseStarted = false
@@ -178,6 +179,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
                 binding.suggestedRepsText.text = "Suggested Reps: $currentReps"
                 binding.suggestedLoadText.text = "Suggested Load: $currentLoad kg"
+                binding.goBtn.text = "START"
             }
 
 
@@ -420,7 +422,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 try {
 
                     val sensorDataParts = s.split("HeartRate:", "Velocity:", "Rotation:")
-                    val heartRate = sensorDataParts[1].trim()
+                    val heartRate = sensorDataParts[1].trim().removeSuffix(",")
                     val velocity = sensorDataParts[2].trim().split(",").map { it.trim() }
                     val rotation = sensorDataParts[3].trim().split(",").map { it.trim() }
 
@@ -490,9 +492,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
     private fun calculateReps(RPE: Int): Int{
         val targetRPE = 7
-        val RPEDifference = targetRPE - RPE
+        val RPEDifference = (targetRPE - RPE).coerceAtMost(4)
         if (currentReps > 15){
-            return currentReps
+            if(RPEDifference < 0 ){
+                val suggestedReps = currentReps + RPEDifference
+                return suggestedReps
+            }else{
+                return currentReps
+            }
         }else{
             val suggestedReps = currentReps + RPEDifference
             return suggestedReps

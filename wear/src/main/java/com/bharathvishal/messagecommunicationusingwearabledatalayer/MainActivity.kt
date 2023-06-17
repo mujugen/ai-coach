@@ -304,6 +304,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         }
     }
     class HeartRateGenerator {
+        val decimalFormat = DecimalFormat("#.##")
         var currentHeartRate: Double = 65.23
 
         fun generateRandomHeartRate(): Double {
@@ -325,8 +326,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             } else if (currentHeartRate > 106.23) {
                 currentHeartRate = 106.23
             }
-
-            return currentHeartRate
+            val formattedHeartRate = decimalFormat.format(currentHeartRate).toDouble()
+            return formattedHeartRate
         }
     }
 
