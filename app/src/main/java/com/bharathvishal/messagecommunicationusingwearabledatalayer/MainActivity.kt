@@ -29,6 +29,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private val wearableAppCheckPayload = "AppOpenWearable"
     private val wearableAppCheckPayloadReturnACK = "AppOpenWearableACK"
     private var wearableDeviceConnected: Boolean = false
+    private var sets: Array<Sets> = arrayOf()
+
 
     private var currentAckFromWearForAppOpenCheck: String? = null
     private val APP_OPEN_WEARABLE_PAYLOAD_PATH = "/APP_OPEN_WEARABLE_PAYLOAD"
@@ -128,6 +130,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             binding.exerciseSettingsPage.visibility = View.GONE
             binding.exercisePage.startAnimation(fadeInAnimation)
             binding.exercisePage.visibility = View.VISIBLE
+
+            sets = Array(numberOfSets) { index ->
+                Sets(
+                    exercise = exerciseSelected,
+                    set = index + 1
+                )
+            }
+
         }
 
         binding.finishBtn.setOnClickListener {
@@ -168,18 +178,36 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 binding.load2Text.text = "Load: $currentLoad kg"
                 binding.goBtn.text = "STOP"
             }else{
+                val RPE = Random.nextInt(1, 11)
+                sets[currentSet-1].load = currentLoad
+                sets[currentSet-1].reps = currentReps
+                sets[currentSet-1].rpe = RPE
                 binding.goBtn.setBackgroundResource(R.drawable.circle_button)
                 exerciseStarted = false
                 currentSet += 1
                 binding.setNumber.text = "Set $currentSet"
-                val RPE = Random.nextInt(1, 11)
+
                 binding.predictedRPEText.text = "Predicted RPE: $RPE"
                 currentLoad = calculateLoad(RPE)
                 currentReps = calculateReps(RPE)
 
                 binding.suggestedRepsText.text = "Suggested Reps: $currentReps"
                 binding.suggestedLoadText.text = "Suggested Load: $currentLoad kg"
+                sets[currentSet-2].sLoad = currentLoad
+                sets[currentSet-2].sReps = currentReps
                 binding.goBtn.text = "START"
+                println("sets = ${sets[currentSet-2]}")
+                if(currentSet > numberOfSets){
+                    exerciseStarted = false
+                    binding.goBtn.setBackgroundResource(R.drawable.circle_button)
+                    binding.exercisePage.startAnimation(fadeOutAnimation)
+                    binding.exercisePage.visibility = View.GONE
+                    binding.summaryPage.startAnimation(fadeInAnimation)
+                    binding.summaryPage.visibility = View.VISIBLE
+                }
+
+
+
             }
 
 
@@ -505,6 +533,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             return suggestedReps
         }
     }
+    private data class Sets(
+        var exercise: String = "",
+        var set: Int = 0,
+        var load: Int = 0,
+        var reps: Int = 0,
+        var rpe: Int = 0,
+        var sLoad: Int = 0,
+        var sReps: Int = 0
+    )
 }
 
 

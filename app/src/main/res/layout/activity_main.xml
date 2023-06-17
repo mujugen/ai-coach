@@ -391,7 +391,7 @@
         android:visibility="gone"
         tools:layout_editor_absoluteX="-113dp"
         tools:layout_editor_absoluteY="-229dp"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <ImageView
             android:id="@+id/imageView7"
@@ -473,7 +473,6 @@
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -1168,7 +1167,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <ImageView
             android:id="@+id/imageView"
