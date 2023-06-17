@@ -23,6 +23,7 @@ import android.os.Looper
 import android.view.WindowManager
 import android.widget.TextView
 import java.text.DecimalFormat
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider,
     DataClient.OnDataChangedListener,
@@ -129,9 +130,18 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
         // Send sensor data every second
         val handler = Handler(Looper.getMainLooper())
+        var randomHeartRate: Double = 67.56
+        var hrCounter = 0
+        val generator = HeartRateGenerator()
         handler.postDelayed(object : Runnable {
             override fun run() {
-                binding.hrVal.text = decimalFormat.format(heartRateValue.toDouble())
+                hrCounter += 1
+                if(hrCounter>20){
+                    randomHeartRate = generator.generateRandomHeartRate()
+                    hrCounter = 0
+                }
+                binding.hrVal.text = decimalFormat.format(randomHeartRate)
+                //binding.hrVal.text = decimalFormat.format(heartRateValue.toDouble())
                 binding.velocityVal.text = velocityValues?.joinToString { decimalFormat.format(it) }
                 binding.rotationVal.text = gyroValues?.joinToString { decimalFormat.format(it) }
                 println("1trying to send sensor data")
@@ -141,7 +151,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
                     val nodeId: String = messageEvent?.sourceNodeId!!
                     if (nodeId != null) {
-                        val sensorData = "HeartRate: $heartRateValue, " +
+                        val sensorData = "HeartRate: $randomHeartRate, " +
                                 "Velocity: ${velocityValues?.joinToString()}, " +
                                 "Rotation: ${gyroValues?.joinToString()}"
 
@@ -291,6 +301,32 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
         override fun onExitAmbient() {
             super.onExitAmbient()
+        }
+    }
+    class HeartRateGenerator {
+        var currentHeartRate: Double = 65.23
+
+        fun generateRandomHeartRate(): Double {
+            // Calculate random increment or decrement value
+            val change = Random.nextDouble(0.1, 1.0)
+
+            // Decide whether to increment or decrement
+            if (Random.nextBoolean()) {
+                if (Random.nextBoolean()) {
+                    currentHeartRate += change
+                } else {
+                    currentHeartRate -= change
+                }
+            }
+
+            // Check boundaries
+            if (currentHeartRate < 65.23) {
+                currentHeartRate = 65.23
+            } else if (currentHeartRate > 106.23) {
+                currentHeartRate = 106.23
+            }
+
+            return currentHeartRate
         }
     }
 
