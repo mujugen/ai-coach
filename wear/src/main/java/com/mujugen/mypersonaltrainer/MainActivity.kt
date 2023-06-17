@@ -1,4 +1,4 @@
-package com.bharathvishal.messagecommunicationusingwearabledatalayer
+package com.mujugen.mypersonaltrainer
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,12 +6,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ScrollView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.ambient.AmbientModeSupport.AmbientCallback
-import com.bharathvishal.messagecommunicationusingwearabledatalayer.databinding.ActivityMainBinding
+import com.mujugen.mypersonaltrainer.databinding.ActivityMainBinding
 import com.google.android.gms.wearable.*
 import java.nio.charset.StandardCharsets
 import android.hardware.Sensor
@@ -20,8 +18,6 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Handler
 import android.os.Looper
-import android.view.WindowManager
-import android.widget.TextView
 import java.text.DecimalFormat
 import kotlin.random.Random
 

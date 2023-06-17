@@ -1,4 +1,4 @@
-package com.bharathvishal.messagecommunicationusingwearabledatalayer
+package com.mujugen.mypersonaltrainer
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -13,7 +13,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.bharathvishal.messagecommunicationusingwearabledatalayer.databinding.ActivityMainBinding
+import com.mujugen.mypersonaltrainer.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import kotlinx.coroutines.*

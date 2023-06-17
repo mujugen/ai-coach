@@ -6,7 +6,7 @@ android {
     compileSdkVersion 33
     buildToolsVersion "33.0.0"
     defaultConfig {
-        applicationId "com.bharathvishal.messagecommunicationusingwearabledatalayer"
+        applicationId 'com.mujugen.mypersonaltrainer'
         minSdkVersion 23
         targetSdkVersion 33
         versionCode 89
@@ -39,7 +39,7 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    namespace 'com.bharathvishal.messagecommunicationusingwearabledatalayer'
+    namespace 'com.mujugen.mypersonaltrainer'
 }
 
 dependencies {
