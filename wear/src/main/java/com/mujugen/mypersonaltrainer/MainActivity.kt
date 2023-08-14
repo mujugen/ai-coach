@@ -136,8 +136,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                     randomHeartRate = generator.generateRandomHeartRate()
                     hrCounter = 0
                 }
-                binding.hrVal.text = decimalFormat.format(randomHeartRate)
-                //binding.hrVal.text = decimalFormat.format(heartRateValue.toDouble())
+                //binding.hrVal.text = decimalFormat.format(randomHeartRate)
+                binding.hrVal.text = decimalFormat.format(heartRateValue.toDouble())
                 binding.velocityVal.text = velocityValues?.joinToString { decimalFormat.format(it) }
                 binding.rotationVal.text = gyroValues?.joinToString { decimalFormat.format(it) }
                 println("1trying to send sensor data")
@@ -147,7 +147,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
                     val nodeId: String = messageEvent?.sourceNodeId!!
                     if (nodeId != null) {
-                        val sensorData = "HeartRate: $randomHeartRate, " +
+                        val sensorData = "HeartRate: $heartRateValue, " +
                                 "Velocity: ${velocityValues?.joinToString()}, " +
                                 "Rotation: ${gyroValues?.joinToString()}"
 

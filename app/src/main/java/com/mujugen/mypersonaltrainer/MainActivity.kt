@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         binding.plusSetsBtn.setOnClickListener {
             numberOfSets += 1
             binding.setsText.text = "$numberOfSets"
-            binding.sets2Text.text = "$numberOfSets"
+            binding.sets2Text.text = "Sets: $numberOfSets"
         }
         binding.plusRepsBtn.setOnClickListener {
             currentReps += 1
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 numberOfSets -= 1
             }
             binding.setsText.text = "$numberOfSets"
-            binding.sets2Text.text = "$numberOfSets"
+            binding.sets2Text.text = "Sets: $numberOfSets"
         }
         binding.minusRepsBtn.setOnClickListener {
             if(currentReps>1) {
