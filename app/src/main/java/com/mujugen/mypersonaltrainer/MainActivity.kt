@@ -1,5 +1,6 @@
 package com.mujugen.mypersonaltrainer
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -26,6 +27,15 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 import kotlin.math.roundToInt
 import kotlin.random.Random
+import android.content.pm.PackageManager
+import android.os.Environment
+import androidx.core.content.ContextCompat
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+
+
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
@@ -475,7 +485,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     val rotationZ = String.format("%.2f",rotation[2].toDouble())
 
                     Log.d("receive1", "HeartRate: $heartRate, Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ, Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ")
-
+                    val dataToSave = "HeartRate: $heartRate, Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ, Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ\n"
+                    saveToFile(dataToSave)
                     binding.hrText.text = "Heart Rate: $heartRate"
                     binding.velocityText.text = "Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ"
                     binding.rotationText.text = "Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ"
@@ -610,6 +621,31 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         val density = resources.displayMetrics.density
         return (dp * density).roundToInt()
     }
+
+    private fun saveToFile(data: String) {
+        // Check for permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            val path = Environment.getExternalStorageDirectory().absolutePath + "/yourFileName.txt"
+            val file = File(path)
+
+            try {
+                if (!file.exists()) {
+                    file.createNewFile()
+                }
+
+                val writer = FileWriter(file, true) // true for append
+                val bufferedWriter = BufferedWriter(writer)
+                bufferedWriter.write(data)
+                bufferedWriter.flush()
+                bufferedWriter.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        } else {
+            // Handle permission request if not granted
+        }
+    }
+
 
 
 
