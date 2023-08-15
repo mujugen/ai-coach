@@ -70,9 +70,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private lateinit var binding: ActivityMainBinding
     private var exerciseStarted: Boolean = false
     private var currentSet: Int = 1
-    private val PERMISSIONS_REQUEST_CODE = 123
-    private val STORAGE_PERMISSION_REQUEST_CODE = 1
-
+    private var uniqueIdentifier = 0
+    private val heartRateArray = mutableListOf<String>()
+    private val velocityXArray = mutableListOf<String>()
+    private val velocityYArray = mutableListOf<String>()
+    private val velocityZArray = mutableListOf<String>()
+    private val rotationXArray = mutableListOf<String>()
+    private val rotationYArray = mutableListOf<String>()
+    private val rotationZArray = mutableListOf<String>()
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -188,6 +193,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
         binding.goBtn.setOnClickListener {
             if (exerciseStarted == false) {
+                uniqueIdentifier += 1
                 binding.goBtn.setBackgroundResource(R.drawable.red_circle_button)
                 exerciseStarted = true
                 binding.suggestedRepsText.text = "Suggested Reps:"
@@ -209,7 +215,26 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 binding.predictedRPEText.text = "Predicted RPE: $RPE"
                 currentLoad = calculateLoad(RPE)
                 currentReps = calculateReps(RPE)
+                val heartRateCSV = heartRateArray.joinToString(" - ") { it.toString() }
+                val velocityXCSV = velocityXArray.joinToString(" - ") { it.toString() }
+                val velocityYCSV = velocityYArray.joinToString(" - ") { it.toString() }
+                val velocityZCSV = velocityZArray.joinToString(" - ") { it.toString() }
+                val rotationXCSV = rotationXArray.joinToString(" - ") { it.toString() }
+                val rotationYCSV = rotationYArray.joinToString(" - ") { it.toString() }
+                val rotationZCSV = rotationZArray.joinToString(" - ") { it.toString() }
 
+                val dataToSave = "$uniqueIdentifier, $exerciseSelected, $currentLoad, $currentReps, $currentSet, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV\n"
+
+                saveToFile(dataToSave)
+
+                // Clearing the arrays for the next set
+                heartRateArray.clear()
+                velocityXArray.clear()
+                velocityYArray.clear()
+                velocityZArray.clear()
+                rotationXArray.clear()
+                rotationYArray.clear()
+                rotationZArray.clear()
                 binding.suggestedRepsText.text = "Suggested Reps: $currentReps"
                 binding.suggestedLoadText.text = "Suggested Load: $currentLoad kg"
                 sets[currentSet - 2].sLoad = currentLoad
@@ -405,13 +430,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         try {
             val s = String(p0.data, StandardCharsets.UTF_8)
             val messageEventPath: String = p0.path
-            //Log.d(TAG_MESSAGE_RECEIVED, "onMessageReceived() Received a message from watch:"
-            //        + p0.requestId
-            //        + " "
-            //        + messageEventPath
-            //        + " "
-            //        + s
-            //)
             if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
                 currentAckFromWearForAppOpenCheck = s
                 //Log.d(TAG_MESSAGE_RECEIVED, "Received acknowledgement message that app is open in wear")
@@ -430,10 +448,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     val rotation = sensorDataParts[3].trim().split(",").map { it.trim() }
 
 
-                    //println(sensorDataParts)
-                    //println(heartRate)
-                    //println(velocity)
-                    //println(rotation)
                     val velocityX = String.format("%.2f", velocity[0].toDouble())
                     val velocityY = String.format("%.2f", velocity[1].toDouble())
                     val velocityZ = String.format("%.2f", velocity[2].toDouble())
@@ -441,10 +455,17 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     val rotationY = String.format("%.2f", rotation[1].toDouble())
                     val rotationZ = String.format("%.2f", rotation[2].toDouble())
 
-                    //Log.d("receive1", "HeartRate: $heartRate, Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ, Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ")
-                    val dataToSave =
-                        "HeartRate: $heartRate, Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ, Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ\n"
-                    saveToFile(dataToSave)
+
+                    if(exerciseStarted == true) {
+                        heartRateArray.add(heartRate)
+                        velocityXArray.add(velocityX)
+                        velocityYArray.add(velocityY)
+                        velocityZArray.add(velocityZ)
+                        rotationXArray.add(rotationX)
+                        rotationYArray.add(rotationY)
+                        rotationZArray.add(rotationZ)
+                    }
+
                     binding.hrText.text = "Heart Rate: $heartRate"
                     binding.velocityText.text = "Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ"
                     binding.rotationText.text = "Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ"
@@ -591,21 +612,23 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
     private fun saveToFile(data: String) {
-        // Get all external file directories including SD card
         val externalFileDirs = getExternalFilesDirs(null)
-
-        // Find an SD card path if there's one available
         val sdCardPath = externalFileDirs.find { file ->
             Environment.isExternalStorageRemovable(file)
         }?.absolutePath
 
         if (sdCardPath != null) {
-            val path = "$sdCardPath/hellooo.txt"
+            val path = "$sdCardPath/data4.csv"
             val file = File(path)
 
             try {
                 if (!file.exists()) {
                     file.createNewFile()
+                    FileWriter(file, true).use { writer ->
+                        BufferedWriter(writer).use { bufferedWriter ->
+                            bufferedWriter.write("Identifier, Exercise, Load, Reps, Set, HeartRate, VelocityX, VelocityY, VelocityZ, RotationX, RotationY, RotationZ\n")
+                        }
+                    }
                 }
                 println("Saving file")
                 FileWriter(file, true).use { writer ->
