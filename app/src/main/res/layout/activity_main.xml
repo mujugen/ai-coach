@@ -700,16 +700,6 @@
                     android:padding="15dp"
                     android:text="Bicep Curl" />
 
-                <Button
-                    android:id="@+id/exercise3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/square_button"
-                    android:elevation="100dp"
-                    android:includeFontPadding="false"
-                    android:padding="15dp"
-                    android:text="Overhead Press" />
             </LinearLayout>
 
             <LinearLayout
@@ -719,18 +709,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/exercise4"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/square_button"
-                    android:elevation="100dp"
-                    android:includeFontPadding="false"
-                    android:padding="15dp"
-                    android:text="Dumbell Row" />
-
-                <Button
-                    android:id="@+id/exercise5"
+                    android:id="@+id/exercise3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -741,6 +720,36 @@
                     android:text="Shoulder Press" />
 
                 <Button
+                    android:id="@+id/exercise4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/square_button"
+                    android:elevation="100dp"
+                    android:includeFontPadding="false"
+                    android:padding="15dp"
+                    android:text="Back Rows" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/exercise5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/square_button"
+                    android:elevation="100dp"
+                    android:includeFontPadding="false"
+                    android:padding="15dp"
+                    android:text="Squat" />
+
+                <Button
                     android:id="@+id/exercise6"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -749,7 +758,8 @@
                     android:elevation="100dp"
                     android:includeFontPadding="false"
                     android:padding="15dp"
-                    android:text="Tricep Kickback" />
+                    android:text="Deadlift" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -767,7 +777,7 @@
                     android:elevation="100dp"
                     android:includeFontPadding="false"
                     android:padding="15dp"
-                    android:text="Skull Crushers" />
+                    android:text="Lunges" />
 
                 <Button
                     android:id="@+id/exercise8"
@@ -778,58 +788,7 @@
                     android:elevation="100dp"
                     android:includeFontPadding="false"
                     android:padding="15dp"
-                    android:text="Inclince Bench Press" />
-
-                <Button
-                    android:id="@+id/exercise9"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/square_button"
-                    android:elevation="100dp"
-                    android:includeFontPadding="false"
-                    android:padding="15dp"
-                    android:text="Shrugs" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/exercise10"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/square_button"
-                    android:elevation="100dp"
-                    android:includeFontPadding="false"
-                    android:padding="15dp"
-                    android:text="Neutral Grip Rows" />
-
-                <Button
-                    android:id="@+id/exercise11"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/square_button"
-                    android:elevation="100dp"
-                    android:includeFontPadding="false"
-                    android:padding="15dp"
-                    android:text="Hammer Curls" />
-
-                <Button
-                    android:id="@+id/exercise12"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/square_button"
-                    android:elevation="100dp"
-                    android:includeFontPadding="false"
-                    android:padding="15dp"
-                    android:text="Arnold Press" />
+                    android:text="Tricep Kickback" />
             </LinearLayout>
 
         </LinearLayout>

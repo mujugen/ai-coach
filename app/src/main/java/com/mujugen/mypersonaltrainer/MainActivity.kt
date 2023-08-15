@@ -223,7 +223,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 val rotationYCSV = rotationYArray.joinToString(" - ") { it.toString() }
                 val rotationZCSV = rotationZArray.joinToString(" - ") { it.toString() }
 
-                val dataToSave = "$uniqueIdentifier, $exerciseSelected, $currentLoad, $currentReps, $currentSet, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV\n"
+                val dataToSave = "$uniqueIdentifier, $exerciseSelected, $currentLoad, $currentReps, ${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV\n"
 
                 saveToFile(dataToSave)
 
