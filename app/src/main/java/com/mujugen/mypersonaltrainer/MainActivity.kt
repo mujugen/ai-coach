@@ -29,12 +29,13 @@ import kotlin.math.roundToInt
 import kotlin.random.Random
 import android.content.pm.PackageManager
 import android.os.Environment
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
-
+import android.app.AlertDialog
 
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
@@ -69,6 +70,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private lateinit var binding: ActivityMainBinding
     private var exerciseStarted: Boolean = false
     private var currentSet: Int = 1
+    private val PERMISSIONS_REQUEST_CODE = 123
+    private val STORAGE_PERMISSION_REQUEST_CODE = 1
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +79,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
         fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
         fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
         activityContext = this
@@ -93,7 +95,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 val tempAct: Activity = activityContext as MainActivity
                 //Couroutine
                 initialiseDevicePairing(tempAct)
-            }else{
+            } else {
                 binding.connectPage.startAnimation(fadeOutAnimation)
                 binding.connectPage.visibility = View.GONE
                 binding.exerciseSelectionPage.startAnimation(fadeInAnimation)
@@ -121,21 +123,21 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             binding.reps2Text.text = "$currentReps"
         }
         binding.minusLoadBtn.setOnClickListener {
-            if(currentLoad>1){
+            if (currentLoad > 1) {
                 currentLoad -= 1
             }
             binding.loadText.text = "$currentLoad kg"
             binding.load2Text.text = "$currentLoad kg"
         }
         binding.minusSetsBtn.setOnClickListener {
-            if(numberOfSets>1){
+            if (numberOfSets > 1) {
                 numberOfSets -= 1
             }
             binding.setsText.text = "$numberOfSets"
             binding.sets2Text.text = "Sets: $numberOfSets"
         }
         binding.minusRepsBtn.setOnClickListener {
-            if(currentReps>1) {
+            if (currentReps > 1) {
                 currentReps -= 1
             }
             binding.repsText.text = "$currentReps"
@@ -185,7 +187,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
 
         binding.goBtn.setOnClickListener {
-            if(exerciseStarted==false){
+            if (exerciseStarted == false) {
                 binding.goBtn.setBackgroundResource(R.drawable.red_circle_button)
                 exerciseStarted = true
                 binding.suggestedRepsText.text = "Suggested Reps:"
@@ -194,11 +196,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 binding.reps2Text.text = "Reps: $currentReps"
                 binding.load2Text.text = "Load: $currentLoad kg"
                 binding.goBtn.text = "STOP"
-            }else{
+            } else {
                 val RPE = Random.nextInt(1, 11)
-                sets[currentSet-1].load = currentLoad
-                sets[currentSet-1].reps = currentReps
-                sets[currentSet-1].rpe = RPE
+                sets[currentSet - 1].load = currentLoad
+                sets[currentSet - 1].reps = currentReps
+                sets[currentSet - 1].rpe = RPE
                 binding.goBtn.setBackgroundResource(R.drawable.circle_button)
                 exerciseStarted = false
                 currentSet += 1
@@ -210,11 +212,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
                 binding.suggestedRepsText.text = "Suggested Reps: $currentReps"
                 binding.suggestedLoadText.text = "Suggested Load: $currentLoad kg"
-                sets[currentSet-2].sLoad = currentLoad
-                sets[currentSet-2].sReps = currentReps
+                sets[currentSet - 2].sLoad = currentLoad
+                sets[currentSet - 2].sReps = currentReps
                 binding.goBtn.text = "START"
-                println("sets = ${sets[currentSet-2]}")
-                if(currentSet > numberOfSets){
+                println("sets = ${sets[currentSet - 2]}")
+                if (currentSet > numberOfSets) {
                     exerciseStarted = false
                     addSetsToLayout()
                     binding.goBtn.setBackgroundResource(R.drawable.circle_button)
@@ -225,59 +227,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 }
 
 
-
             }
 
 
         }
 
 
-
-
-//        binding.sendmessageButton.setOnClickListener {
-//            if (wearableDeviceConnected) {
-//                if (binding.messagecontentEditText.text!!.isNotEmpty()) {
-//
-//                    val nodeId: String = messageEvent?.sourceNodeId!!
-//                    // Set the data of the message to be the bytes of the Uri.
-//                    val payload: ByteArray =
-//                        binding.messagecontentEditText.text.toString().toByteArray()
-//
-//                    // Send the rpc
-//                    // Instantiates clients without member variables, as clients are inexpensive to
-//                    // create. (They are cached and shared between GoogleApi instances.)
-//                    val sendMessageTask =
-//                        Wearable.getMessageClient(activityContext!!)
-//                            .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
-//
-//                    sendMessageTask.addOnCompleteListener {
-//                        if (it.isSuccessful) {
-//                            Log.d("send1", "Message sent successfully")
-//                            val sbTemp = StringBuilder()
-//                            sbTemp.append("\n")
-//                            sbTemp.append(binding.messagecontentEditText.text.toString())
-//                            sbTemp.append(" (Sent to Wearable)")
-//                            Log.d("receive1", " $sbTemp")
-//                            binding.messagelogTextView.append(sbTemp)
-//
-//                            binding.scrollviewText.requestFocus()
-//                            binding.scrollviewText.post {
-//                                binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
-//                            }
-//                        } else {
-//                            Log.d("send1", "Message failed.")
-//                        }
-//                    }
-//                } else {
-//                    Toast.makeText(
-//                        activityContext,
-//                        "Message content is empty. Please enter some message and proceed",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//            }
-//        }
     }
+
     private fun setButtonListeners(viewGroup: ViewGroup) {
         for (i in 0 until viewGroup.childCount) {
             val child = viewGroup.getChildAt(i)
@@ -370,9 +327,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 Tasks.await(
                     nodeListTask
                 )
-            Log.e(TAG_GET_NODES, "Task fetched nodes")
+            //Log.e(TAG_GET_NODES, "Task fetched nodes")
             for (node in nodes) {
-                Log.e(TAG_GET_NODES, "inside loop")
+                //Log.e(TAG_GET_NODES, "inside loop")
                 nodeResults.add(node.id)
                 try {
                     val nodeId = node.id
@@ -387,14 +344,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     try {
                         // Block on a task and get the result synchronously (because this is on a background thread).
                         val result = Tasks.await(sendMessageTask)
-                        Log.d(TAG_GET_NODES, "send message result : $result")
+                        //Log.d(TAG_GET_NODES, "send message result : $result")
                         resBool[0] = true
 
                         //Wait for 700 ms/0.7 sec for the acknowledgement message
                         //Wait 1
                         if (currentAckFromWearForAppOpenCheck != wearableAppCheckPayloadReturnACK) {
                             Thread.sleep(100)
-                            Log.d(TAG_GET_NODES, "ACK thread sleep 1")
+                            //Log.d(TAG_GET_NODES, "ACK thread sleep 1")
                         }
                         if (currentAckFromWearForAppOpenCheck == wearableAppCheckPayloadReturnACK) {
                             resBool[1] = true
@@ -403,7 +360,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         //Wait 2
                         if (currentAckFromWearForAppOpenCheck != wearableAppCheckPayloadReturnACK) {
                             Thread.sleep(250)
-                            Log.d(TAG_GET_NODES, "ACK thread sleep 2")
+                            //Log.d(TAG_GET_NODES, "ACK thread sleep 2")
                         }
                         if (currentAckFromWearForAppOpenCheck == wearableAppCheckPayloadReturnACK) {
                             resBool[1] = true
@@ -412,27 +369,27 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         //Wait 3
                         if (currentAckFromWearForAppOpenCheck != wearableAppCheckPayloadReturnACK) {
                             Thread.sleep(350)
-                            Log.d(TAG_GET_NODES, "ACK thread sleep 5")
+                            //Log.d(TAG_GET_NODES, "ACK thread sleep 5")
                         }
                         if (currentAckFromWearForAppOpenCheck == wearableAppCheckPayloadReturnACK) {
                             resBool[1] = true
                             return resBool
                         }
                         resBool[1] = false
-                        Log.d(
-                            TAG_GET_NODES,
-                            "ACK thread timeout, no message received from the wearable "
-                        )
+                        //Log.d(
+                        //    TAG_GET_NODES,
+                        //    "ACK thread timeout, no message received from the wearable "
+                        //)
                     } catch (exception: Exception) {
                         exception.printStackTrace()
                     }
                 } catch (e1: Exception) {
-                    Log.d(TAG_GET_NODES, "send message exception")
+                    //Log.d(TAG_GET_NODES, "send message exception")
                     e1.printStackTrace()
                 }
             } //end of for loop
         } catch (exception: Exception) {
-            Log.e(TAG_GET_NODES, "Task failed: $exception")
+            //Log.e(TAG_GET_NODES, "Task failed: $exception")
             exception.printStackTrace()
         }
         return resBool
@@ -444,23 +401,23 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
-        println("message received")
+        //println("message received")
         try {
             val s = String(p0.data, StandardCharsets.UTF_8)
             val messageEventPath: String = p0.path
-            Log.d(TAG_MESSAGE_RECEIVED, "onMessageReceived() Received a message from watch:"
-                    + p0.requestId
-                    + " "
-                    + messageEventPath
-                    + " "
-                    + s
-            )
+            //Log.d(TAG_MESSAGE_RECEIVED, "onMessageReceived() Received a message from watch:"
+            //        + p0.requestId
+            //        + " "
+            //        + messageEventPath
+            //        + " "
+            //        + s
+            //)
             if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
                 currentAckFromWearForAppOpenCheck = s
-                Log.d(TAG_MESSAGE_RECEIVED, "Received acknowledgement message that app is open in wear")
+                //Log.d(TAG_MESSAGE_RECEIVED, "Received acknowledgement message that app is open in wear")
 
                 val sbTemp = StringBuilder()
-                Log.d("receive1", " $sbTemp")
+                //Log.d("receive1", " $sbTemp")
                 messageEvent = p0
                 wearableNodeUri = p0.sourceNodeId
             } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
@@ -473,19 +430,20 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     val rotation = sensorDataParts[3].trim().split(",").map { it.trim() }
 
 
-                    println(sensorDataParts)
-                    println(heartRate)
-                    println(velocity)
-                    println(rotation)
-                    val velocityX = String.format("%.2f",velocity[0].toDouble())
-                    val velocityY = String.format("%.2f",velocity[1].toDouble())
-                    val velocityZ = String.format("%.2f",velocity[2].toDouble())
-                    val rotationX = String.format("%.2f",rotation[0].toDouble())
-                    val rotationY = String.format("%.2f",rotation[1].toDouble())
-                    val rotationZ = String.format("%.2f",rotation[2].toDouble())
+                    //println(sensorDataParts)
+                    //println(heartRate)
+                    //println(velocity)
+                    //println(rotation)
+                    val velocityX = String.format("%.2f", velocity[0].toDouble())
+                    val velocityY = String.format("%.2f", velocity[1].toDouble())
+                    val velocityZ = String.format("%.2f", velocity[2].toDouble())
+                    val rotationX = String.format("%.2f", rotation[0].toDouble())
+                    val rotationY = String.format("%.2f", rotation[1].toDouble())
+                    val rotationZ = String.format("%.2f", rotation[2].toDouble())
 
-                    Log.d("receive1", "HeartRate: $heartRate, Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ, Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ")
-                    val dataToSave = "HeartRate: $heartRate, Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ, Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ\n"
+                    //Log.d("receive1", "HeartRate: $heartRate, Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ, Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ")
+                    val dataToSave =
+                        "HeartRate: $heartRate, Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ, Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ\n"
                     saveToFile(dataToSave)
                     binding.hrText.text = "Heart Rate: $heartRate"
                     binding.velocityText.text = "Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ"
@@ -497,7 +455,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.d("receive1", "Handled")
+            //Log.d("receive1", "Handled")
         }
     }
 
@@ -530,28 +488,30 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
     }
 
-    private fun calculateLoad(RPE: Int): Int{
+    private fun calculateLoad(RPE: Int): Int {
         val targetRPE = 7
         val RPEDifference = targetRPE - RPE
-        val suggestedLoad = (((RPEDifference*0.04)+1)*currentLoad).toInt()
+        val suggestedLoad = (((RPEDifference * 0.04) + 1) * currentLoad).toInt()
 
         return suggestedLoad
     }
-    private fun calculateReps(RPE: Int): Int{
+
+    private fun calculateReps(RPE: Int): Int {
         val targetRPE = 7
         val RPEDifference = (targetRPE - RPE).coerceAtMost(4)
-        if (currentReps > 15){
-            if(RPEDifference < 0 ){
+        if (currentReps > 15) {
+            if (RPEDifference < 0) {
                 val suggestedReps = currentReps + RPEDifference
                 return suggestedReps
-            }else{
+            } else {
                 return currentReps
             }
-        }else{
+        } else {
             val suggestedReps = currentReps + RPEDifference
             return suggestedReps
         }
     }
+
     private data class Sets(
         var exercise: String = "",
         var set: Int = 0,
@@ -561,6 +521,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         var sLoad: Int = 0,
         var sReps: Int = 0
     )
+
     private fun addSetsToLayout() {
         val parentLayout = binding.setsContainer
 
@@ -581,7 +542,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             val repsTextView = createTextView("Reps: ${set.reps}", 18f)
             val rpeTextView = createTextView("RPE: ${set.rpe}", 18f)
             val suggestedLoadTextView = createTextView("Suggested Load: ${set.sLoad}", 18f)
-            val suggestedRepsTextView = createTextView("Suggested Reps: ${set.sReps}", 18f, 0, Typeface.NORMAL, 20)
+            val suggestedRepsTextView =
+                createTextView("Suggested Reps: ${set.sReps}", 18f, 0, Typeface.NORMAL, 20)
 
             // Add TextViews to the new LinearLayout
             newLayout.apply {
@@ -598,7 +560,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
     }
 
-    private fun createTextView(text: String, textSize: Float, marginTop: Int = 0, textStyle: Int = Typeface.NORMAL, marginBottom: Int = 0): TextView {
+    private fun createTextView(
+        text: String,
+        textSize: Float,
+        marginTop: Int = 0,
+        textStyle: Int = Typeface.NORMAL,
+        marginBottom: Int = 0
+    ): TextView {
         val marginLayoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -623,26 +591,34 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
     private fun saveToFile(data: String) {
-        // Check for permission
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            val path = Environment.getExternalStorageDirectory().absolutePath + "/yourFileName.txt"
+        // Get all external file directories including SD card
+        val externalFileDirs = getExternalFilesDirs(null)
+
+        // Find an SD card path if there's one available
+        val sdCardPath = externalFileDirs.find { file ->
+            Environment.isExternalStorageRemovable(file)
+        }?.absolutePath
+
+        if (sdCardPath != null) {
+            val path = "$sdCardPath/hellooo.txt"
             val file = File(path)
 
             try {
                 if (!file.exists()) {
                     file.createNewFile()
                 }
-
-                val writer = FileWriter(file, true) // true for append
-                val bufferedWriter = BufferedWriter(writer)
-                bufferedWriter.write(data)
-                bufferedWriter.flush()
-                bufferedWriter.close()
+                println("Saving file")
+                FileWriter(file, true).use { writer ->
+                    BufferedWriter(writer).use { bufferedWriter ->
+                        bufferedWriter.write(data)
+                    }
+                }
             } catch (e: IOException) {
+                println("Error encountered")
                 e.printStackTrace()
             }
         } else {
-            // Handle permission request if not granted
+            println("SD card not found")
         }
     }
 
@@ -650,5 +626,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
 
 }
+
 
 
