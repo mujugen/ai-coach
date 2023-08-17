@@ -8,6 +8,182 @@
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/exerciseSettingsPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="gone">
+
+        <Button
+            android:id="@+id/finishBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="68dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/miriam_libre"
+            android:text="Finish"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/exerciseType"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.95"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/proceedBtn"
+            android:layout_width="227dp"
+            android:layout_height="57dp"
+            android:background="@drawable/rounded_button"
+            android:elevation="15dp"
+            android:fontFamily="@font/miriam_libre"
+            android:stateListAnimator="@null"
+            android:text="Proceed"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textColorLink="#202587"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.849" />
+
+        <TextView
+            android:id="@+id/exerciseType"
+            android:layout_width="316dp"
+            android:layout_height="77dp"
+            android:layout_marginStart="38dp"
+            android:layout_marginTop="120dp"
+            android:layout_marginEnd="39dp"
+            android:layout_marginBottom="632dp"
+            android:fontFamily="@font/miriam_libre"
+            android:gravity="center"
+            android:text="Exercise_Type"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/ExerciseSettingsSetNumber"
+            android:layout_width="match_parent"
+            android:layout_height="77dp"
+            android:layout_marginBottom="2dp"
+            android:fontFamily="@font/miriam_libre"
+            android:gravity="center"
+            android:text="Set Number"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/exerciseType"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="299dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="47dp"
+            android:layout_marginTop="300dp"
+            android:layout_marginEnd="47dp"
+            android:layout_marginBottom="247dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/loadInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="Load"
+                android:textSize="22sp" />
+
+            <EditText
+                android:id="@+id/repsInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="Reps"
+                android:textSize="22sp" />
+
+            <EditText
+                android:id="@+id/RPEInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="RPE"
+                android:textSize="22sp" />
+
+            <EditText
+                android:id="@+id/nameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="Name"
+                android:textSize="22sp" />
+
+            <EditText
+                android:id="@+id/yearsTrainedInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="Years Trained"
+                android:textSize="22sp" />
+
+            <EditText
+                android:id="@+id/sexInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="Sex"
+                android:textSize="22sp" />
+
+            <EditText
+                android:id="@+id/ageInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:text="Age"
+                android:textSize="22sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="124dp"
+            android:layout_height="114dp"
+            android:layout_marginStart="133dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="136dp"
+            android:layout_marginBottom="709dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/logo" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/summaryPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -165,10 +341,9 @@
             android:id="@+id/goBtn"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_marginStart="96dp"
-            android:layout_marginTop="132dp"
-            android:layout_marginEnd="97dp"
-            android:layout_marginBottom="497dp"
+            android:layout_marginStart="105dp"
+            android:layout_marginEnd="106dp"
+            android:layout_marginBottom="430dp"
             android:background="@drawable/circle_button"
             android:fontFamily="@font/miriam_libre"
             android:text="Start"
@@ -177,7 +352,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/setNumber" />
 
         <Button
             android:id="@+id/backBtn"
@@ -198,24 +373,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/finishBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="305dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="765dp"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/miriam_libre"
-            android:text="Finish"
-            android:textAllCaps="false"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
             android:id="@+id/setNumber"
             android:layout_width="wrap_content"
@@ -227,399 +384,11 @@
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.526"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/goBtn" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="355dp"
-            android:layout_height="200dp"
-            android:layout_marginStart="19dp"
-            android:layout_marginTop="419dp"
-            android:layout_marginEnd="19dp"
-            android:layout_marginBottom="210dp"
-            android:background="@drawable/square_button_light_blue"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/predictedRPEText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/miriam_libre"
-                android:shadowColor="#000000"
-                android:text="Predicted RPE:"
-                android:textColor="#000000"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/suggestedLoadText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:fontFamily="@font/miriam_libre"
-                android:shadowColor="#000000"
-                android:text="Suggested Load:"
-                android:textColor="#000000"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/suggestedRepsText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:fontFamily="@font/miriam_libre"
-                android:shadowColor="#000000"
-                android:text="Suggested Reps:"
-                android:textColor="#000000"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="355dp"
-            android:layout_height="250dp"
-            android:layout_marginStart="19dp"
-            android:layout_marginTop="548dp"
-            android:layout_marginEnd="19dp"
-            android:layout_marginBottom="31dp"
-            android:background="@drawable/square_button"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/exerciseText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/miriam_libre"
-                android:shadowColor="#000000"
-                android:text="Exercise:"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textStyle="normal" />
-
-            <TextView
-                android:id="@+id/load2Text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:fontFamily="@font/miriam_libre"
-                android:shadowColor="#000000"
-                android:text="Load:"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textStyle="normal" />
-
-            <TextView
-                android:id="@+id/reps2Text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:fontFamily="@font/miriam_libre"
-                android:shadowColor="#000000"
-                android:text="Reps:"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textStyle="normal" />
-
-            <TextView
-                android:id="@+id/sets2Text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:fontFamily="@font/miriam_libre"
-                android:shadowColor="#000000"
-                android:text="Sets:"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textStyle="normal" />
-
-            <TextView
-                android:id="@+id/previousRPEText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:fontFamily="@font/miriam_libre"
-                android:shadowColor="#000000"
-                android:text="Previous RPE:"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textStyle="normal" />
-
-            <TextView
-                android:id="@+id/hrText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:fontFamily="@font/miriam_libre"
-                android:shadowColor="#000000"
-                android:text="Heart Rate:"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textStyle="normal" />
-
-            <TextView
-                android:id="@+id/velocityText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:fontFamily="@font/miriam_libre"
-                android:shadowColor="#000000"
-                android:text="Acceleration:"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textStyle="normal" />
-
-            <TextView
-                android:id="@+id/rotationText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:fontFamily="@font/miriam_libre"
-                android:shadowColor="#000000"
-                android:text="Rotation:"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textStyle="normal" />
-        </LinearLayout>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/exerciseSettingsPage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:layout_editor_absoluteX="-113dp"
-        tools:layout_editor_absoluteY="-229dp"
-        tools:visibility="gone">
-
-        <Button
-            android:id="@+id/proceedBtn"
-            android:layout_width="227dp"
-            android:layout_height="57dp"
-            android:background="@drawable/rounded_button"
-            android:elevation="15dp"
-            android:fontFamily="@font/miriam_libre"
-            android:stateListAnimator="@null"
-            android:text="Proceed"
-            android:textAlignment="center"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textColorLink="#202587"
-            android:textSize="34sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.849" />
-
-        <TextView
-            android:id="@+id/exerciseType"
-            android:layout_width="316dp"
-            android:layout_height="77dp"
-            android:layout_marginStart="38dp"
-            android:layout_marginTop="120dp"
-            android:layout_marginEnd="39dp"
-            android:layout_marginBottom="632dp"
-            android:fontFamily="@font/miriam_libre"
-            android:gravity="center"
-            android:text="Exercise_Type"
-            android:textColor="#000000"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:layout_width="299dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="47dp"
-            android:layout_marginTop="207dp"
-            android:layout_marginEnd="47dp"
-            android:layout_marginBottom="247dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/exerciseType2"
-                android:layout_width="match_parent"
-                android:layout_height="77dp"
-                android:fontFamily="@font/miriam_libre"
-                android:gravity="center"
-                android:text="Starting Load"
-                android:textColor="#000000"
-                android:textSize="30sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal|center_vertical"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/minusLoadBtn"
-                    android:layout_width="80dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/square_button_light_blue"
-                    android:text="-"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/loadText"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/miriam_libre"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textColor="#000000"
-                    android:textSize="24sp" />
-
-                <Button
-                    android:id="@+id/plusLoadBtn"
-                    android:layout_width="80dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/square_button_light_blue"
-                    android:text="+"
-                    android:textSize="24sp" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/exerciseType4"
-                android:layout_width="match_parent"
-                android:layout_height="77dp"
-                android:fontFamily="@font/miriam_libre"
-                android:gravity="center"
-                android:text="Sets"
-                android:textColor="#000000"
-                android:textSize="30sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|center_vertical"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/minusSetsBtn"
-                    android:layout_width="80dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/square_button_light_blue"
-                    android:text="-"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/setsText"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/miriam_libre"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textColor="#000000"
-                    android:textSize="24sp" />
-
-                <Button
-                    android:id="@+id/plusSetsBtn"
-                    android:layout_width="80dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/square_button_light_blue"
-                    android:text="+"
-                    android:textSize="24sp" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/exerciseType5"
-                android:layout_width="match_parent"
-                android:layout_height="77dp"
-                android:fontFamily="@font/miriam_libre"
-                android:gravity="center"
-                android:text="Starting Reps"
-                android:textColor="#000000"
-                android:textSize="30sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|center_vertical"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/minusRepsBtn"
-                    android:layout_width="80dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/square_button_light_blue"
-                    android:text="-"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/repsText"
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/miriam_libre"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textColor="#000000"
-                    android:textSize="24sp" />
-
-                <Button
-                    android:id="@+id/plusRepsBtn"
-                    android:layout_width="80dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/square_button_light_blue"
-                    android:text="+"
-                    android:textSize="24sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="124dp"
-            android:layout_height="114dp"
-            android:layout_marginStart="133dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginEnd="136dp"
-            android:layout_marginBottom="709dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

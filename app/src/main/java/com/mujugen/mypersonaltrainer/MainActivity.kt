@@ -36,8 +36,10 @@ import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import android.app.AlertDialog
-
-
+import java.time.LocalDateTime
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
     MessageClient.OnMessageReceivedListener,
@@ -46,7 +48,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private val wearableAppCheckPayload = "AppOpenWearable"
     private val wearableAppCheckPayloadReturnACK = "AppOpenWearableACK"
     private var wearableDeviceConnected: Boolean = false
-    private var sets: Array<Sets> = arrayOf()
+    private var setsList: ArrayList<Sets> = ArrayList()
+
 
 
     private var currentAckFromWearForAppOpenCheck: String? = null
@@ -62,9 +65,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
     private var exerciseSelected: String = "None"
 
-    private var currentLoad: Int = 20
-    private var currentReps: Int = 10
-    private var numberOfSets: Int = 4
     private lateinit var fadeInAnimation: Animation
     private lateinit var fadeOutAnimation: Animation
     private lateinit var binding: ActivityMainBinding
@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private val rotationXArray = mutableListOf<String>()
     private val rotationYArray = mutableListOf<String>()
     private val rotationZArray = mutableListOf<String>()
+    private var sensorData: String = ""
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,55 +113,26 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
         setButtonListeners(binding.exerciseLayout)
 
-        binding.plusLoadBtn.setOnClickListener {
-            currentLoad += 1
-            binding.loadText.text = "$currentLoad kg"
-            binding.load2Text.text = "$currentLoad kg"
-        }
-        binding.plusSetsBtn.setOnClickListener {
-            numberOfSets += 1
-            binding.setsText.text = "$numberOfSets"
-            binding.sets2Text.text = "Sets: $numberOfSets"
-        }
-        binding.plusRepsBtn.setOnClickListener {
-            currentReps += 1
-            binding.repsText.text = "$currentReps"
-            binding.reps2Text.text = "$currentReps"
-        }
-        binding.minusLoadBtn.setOnClickListener {
-            if (currentLoad > 1) {
-                currentLoad -= 1
-            }
-            binding.loadText.text = "$currentLoad kg"
-            binding.load2Text.text = "$currentLoad kg"
-        }
-        binding.minusSetsBtn.setOnClickListener {
-            if (numberOfSets > 1) {
-                numberOfSets -= 1
-            }
-            binding.setsText.text = "$numberOfSets"
-            binding.sets2Text.text = "Sets: $numberOfSets"
-        }
-        binding.minusRepsBtn.setOnClickListener {
-            if (currentReps > 1) {
-                currentReps -= 1
-            }
-            binding.repsText.text = "$currentReps"
-            binding.reps2Text.text = "$currentReps"
-        }
         binding.proceedBtn.setOnClickListener {
             binding.exerciseSettingsPage.startAnimation(fadeOutAnimation)
             binding.exerciseSettingsPage.visibility = View.GONE
             binding.exercisePage.startAnimation(fadeInAnimation)
             binding.exercisePage.visibility = View.VISIBLE
             binding.exerciseTypeText.text = "$exerciseSelected"
+            val currentDateTime: Calendar = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val currentDateTimeString: String = dateFormat.format(currentDateTime.time)
+            // sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
+            val currentLoad = binding.loadInput.text
+            val currentReps = binding.repsInput.text
+            val name = binding.nameInput.text
+            val sex = binding.sexInput.text
+            val yearsTrained = binding.yearsTrainedInput.text
+            val age = binding.ageInput.text
+            val dataToSave = "$sensorData, $currentDateTimeString, $exerciseSelected, $currentLoad, $currentReps, $name, $sex, $yearsTrained, $age"
+            println("dataToSave = $dataToSave")
+            saveToFile(dataToSave)
 
-            sets = Array(numberOfSets) { index ->
-                Sets(
-                    exercise = exerciseSelected,
-                    set = index + 1
-                )
-            }
 
         }
 
@@ -196,25 +168,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 uniqueIdentifier += 1
                 binding.goBtn.setBackgroundResource(R.drawable.red_circle_button)
                 exerciseStarted = true
-                binding.suggestedRepsText.text = "Suggested Reps:"
-                binding.suggestedLoadText.text = "Suggested Load:"
-                binding.predictedRPEText.text = "Predicted RPE:"
-                binding.reps2Text.text = "Reps: $currentReps"
-                binding.load2Text.text = "Load: $currentLoad kg"
                 binding.goBtn.text = "STOP"
+                binding.ExerciseSettingsSetNumber.text = "Set $currentSet"
             } else {
-                val RPE = Random.nextInt(1, 11)
-                sets[currentSet - 1].load = currentLoad
-                sets[currentSet - 1].reps = currentReps
-                sets[currentSet - 1].rpe = RPE
                 binding.goBtn.setBackgroundResource(R.drawable.circle_button)
                 exerciseStarted = false
                 currentSet += 1
                 binding.setNumber.text = "Set $currentSet"
-
-                binding.predictedRPEText.text = "Predicted RPE: $RPE"
-                currentLoad = calculateLoad(RPE)
-                currentReps = calculateReps(RPE)
                 val heartRateCSV = heartRateArray.joinToString(" - ") { it.toString() }
                 val velocityXCSV = velocityXArray.joinToString(" - ") { it.toString() }
                 val velocityYCSV = velocityYArray.joinToString(" - ") { it.toString() }
@@ -222,10 +182,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 val rotationXCSV = rotationXArray.joinToString(" - ") { it.toString() }
                 val rotationYCSV = rotationYArray.joinToString(" - ") { it.toString() }
                 val rotationZCSV = rotationZArray.joinToString(" - ") { it.toString() }
-
-                val dataToSave = "$uniqueIdentifier, $exerciseSelected, $currentLoad, $currentReps, ${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV\n"
-
-                saveToFile(dataToSave)
+                sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
 
                 // Clearing the arrays for the next set
                 heartRateArray.clear()
@@ -235,21 +192,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 rotationXArray.clear()
                 rotationYArray.clear()
                 rotationZArray.clear()
-                binding.suggestedRepsText.text = "Suggested Reps: $currentReps"
-                binding.suggestedLoadText.text = "Suggested Load: $currentLoad kg"
-                sets[currentSet - 2].sLoad = currentLoad
-                sets[currentSet - 2].sReps = currentReps
                 binding.goBtn.text = "START"
-                println("sets = ${sets[currentSet - 2]}")
-                if (currentSet > numberOfSets) {
-                    exerciseStarted = false
-                    addSetsToLayout()
-                    binding.goBtn.setBackgroundResource(R.drawable.circle_button)
-                    binding.exercisePage.startAnimation(fadeOutAnimation)
-                    binding.exercisePage.visibility = View.GONE
-                    binding.summaryPage.startAnimation(fadeInAnimation)
-                    binding.summaryPage.visibility = View.VISIBLE
-                }
+                exerciseStarted = false
+                binding.goBtn.setBackgroundResource(R.drawable.circle_button)
+                binding.exercisePage.startAnimation(fadeOutAnimation)
+                binding.exercisePage.visibility = View.GONE
+                binding.exerciseSettingsPage.startAnimation(fadeInAnimation)
+                binding.exerciseSettingsPage.visibility = View.VISIBLE
+
 
 
             }
@@ -273,17 +223,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     exerciseSelected = buttonText
                     println("exercise selected: ${exerciseSelected}")
                     binding.exerciseType.text = exerciseSelected
-                    binding.exerciseText.text = exerciseSelected
-                    binding.repsText.text = "$currentReps"
-                    binding.loadText.text = "$currentLoad kg"
-                    binding.setsText.text = "$numberOfSets"
-                    binding.reps2Text.text = "Reps: $currentReps"
-                    binding.load2Text.text = "Load: $currentLoad kg"
-                    binding.sets2Text.text = "Sets: $numberOfSets"
                     binding.exerciseSelectionPage.startAnimation(fadeOutAnimation)
                     binding.exerciseSelectionPage.visibility = View.GONE
-                    binding.exerciseSettingsPage.startAnimation(fadeInAnimation)
-                    binding.exerciseSettingsPage.visibility = View.VISIBLE
+                    binding.exercisePage.startAnimation(fadeInAnimation)
+                    binding.exercisePage.visibility = View.VISIBLE
                 }
             }
         }
@@ -466,9 +409,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         rotationZArray.add(rotationZ)
                     }
 
-                    binding.hrText.text = "Heart Rate: $heartRate"
-                    binding.velocityText.text = "Velocity: X=$velocityX, Y=$velocityY, Z=$velocityZ"
-                    binding.rotationText.text = "Rotation: X=$rotationX, Y=$rotationY, Z=$rotationZ"
 
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -509,29 +449,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
     }
 
-    private fun calculateLoad(RPE: Int): Int {
-        val targetRPE = 7
-        val RPEDifference = targetRPE - RPE
-        val suggestedLoad = (((RPEDifference * 0.04) + 1) * currentLoad).toInt()
-
-        return suggestedLoad
-    }
-
-    private fun calculateReps(RPE: Int): Int {
-        val targetRPE = 7
-        val RPEDifference = (targetRPE - RPE).coerceAtMost(4)
-        if (currentReps > 15) {
-            if (RPEDifference < 0) {
-                val suggestedReps = currentReps + RPEDifference
-                return suggestedReps
-            } else {
-                return currentReps
-            }
-        } else {
-            val suggestedReps = currentReps + RPEDifference
-            return suggestedReps
-        }
-    }
 
     private data class Sets(
         var exercise: String = "",
@@ -543,43 +460,43 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         var sReps: Int = 0
     )
 
-    private fun addSetsToLayout() {
-        val parentLayout = binding.setsContainer
-
-        sets.forEachIndexed { index, set ->
-            // Create new LinearLayout
-            val newLayout = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                setBackgroundResource(R.drawable.square_button)
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-            }
-
-            // Create new TextViews
-            val setNumberTextView = createTextView("Set ${index + 1}", 24f, 20, Typeface.BOLD)
-            val loadTextView = createTextView("Load: ${set.load}", 18f)
-            val repsTextView = createTextView("Reps: ${set.reps}", 18f)
-            val rpeTextView = createTextView("RPE: ${set.rpe}", 18f)
-            val suggestedLoadTextView = createTextView("Suggested Load: ${set.sLoad}", 18f)
-            val suggestedRepsTextView =
-                createTextView("Suggested Reps: ${set.sReps}", 18f, 0, Typeface.NORMAL, 20)
-
-            // Add TextViews to the new LinearLayout
-            newLayout.apply {
-                addView(setNumberTextView)
-                addView(loadTextView)
-                addView(repsTextView)
-                addView(rpeTextView)
-                addView(suggestedLoadTextView)
-                addView(suggestedRepsTextView)
-            }
-
-            // Add new LinearLayout to parent LinearLayout
-            parentLayout.addView(newLayout)
-        }
-    }
+    //private fun addSetsToLayout() {
+    //    val parentLayout = binding.setsContainer
+    //
+    //    sets.forEachIndexed { index, set ->
+    //        // Create new LinearLayout
+    //        val newLayout = LinearLayout(this).apply {
+    //            orientation = LinearLayout.VERTICAL
+    //            setBackgroundResource(R.drawable.square_button)
+    //            layoutParams = LinearLayout.LayoutParams(
+    //                LinearLayout.LayoutParams.MATCH_PARENT,
+    //                LinearLayout.LayoutParams.WRAP_CONTENT
+    //            )
+    //        }
+        //
+    //        // Create new TextViews
+    //        val setNumberTextView = createTextView("Set ${index + 1}", 24f, 20, Typeface.BOLD)
+    //        val loadTextView = createTextView("Load: ${set.load}", 18f)
+    //        val repsTextView = createTextView("Reps: ${set.reps}", 18f)
+    //        val rpeTextView = createTextView("RPE: ${set.rpe}", 18f)
+    //        val suggestedLoadTextView = createTextView("Suggested Load: ${set.sLoad}", 18f)
+    //        val suggestedRepsTextView =
+    //            createTextView("Suggested Reps: ${set.sReps}", 18f, 0, Typeface.NORMAL, 20)
+        //
+    //        // Add TextViews to the new LinearLayout
+    //        newLayout.apply {
+    //            addView(setNumberTextView)
+    //            addView(loadTextView)
+    //            addView(repsTextView)
+    //            addView(rpeTextView)
+    //            addView(suggestedLoadTextView)
+    //            addView(suggestedRepsTextView)
+    //        }
+    //
+    //        // Add new LinearLayout to parent LinearLayout
+    //        parentLayout.addView(newLayout)
+    //    }
+    //}
 
     private fun createTextView(
         text: String,
@@ -618,7 +535,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }?.absolutePath
 
         if (sdCardPath != null) {
-            val path = "$sdCardPath/data4.csv"
+            val path = "$sdCardPath/data5.csv"
             val file = File(path)
 
             try {
@@ -626,7 +543,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     file.createNewFile()
                     FileWriter(file, true).use { writer ->
                         BufferedWriter(writer).use { bufferedWriter ->
-                            bufferedWriter.write("Identifier, Exercise, Load, Reps, Set, HeartRate, VelocityX, VelocityY, VelocityZ, RotationX, RotationY, RotationZ\n")
+                            bufferedWriter.write("Set, HeartRate, VelocityX, VelocityY, VelocityZ, RotationX, RotationY, RotationZ, Id, Exercise Selected, Load, Reps, Name, Sex, Years Trained, Age\n")
                         }
                     }
                 }
