@@ -114,47 +114,64 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         setButtonListeners(binding.exerciseLayout)
 
         binding.proceedBtn.setOnClickListener {
-            binding.exerciseSettingsPage.startAnimation(fadeOutAnimation)
-            binding.exerciseSettingsPage.visibility = View.GONE
-            binding.exercisePage.startAnimation(fadeInAnimation)
-            binding.exercisePage.visibility = View.VISIBLE
-            binding.exerciseTypeText.text = "$exerciseSelected"
-            val currentDateTime: Calendar = Calendar.getInstance()
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val currentDateTimeString: String = dateFormat.format(currentDateTime.time)
-            // sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
             val currentLoad = binding.loadInput.text
             val currentReps = binding.repsInput.text
-            val name = binding.nameInput.text
-            val sex = binding.sexInput.text
-            val yearsTrained = binding.yearsTrainedInput.text
-            val age = binding.ageInput.text
-            val dataToSave = "$sensorData, $currentDateTimeString, $exerciseSelected, $currentLoad, $currentReps, $name, $sex, $yearsTrained, $age"
-            println("dataToSave = $dataToSave")
-            saveToFile(dataToSave)
+            val currentRPE = binding.RPEInput.text
+            if(currentLoad.isEmpty() || currentReps.isEmpty() || currentRPE.isEmpty()){
+                println("Missing fields")
+            }else{
+                binding.exerciseSettingsPage.startAnimation(fadeOutAnimation)
+                binding.exerciseSettingsPage.visibility = View.GONE
+                binding.exercisePage.startAnimation(fadeInAnimation)
+                binding.exercisePage.visibility = View.VISIBLE
+                binding.exerciseTypeText.text = "$exerciseSelected"
+                val currentDateTime: Calendar = Calendar.getInstance()
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                val currentDateTimeString: String = dateFormat.format(currentDateTime.time)
+                // sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
+
+                val name = binding.nameInput.text
+                val sex = binding.sexInput.text
+                val yearsTrained = binding.yearsTrainedInput.text
+                val age = binding.ageInput.text
+                val dataToSave = "$sensorData, $currentDateTimeString, $exerciseSelected, $currentLoad, $currentReps, $name, $sex, $yearsTrained, $age, $currentRPE\n"
+                println("dataToSave = $dataToSave")
+                saveToFile(dataToSave)
+
+                binding.loadInput.setText("")
+                binding.repsInput.setText("")
+                binding.RPEInput.setText("")
+            }
+
+
+
 
 
         }
 
-        binding.finishBtn.setOnClickListener {
-            exerciseStarted = false
-            binding.goBtn.setBackgroundResource(R.drawable.circle_button)
-            binding.exercisePage.startAnimation(fadeOutAnimation)
-            binding.exercisePage.visibility = View.GONE
-            binding.summaryPage.startAnimation(fadeInAnimation)
-            binding.summaryPage.visibility = View.VISIBLE
-        }
-        binding.backBtn.setOnClickListener {
-            binding.exercisePage.startAnimation(fadeOutAnimation)
-            binding.exercisePage.visibility = View.GONE
-            binding.exerciseSelectionPage.startAnimation(fadeInAnimation)
-            binding.exerciseSelectionPage.visibility = View.VISIBLE
-        }
+
         binding.finishBtn2.setOnClickListener {
             binding.summaryPage.startAnimation(fadeOutAnimation)
             binding.summaryPage.visibility = View.GONE
             binding.exerciseSelectionPage.startAnimation(fadeInAnimation)
             binding.exerciseSelectionPage.visibility = View.VISIBLE
+        }
+        binding.finishBtn3.setOnClickListener {
+            exerciseStarted = false
+            binding.goBtn.setBackgroundResource(R.drawable.circle_button)
+            binding.exercisePage.startAnimation(fadeOutAnimation)
+            binding.exercisePage.visibility = View.GONE
+            binding.exerciseSelectionPage.startAnimation(fadeInAnimation)
+            binding.exerciseSelectionPage.visibility = View.VISIBLE
+            currentSet = 1
+            binding.loadInput.setText("")
+            binding.repsInput.setText("")
+            binding.RPEInput.setText("")
+            binding.nameInput.setText("")
+            binding.sexInput.setText("")
+            binding.ageInput.setText("")
+            binding.yearsTrainedInput.setText("")
+            binding.ExerciseSettingsSetNumber.text = "Set $currentSet"
         }
         binding.backBtn2.setOnClickListener {
             binding.summaryPage.startAnimation(fadeOutAnimation)
@@ -227,6 +244,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     binding.exerciseSelectionPage.visibility = View.GONE
                     binding.exercisePage.startAnimation(fadeInAnimation)
                     binding.exercisePage.visibility = View.VISIBLE
+                    currentSet = 1
                 }
             }
         }
@@ -543,7 +561,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     file.createNewFile()
                     FileWriter(file, true).use { writer ->
                         BufferedWriter(writer).use { bufferedWriter ->
-                            bufferedWriter.write("Set, HeartRate, VelocityX, VelocityY, VelocityZ, RotationX, RotationY, RotationZ, Id, Exercise Selected, Load, Reps, Name, Sex, Years Trained, Age\n")
+                            bufferedWriter.write("Set, HeartRate, VelocityX, VelocityY, VelocityZ, RotationX, RotationY, RotationZ, Id, Exercise Selected, Load, Reps, Name, Sex, Years Trained, Age, RPE\n")
                         }
                     }
                 }
