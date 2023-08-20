@@ -9,4 +9,25 @@
     <string name="init">...</string>
     <string name="check_for_connected_wearables">Check for connected wearables</string>
     <string name="send_message_alt">Send Message to Wearable</string>
+    <string name="selected_item">Selected item:</string>
+
+    <string-array name="sexInputOptions">
+        <item>-</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
+    <string-array name="RPEInputOptions">
+        <item>-</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
 </resources>

@@ -36,6 +36,7 @@ import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import android.app.AlertDialog
+import android.widget.ArrayAdapter
 import java.time.LocalDateTime
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -79,6 +80,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private val rotationYArray = mutableListOf<String>()
     private val rotationZArray = mutableListOf<String>()
     private var sensorData: String = ""
+
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +92,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
         activityContext = this
         wearableDeviceConnected = false
+        val sexInputOptions = resources.getStringArray(R.array.sexInputOptions)
+        val sexInputAdapter = ArrayAdapter(this,
+            android.R.layout.simple_spinner_item, sexInputOptions)
+        binding.sexInput.adapter = sexInputAdapter
+
+        val RPEInputOptions = resources.getStringArray(R.array.RPEInputOptions)
+        val RPEInputAdapter = ArrayAdapter(this,
+            android.R.layout.simple_spinner_item, RPEInputOptions)
+        binding.RPEInput.adapter = RPEInputAdapter
 
         binding.startBtn.setOnClickListener {
             binding.startPage.startAnimation(fadeOutAnimation)
@@ -116,8 +128,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         binding.proceedBtn.setOnClickListener {
             val currentLoad = binding.loadInput.text
             val currentReps = binding.repsInput.text
-            val currentRPE = binding.RPEInput.text
-            if(currentLoad.isEmpty() || currentReps.isEmpty() || currentRPE.isEmpty()){
+            val currentRPE = binding.RPEInput.selectedItem.toString()
+            if(currentLoad.isEmpty() || currentReps.isEmpty() || currentRPE == "-"){
                 println("Missing fields")
             }else{
                 binding.exerciseSettingsPage.startAnimation(fadeOutAnimation)
@@ -131,7 +143,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 // sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
 
                 val name = binding.nameInput.text
-                val sex = binding.sexInput.text
+                val sex = binding.sexInput.selectedItem.toString()
                 val yearsTrained = binding.yearsTrainedInput.text
                 val age = binding.ageInput.text
                 val dataToSave = "$sensorData, $currentDateTimeString, $exerciseSelected, $currentLoad, $currentReps, $name, $sex, $yearsTrained, $age, $currentRPE\n"
@@ -140,7 +152,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
                 binding.loadInput.setText("")
                 binding.repsInput.setText("")
-                binding.RPEInput.setText("")
+                binding.RPEInput.setSelection(0)
             }
 
 
@@ -166,9 +178,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             currentSet = 1
             binding.loadInput.setText("")
             binding.repsInput.setText("")
-            binding.RPEInput.setText("")
+            binding.RPEInput.setSelection(0)
             binding.nameInput.setText("")
-            binding.sexInput.setText("")
+            binding.sexInput.setSelection(0)
             binding.ageInput.setText("")
             binding.yearsTrainedInput.setText("")
             binding.ExerciseSettingsSetNumber.text = "Set $currentSet"
