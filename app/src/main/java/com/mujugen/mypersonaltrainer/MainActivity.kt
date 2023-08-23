@@ -1,6 +1,5 @@
 package com.mujugen.mypersonaltrainer
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -8,39 +7,34 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.mujugen.mypersonaltrainer.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
+import com.mujugen.mypersonaltrainer.databinding.ActivityMainBinding
+import com.robinhood.spark.SparkAdapter
+import com.robinhood.spark.SparkView
 import kotlinx.coroutines.*
-import java.nio.charset.StandardCharsets
-import java.util.*
-import kotlin.math.roundToInt
-import kotlin.random.Random
-import android.content.pm.PackageManager
-import android.os.Environment
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
-import android.app.AlertDialog
-import android.widget.ArrayAdapter
-import java.time.LocalDateTime
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import java.nio.charset.StandardCharsets
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.roundToInt
+import java.util.ArrayDeque
+
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
     MessageClient.OnMessageReceivedListener,
@@ -50,6 +44,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private val wearableAppCheckPayloadReturnACK = "AppOpenWearableACK"
     private var wearableDeviceConnected: Boolean = false
     private var setsList: ArrayList<Sets> = ArrayList()
+
 
 
 
@@ -79,8 +74,23 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private val rotationXArray = mutableListOf<String>()
     private val rotationYArray = mutableListOf<String>()
     private val rotationZArray = mutableListOf<String>()
+    private val heartRateArrayGraph = MaxSizeArray<String>()
+    private val velocityXArrayGraph = MaxSizeArray<String>()
+    private val velocityYArrayGraph = MaxSizeArray<String>()
+    private val velocityZArrayGraph = MaxSizeArray<String>()
+    private val rotationXArrayGraph = MaxSizeArray<String>()
+    private val rotationYArrayGraph = MaxSizeArray<String>()
+    private val rotationZArrayGraph = MaxSizeArray<String>()
     private var sensorData: String = ""
 
+
+    private lateinit var hrGraph: SparkView
+    private lateinit var velocityXGraph: SparkView
+    private lateinit var velocityYGraph: SparkView
+    private lateinit var velocityZGraph: SparkView
+    private lateinit var rotationXGraph: SparkView
+    private lateinit var rotationYGraph: SparkView
+    private lateinit var rotationZGraph: SparkView
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,6 +98,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        hrGraph = findViewById(R.id.hrGraph)
+        velocityXGraph = findViewById(R.id.velocityXGraph)
+        velocityYGraph = findViewById(R.id.velocityYGraph)
+        velocityZGraph = findViewById(R.id.velocityZGraph)
+        rotationXGraph = findViewById(R.id.rotationXGraph)
+        rotationYGraph = findViewById(R.id.rotationYGraph)
+        rotationZGraph = findViewById(R.id.rotationZGraph)
+
+
         fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
         fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
         activityContext = this
@@ -96,6 +115,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         val sexInputAdapter = ArrayAdapter(this,
             android.R.layout.simple_spinner_item, sexInputOptions)
         binding.sexInput.adapter = sexInputAdapter
+
 
         val RPEInputOptions = resources.getStringArray(R.array.RPEInputOptions)
         val RPEInputAdapter = ArrayAdapter(this,
@@ -148,7 +168,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 val age = binding.ageInput.text
                 val dataToSave = "$sensorData, $currentDateTimeString, $exerciseSelected, $currentLoad, $currentReps, $name, $sex, $yearsTrained, $age, $currentRPE\n"
                 println("dataToSave = $dataToSave")
-                saveToFile(dataToSave)
+                saveToFileInternal(dataToSave)
 
                 binding.loadInput.setText("")
                 binding.repsInput.setText("")
@@ -221,6 +241,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 rotationXArray.clear()
                 rotationYArray.clear()
                 rotationZArray.clear()
+
+                heartRateArrayGraph.clear()
+                velocityXArrayGraph.clear()
+                velocityYArrayGraph.clear()
+                velocityZArrayGraph.clear()
+                rotationXArrayGraph.clear()
+                rotationYArrayGraph.clear()
+                rotationZArrayGraph.clear()
                 binding.goBtn.text = "START"
                 exerciseStarted = false
                 binding.goBtn.setBackgroundResource(R.drawable.circle_button)
@@ -265,51 +293,57 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
     @SuppressLint("SetTextI18n")
     private fun initialiseDevicePairing(tempAct: Activity) {
-        //Coroutine
+        // Coroutine
         launch(Dispatchers.Default) {
             var getNodesResBool: BooleanArray? = null
 
-            try {
-                getNodesResBool =
-                    getNodes(tempAct.applicationContext)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            while (!wearableDeviceConnected) {
+                try {
+                    getNodesResBool = getNodes(tempAct.applicationContext)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
 
-            //UI Thread
-            withContext(Dispatchers.Main) {
-                if (getNodesResBool!![0]) {
-                    //if message Acknowlegement Received
-                    if (getNodesResBool[1]) {
-                        Toast.makeText(
-                            activityContext,
-                            "Wearable device paired and app is open",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        binding.connectionStatusText.text =
-                            "Status: Connected"
-
-                        binding.connectBtn.text = "Next"
-                        wearableDeviceConnected = true
+                // UI Thread
+                withContext(Dispatchers.Main) {
+                    if (getNodesResBool!![0]) {
+                        // if message Acknowledgement Received
+                        if (getNodesResBool[1]) {
+                            Toast.makeText(
+                                activityContext,
+                                "Wearable device paired and app is open",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            binding.connectionStatusText.text =
+                                "Status: Connected"
+                            binding.connectBtn.text = "Next"
+                            wearableDeviceConnected = true
+                        } else {
+                            Toast.makeText(
+                                activityContext,
+                                "A wearable device is paired but the wearable app on your watch isn't open.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            wearableDeviceConnected = false
+                        }
                     } else {
                         Toast.makeText(
                             activityContext,
-                            "A wearable device is paired but the wearable app on your watch isn't open.",
+                            "No wearable device paired.",
                             Toast.LENGTH_LONG
                         ).show()
                         wearableDeviceConnected = false
                     }
-                } else {
-                    Toast.makeText(
-                        activityContext,
-                        "No wearable device paired.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    wearableDeviceConnected = false
+                }
+
+                if (!wearableDeviceConnected) {
+                    // Delay before trying again, to prevent too quick reattempts
+                    delay(10)
                 }
             }
         }
     }
+
 
 
     private fun getNodes(context: Context): BooleanArray {
@@ -411,9 +445,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 //Log.d("receive1", " $sbTemp")
                 messageEvent = p0
                 wearableNodeUri = p0.sourceNodeId
+
             } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
 
                 try {
+
 
                     val sensorDataParts = s.split("HeartRate:", "Velocity:", "Rotation:")
                     val heartRate = sensorDataParts[1].trim().removeSuffix(",")
@@ -421,12 +457,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     val rotation = sensorDataParts[3].trim().split(",").map { it.trim() }
 
 
-                    val velocityX = String.format("%.2f", velocity[0].toDouble())
-                    val velocityY = String.format("%.2f", velocity[1].toDouble())
-                    val velocityZ = String.format("%.2f", velocity[2].toDouble())
-                    val rotationX = String.format("%.2f", rotation[0].toDouble())
-                    val rotationY = String.format("%.2f", rotation[1].toDouble())
-                    val rotationZ = String.format("%.2f", rotation[2].toDouble())
+                    val velocityX = velocity[0].toString()
+                    val velocityY = velocity[1].toString()
+                    val velocityZ = velocity[2].toString()
+                    val rotationX = rotation[0].toString()
+                    val rotationY = rotation[1].toString()
+                    val rotationZ = rotation[2].toString()
+
 
 
                     if(exerciseStarted == true) {
@@ -437,7 +474,23 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         rotationXArray.add(rotationX)
                         rotationYArray.add(rotationY)
                         rotationZArray.add(rotationZ)
+
+                        heartRateArrayGraph.add(heartRate)
+                        velocityXArrayGraph.add(velocityX)
+                        velocityYArrayGraph.add(velocityY)
+                        velocityZArrayGraph.add(velocityZ)
+                        rotationXArrayGraph.add(rotationX)
+                        rotationYArrayGraph.add(rotationY)
+                        rotationZArrayGraph.add(rotationZ)
                     }
+                    hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
+                    velocityXGraph.adapter = SparkGraphAdapter(velocityXArrayGraph.toList())
+                    velocityYGraph.adapter = SparkGraphAdapter(velocityYArrayGraph.toList())
+                    velocityZGraph.adapter = SparkGraphAdapter(velocityZArrayGraph.toList())
+                    rotationXGraph.adapter = SparkGraphAdapter(rotationXArrayGraph.toList())
+                    rotationYGraph.adapter = SparkGraphAdapter(rotationYArrayGraph.toList())
+                    rotationZGraph.adapter = SparkGraphAdapter(rotationZArrayGraph.toList())
+
 
 
                 } catch (e: Exception) {
@@ -490,43 +543,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         var sReps: Int = 0
     )
 
-    //private fun addSetsToLayout() {
-    //    val parentLayout = binding.setsContainer
-    //
-    //    sets.forEachIndexed { index, set ->
-    //        // Create new LinearLayout
-    //        val newLayout = LinearLayout(this).apply {
-    //            orientation = LinearLayout.VERTICAL
-    //            setBackgroundResource(R.drawable.square_button)
-    //            layoutParams = LinearLayout.LayoutParams(
-    //                LinearLayout.LayoutParams.MATCH_PARENT,
-    //                LinearLayout.LayoutParams.WRAP_CONTENT
-    //            )
-    //        }
-        //
-    //        // Create new TextViews
-    //        val setNumberTextView = createTextView("Set ${index + 1}", 24f, 20, Typeface.BOLD)
-    //        val loadTextView = createTextView("Load: ${set.load}", 18f)
-    //        val repsTextView = createTextView("Reps: ${set.reps}", 18f)
-    //        val rpeTextView = createTextView("RPE: ${set.rpe}", 18f)
-    //        val suggestedLoadTextView = createTextView("Suggested Load: ${set.sLoad}", 18f)
-    //        val suggestedRepsTextView =
-    //            createTextView("Suggested Reps: ${set.sReps}", 18f, 0, Typeface.NORMAL, 20)
-        //
-    //        // Add TextViews to the new LinearLayout
-    //        newLayout.apply {
-    //            addView(setNumberTextView)
-    //            addView(loadTextView)
-    //            addView(repsTextView)
-    //            addView(rpeTextView)
-    //            addView(suggestedLoadTextView)
-    //            addView(suggestedRepsTextView)
-    //        }
-    //
-    //        // Add new LinearLayout to parent LinearLayout
-    //        parentLayout.addView(newLayout)
-    //    }
-    //}
 
     private fun createTextView(
         text: String,
@@ -565,7 +581,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }?.absolutePath
 
         if (sdCardPath != null) {
-            val path = "$sdCardPath/data5.csv"
+            val path = "$sdCardPath/data6.csv"
             val file = File(path)
 
             try {
@@ -592,8 +608,58 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
     }
 
+    private fun saveToFileInternal(data: String) {
+        val internalFilePath = getFilesDir().absolutePath + "/data6.csv"
+        val file = File(internalFilePath)
 
+        try {
+            if (!file.exists()) {
+                file.createNewFile()
+                FileWriter(file, true).use { writer ->
+                    BufferedWriter(writer).use { bufferedWriter ->
+                        bufferedWriter.write("Set, HeartRate, VelocityX, VelocityY, VelocityZ, RotationX, RotationY, RotationZ, Id, Exercise Selected, Load, Reps, Name, Sex, Years Trained, Age, RPE\n")
+                    }
+                }
+            }
+            println("Saving file internally")
+            FileWriter(file, true).use { writer ->
+                BufferedWriter(writer).use { bufferedWriter ->
+                    bufferedWriter.write(data)
+                }
+            }
+        } catch (e: IOException) {
+            println("Error encountered")
+            e.printStackTrace()
+        }
+    }
+    private class SparkGraphAdapter(private val data: List<String>) : SparkAdapter() {
+        override fun getCount() = data.size
 
+        override fun getItem(index: Int) = data[index].toFloat()
+
+        override fun getY(index: Int) = getItem(index)
+    }
+
+    class MaxSizeArray<T>() {
+        private val deque: ArrayDeque<T> = ArrayDeque(100)
+
+        fun add(element: T) {
+            if (deque.size == 100) {
+                deque.pollFirst()  // Remove the oldest element
+            }
+            deque.addLast(element)
+        }
+        fun clear() {
+            deque.clear()
+        }
+
+        fun toList(): List<T> {
+            return deque.toList()
+        }
+        fun toArray(): Array<Any?> = deque.toArray()
+
+        override fun toString(): String = deque.toString()
+    }
 
 }
 

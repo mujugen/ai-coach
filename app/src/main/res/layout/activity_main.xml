@@ -11,8 +11,8 @@
         android:id="@+id/exerciseSettingsPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
-        tools:visibility="visible">
+        android:visibility="gone"
+        tools:visibility="gone">
 
         <Button
             android:id="@+id/proceedBtn"
@@ -462,7 +462,7 @@
         android:visibility="gone"
         tools:layout_editor_absoluteX="-113dp"
         tools:layout_editor_absoluteY="-229dp"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <Button
             android:id="@+id/finishBtn3"
@@ -512,6 +512,117 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setNumber" />
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="65dp"
+            android:background="#C1C1C1"
+            android:orientation="vertical"
+            android:paddingLeft="20px"
+            android:paddingRight="20px"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/goBtn">
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Heart Rate" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="300px"
+                android:orientation="vertical"
+                android:padding="10px"
+                android:paddingTop="20px">
+
+                <com.robinhood.spark.SparkView
+                    android:id="@+id/hrGraph"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10px"
+                    android:background="#FFFFFF" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Velocity (XYZ)" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="300px"
+                android:orientation="horizontal"
+                android:padding="10px">
+
+                <com.robinhood.spark.SparkView
+                    android:id="@+id/velocityXGraph"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10px"
+                    android:layout_weight="1"
+                    android:background="#FFFFFF" />
+
+                <com.robinhood.spark.SparkView
+                    android:id="@+id/velocityYGraph"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10px"
+                    android:layout_weight="1"
+                    android:background="#FFFFFF" />
+
+                <com.robinhood.spark.SparkView
+                    android:id="@+id/velocityZGraph"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10px"
+                    android:layout_weight="1"
+                    android:background="#FFFFFF" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rotation (XYZ)" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="300px"
+                android:orientation="horizontal"
+                android:padding="10px">
+
+                <com.robinhood.spark.SparkView
+                    android:id="@+id/rotationXGraph"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10px"
+                    android:layout_weight="1"
+                    android:background="#FFFFFF" />
+
+                <com.robinhood.spark.SparkView
+                    android:id="@+id/rotationYGraph"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10px"
+                    android:layout_weight="1"
+                    android:background="#FFFFFF" />
+
+                <com.robinhood.spark.SparkView
+                    android:id="@+id/rotationZGraph"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10px"
+                    android:layout_weight="1"
+                    android:background="#FFFFFF" />
+            </LinearLayout>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/setNumber"
@@ -788,7 +899,7 @@
         android:id="@+id/startPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:visibility="gone">
 
         <ImageView
