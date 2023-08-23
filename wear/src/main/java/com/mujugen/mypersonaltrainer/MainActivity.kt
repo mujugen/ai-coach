@@ -136,6 +136,16 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                 if (mobileDeviceConnected && messageEvent != null) {
                     println("2trying to send sensor data")
                     mobileDeviceConnected = true
+                    if (binding.startPage.visibility != View.GONE) {
+                        binding.startPage.visibility = View.GONE
+                    }
+                    if (binding.connectPage.visibility != View.GONE) {
+                        binding.connectPage.visibility = View.GONE
+                    }
+
+                    if (binding.mainPage.visibility != View.VISIBLE) {
+                        binding.mainPage.visibility = View.VISIBLE
+                    }
 
                     val nodeId: String = messageEvent?.sourceNodeId!!
                     if (nodeId != null) {
@@ -177,6 +187,19 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         messageEvent = p0
         mobileNodeUri = p0.sourceNodeId
         try {
+            if(mobileDeviceConnected == true){
+                if (binding.startPage.visibility != View.GONE) {
+                    binding.startPage.visibility = View.GONE
+                }
+                if (binding.connectPage.visibility != View.GONE) {
+                    binding.connectPage.visibility = View.GONE
+                }
+
+                if (binding.mainPage.visibility != View.VISIBLE) {
+                    binding.mainPage.visibility = View.VISIBLE
+                }
+
+            }
             Log.d(TAG_MESSAGE_RECEIVED, "onMessageReceived event received")
             val s1 = String(p0.data, StandardCharsets.UTF_8)
             val messageEventPath: String = p0.path

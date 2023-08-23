@@ -18,6 +18,7 @@
             android:id="@+id/proceedBtn"
             android:layout_width="227dp"
             android:layout_height="57dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/rounded_button"
             android:elevation="15dp"
             android:fontFamily="@font/miriam_libre"
@@ -29,30 +30,25 @@
             android:textColorLink="#202587"
             android:textSize="34sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.849" />
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
         <TextView
             android:id="@+id/exerciseType"
             android:layout_width="316dp"
             android:layout_height="77dp"
             android:layout_marginStart="38dp"
-            android:layout_marginTop="120dp"
             android:layout_marginEnd="39dp"
-            android:layout_marginBottom="632dp"
             android:fontFamily="@font/miriam_libre"
             android:gravity="center"
             android:text="Exercise_Type"
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
         <TextView
             android:id="@+id/ExerciseSettingsSetNumber"
@@ -63,7 +59,6 @@
             android:text="Set Number"
             android:textColor="#000000"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -74,14 +69,11 @@
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="47dp"
-            android:layout_marginTop="300dp"
             android:layout_marginEnd="47dp"
-            android:layout_marginBottom="247dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/ExerciseSettingsSetNumber">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -315,8 +307,6 @@
             android:layout_marginStart="133dp"
             android:layout_marginTop="6dp"
             android:layout_marginEnd="136dp"
-            android:layout_marginBottom="709dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -488,141 +478,146 @@
             android:layout_marginStart="133dp"
             android:layout_marginTop="6dp"
             android:layout_marginEnd="136dp"
-            android:layout_marginBottom="709dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/logo" />
 
+
         <Button
             android:id="@+id/goBtn"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_marginStart="105dp"
             android:layout_marginEnd="106dp"
-            android:layout_marginBottom="430dp"
             android:background="@drawable/circle_button"
             android:fontFamily="@font/miriam_libre"
             android:text="Start"
             android:textColor="#FFFFFF"
             android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setNumber" />
 
-
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="65dp"
-            android:background="#C1C1C1"
-            android:orientation="vertical"
-            android:paddingLeft="20px"
-            android:paddingRight="20px"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="20dp"
+            app:cardCornerRadius="20dp"
+            app:cardPreventCornerOverlap="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/goBtn">
 
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Heart Rate" />
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="300px"
+                android:layout_height="wrap_content"
+                android:background="#C4C4C8"
                 android:orientation="vertical"
-                android:padding="10px"
-                android:paddingTop="20px">
+                android:padding="40px"
+                android:paddingLeft="40px"
+                android:paddingRight="40px">
 
-                <com.robinhood.spark.SparkView
-                    android:id="@+id/hrGraph"
+                <TextView
+                    android:id="@+id/textView10"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10px"
-                    android:background="#FFFFFF" />
+                    android:text="Heart Rate" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="300px"
+                    android:orientation="vertical"
+                    android:padding="10px"
+                    android:paddingTop="20px">
+
+                    <com.robinhood.spark.SparkView
+                        android:id="@+id/hrGraph"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10px"
+                        android:background="#FFFFFF" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Velocity (XYZ)" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="300px"
+                    android:orientation="horizontal"
+                    android:padding="10px">
+
+                    <com.robinhood.spark.SparkView
+                        android:id="@+id/velocityXGraph"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10px"
+                        android:layout_weight="1"
+                        android:background="#FFFFFF" />
+
+                    <com.robinhood.spark.SparkView
+                        android:id="@+id/velocityYGraph"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10px"
+                        android:layout_weight="1"
+                        android:background="#FFFFFF" />
+
+                    <com.robinhood.spark.SparkView
+                        android:id="@+id/velocityZGraph"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10px"
+                        android:layout_weight="1"
+                        android:background="#FFFFFF" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Rotation (XYZ)" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="300px"
+                    android:orientation="horizontal"
+                    android:padding="10px">
+
+                    <com.robinhood.spark.SparkView
+                        android:id="@+id/rotationXGraph"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10px"
+                        android:layout_weight="1"
+                        android:background="#FFFFFF" />
+
+                    <com.robinhood.spark.SparkView
+                        android:id="@+id/rotationYGraph"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10px"
+                        android:layout_weight="1"
+                        android:background="#FFFFFF" />
+
+                    <com.robinhood.spark.SparkView
+                        android:id="@+id/rotationZGraph"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10px"
+                        android:layout_weight="1"
+                        android:background="#FFFFFF" />
+                </LinearLayout>
 
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/textView12"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Velocity (XYZ)" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="300px"
-                android:orientation="horizontal"
-                android:padding="10px">
-
-                <com.robinhood.spark.SparkView
-                    android:id="@+id/velocityXGraph"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10px"
-                    android:layout_weight="1"
-                    android:background="#FFFFFF" />
-
-                <com.robinhood.spark.SparkView
-                    android:id="@+id/velocityYGraph"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10px"
-                    android:layout_weight="1"
-                    android:background="#FFFFFF" />
-
-                <com.robinhood.spark.SparkView
-                    android:id="@+id/velocityZGraph"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10px"
-                    android:layout_weight="1"
-                    android:background="#FFFFFF" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/textView13"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Rotation (XYZ)" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="300px"
-                android:orientation="horizontal"
-                android:padding="10px">
-
-                <com.robinhood.spark.SparkView
-                    android:id="@+id/rotationXGraph"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10px"
-                    android:layout_weight="1"
-                    android:background="#FFFFFF" />
-
-                <com.robinhood.spark.SparkView
-                    android:id="@+id/rotationYGraph"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10px"
-                    android:layout_weight="1"
-                    android:background="#FFFFFF" />
-
-                <com.robinhood.spark.SparkView
-                    android:id="@+id/rotationZGraph"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10px"
-                    android:layout_weight="1"
-                    android:background="#FFFFFF" />
-            </LinearLayout>
-
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/setNumber"

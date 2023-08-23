@@ -113,13 +113,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         wearableDeviceConnected = false
         val sexInputOptions = resources.getStringArray(R.array.sexInputOptions)
         val sexInputAdapter = ArrayAdapter(this,
-            android.R.layout.simple_spinner_item, sexInputOptions)
+            R.layout.spinner_dropdown_item, sexInputOptions)
         binding.sexInput.adapter = sexInputAdapter
 
 
         val RPEInputOptions = resources.getStringArray(R.array.RPEInputOptions)
         val RPEInputAdapter = ArrayAdapter(this,
-            android.R.layout.simple_spinner_item, RPEInputOptions)
+            R.layout.spinner_dropdown_item, RPEInputOptions)
         binding.RPEInput.adapter = RPEInputAdapter
 
         binding.startBtn.setOnClickListener {
@@ -224,13 +224,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 exerciseStarted = false
                 currentSet += 1
                 binding.setNumber.text = "Set $currentSet"
-                val heartRateCSV = heartRateArray.joinToString(" - ") { it.toString() }
-                val velocityXCSV = velocityXArray.joinToString(" - ") { it.toString() }
-                val velocityYCSV = velocityYArray.joinToString(" - ") { it.toString() }
-                val velocityZCSV = velocityZArray.joinToString(" - ") { it.toString() }
-                val rotationXCSV = rotationXArray.joinToString(" - ") { it.toString() }
-                val rotationYCSV = rotationYArray.joinToString(" - ") { it.toString() }
-                val rotationZCSV = rotationZArray.joinToString(" - ") { it.toString() }
+                val heartRateCSV = heartRateArray.joinToString("-") { it.toString() }
+                val velocityXCSV = velocityXArray.joinToString("-") { it.toString() }
+                val velocityYCSV = velocityYArray.joinToString("-") { it.toString() }
+                val velocityZCSV = velocityZArray.joinToString("-") { it.toString() }
+                val rotationXCSV = rotationXArray.joinToString("-") { it.toString() }
+                val rotationYCSV = rotationYArray.joinToString("-") { it.toString() }
+                val rotationZCSV = rotationZArray.joinToString("-") { it.toString() }
                 sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
 
                 // Clearing the arrays for the next set
@@ -475,14 +475,16 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         rotationYArray.add(rotationY)
                         rotationZArray.add(rotationZ)
 
-                        heartRateArrayGraph.add(heartRate)
-                        velocityXArrayGraph.add(velocityX)
-                        velocityYArrayGraph.add(velocityY)
-                        velocityZArrayGraph.add(velocityZ)
-                        rotationXArrayGraph.add(rotationX)
-                        rotationYArrayGraph.add(rotationY)
-                        rotationZArrayGraph.add(rotationZ)
+
                     }
+                    heartRateArrayGraph.add(if (Math.abs(heartRate.toFloat()) < 1) "0.0" else heartRate)
+                    velocityXArrayGraph.add(if (Math.abs(velocityX.toFloat()) < 0.005) "0.0" else velocityX)
+                    velocityYArrayGraph.add(if (Math.abs(velocityY.toFloat()) < 0.005) "0.0" else velocityY)
+                    velocityZArrayGraph.add(if (Math.abs(velocityZ.toFloat()) < 0.005) "0.0" else velocityZ)
+                    rotationXArrayGraph.add(if (Math.abs(rotationX.toFloat()) < 0.005) "0.0" else rotationX)
+                    rotationYArrayGraph.add(if (Math.abs(rotationY.toFloat()) < 0.005) "0.0" else rotationY)
+                    rotationZArrayGraph.add(if (Math.abs(rotationZ.toFloat()) < 0.005) "0.0" else rotationZ)
+
                     hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
                     velocityXGraph.adapter = SparkGraphAdapter(velocityXArrayGraph.toList())
                     velocityYGraph.adapter = SparkGraphAdapter(velocityYArrayGraph.toList())
