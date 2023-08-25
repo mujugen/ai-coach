@@ -68,7 +68,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private var exerciseStarted: Boolean = false
     private var currentSet: Int = 1
     private val heartRateArray = mutableListOf<String>()
-    private val heartBeatArray = mutableListOf<String>()
     private val velocityXArray = mutableListOf<String>()
     private val velocityYArray = mutableListOf<String>()
     private val velocityZArray = mutableListOf<String>()
@@ -76,7 +75,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private val rotationYArray = mutableListOf<String>()
     private val rotationZArray = mutableListOf<String>()
     private val heartRateArrayGraph = MaxSizeArray<String>()
-    private val heartBeatArrayGraph = MaxSizeArray<String>()
     private val velocityXArrayGraph = MaxSizeArray<String>()
     private val velocityYArrayGraph = MaxSizeArray<String>()
     private val velocityZArrayGraph = MaxSizeArray<String>()
@@ -87,7 +85,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
 
     private lateinit var hrGraph: SparkView
-    private lateinit var hbGraph: SparkView
     private lateinit var velocityXGraph: SparkView
     private lateinit var velocityYGraph: SparkView
     private lateinit var velocityZGraph: SparkView
@@ -101,7 +98,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        hbGraph = findViewById(R.id.hbGraph)
+        hrGraph = findViewById(R.id.hrGraph)
         velocityXGraph = findViewById(R.id.velocityXGraph)
         velocityYGraph = findViewById(R.id.velocityYGraph)
         velocityZGraph = findViewById(R.id.velocityZGraph)
@@ -163,6 +160,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 val currentDateTime: Calendar = Calendar.getInstance()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                 val currentDateTimeString: String = dateFormat.format(currentDateTime.time)
+                // sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
 
                 val name = binding.nameInput.text
                 val sex = binding.sexInput.selectedItem.toString()
@@ -228,18 +226,16 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     currentSet += 1
                     binding.setNumber.text = "Set $currentSet"
                     val heartRateCSV = heartRateArray.joinToString("-") { it.toString() }
-                    val heartBeatCSV = heartBeatArray.joinToString("-") { it.toString() }
                     val velocityXCSV = velocityXArray.joinToString("-") { it.toString() }
                     val velocityYCSV = velocityYArray.joinToString("-") { it.toString() }
                     val velocityZCSV = velocityZArray.joinToString("-") { it.toString() }
                     val rotationXCSV = rotationXArray.joinToString("-") { it.toString() }
                     val rotationYCSV = rotationYArray.joinToString("-") { it.toString() }
                     val rotationZCSV = rotationZArray.joinToString("-") { it.toString() }
-                    sensorData = "${currentSet-1}, $heartRateCSV, $heartBeatCSV $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
+                    sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
 
                     // Clearing the arrays for the next set
                     heartRateArray.clear()
-                    heartBeatArray.clear()
                     velocityXArray.clear()
                     velocityYArray.clear()
                     velocityZArray.clear()
@@ -248,7 +244,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     rotationZArray.clear()
 
                     heartRateArrayGraph.clear()
-                    heartBeatArrayGraph.clear()
                     velocityXArrayGraph.clear()
                     velocityYArrayGraph.clear()
                     velocityZArrayGraph.clear()
@@ -464,11 +459,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 try {
 
 
-                    val sensorDataParts = s.split("HeartRate:", "HeartBeat:", "Velocity:", "Rotation:")
+                    val sensorDataParts = s.split("HeartRate:", "Velocity:", "Rotation:")
                     val heartRate = sensorDataParts[1].trim().removeSuffix(",")
-                    val heartBeat = sensorDataParts[2].trim().removeSuffix(",")
-                    val velocity = sensorDataParts[3].trim().split(",").map { it.trim() }
-                    val rotation = sensorDataParts[4].trim().split(",").map { it.trim() }
+                    val velocity = sensorDataParts[2].trim().split(",").map { it.trim() }
+                    val rotation = sensorDataParts[3].trim().split(",").map { it.trim() }
 
 
                     val velocityX = velocity[0].toString()
@@ -482,7 +476,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
                     if(exerciseStarted == true) {
                         heartRateArray.add(heartRate)
-                        heartBeatArray.add(heartBeat)
                         velocityXArray.add(velocityX)
                         velocityYArray.add(velocityY)
                         velocityZArray.add(velocityZ)
@@ -493,7 +486,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
                     }
                     heartRateArrayGraph.add(if (Math.abs(heartRate.toFloat()) < 1) "0.0" else heartRate)
-                    heartBeatArrayGraph.add(if (Math.abs(heartBeat.toFloat()) < 1) "0.0" else heartBeat)
                     velocityXArrayGraph.add(if (Math.abs(velocityX.toFloat()) < 0.2) "0.0" else velocityX)
                     velocityYArrayGraph.add(if (Math.abs(velocityY.toFloat()) < 0.2) "0.0" else velocityY)
                     velocityZArrayGraph.add(if (Math.abs(velocityZ.toFloat()) < 0.2) "0.0" else velocityZ)
@@ -502,7 +494,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     rotationZArrayGraph.add(if (Math.abs(rotationZ.toFloat()) < 0.2) "0.0" else rotationZ)
 
                     hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
-                    hbGraph.adapter = SparkGraphAdapter(heartBeatArrayGraph.toList())
                     velocityXGraph.adapter = SparkGraphAdapter(velocityXArrayGraph.toList())
                     velocityYGraph.adapter = SparkGraphAdapter(velocityYArrayGraph.toList())
                     velocityZGraph.adapter = SparkGraphAdapter(velocityZArrayGraph.toList())
@@ -511,7 +502,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     rotationZGraph.adapter = SparkGraphAdapter(rotationZArrayGraph.toList())
 
                     hrGraph.cornerRadius = 20f
-                    hbGraph.cornerRadius = 20f
                     velocityXGraph.cornerRadius = 20f
                     velocityYGraph.cornerRadius = 20f
                     velocityZGraph.cornerRadius = 20f
@@ -617,7 +607,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     file.createNewFile()
                     FileWriter(file, true).use { writer ->
                         BufferedWriter(writer).use { bufferedWriter ->
-                            bufferedWriter.write("Set, HeartRate, HeartBeat, VelocityX, VelocityY, VelocityZ, RotationX, RotationY, RotationZ, Id, Exercise Selected, Load, Reps, Name, Sex, Years Trained, Age, RPE\n")
+                            bufferedWriter.write("Set, HeartRate, VelocityX, VelocityY, VelocityZ, RotationX, RotationY, RotationZ, Id, Exercise Selected, Load, Reps, Name, Sex, Years Trained, Age, RPE\n")
                         }
                     }
                 }
@@ -637,7 +627,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
     private fun saveToFileInternal(data: String) {
-        val internalFilePath = getFilesDir().absolutePath + "/data9.csv"
+        val internalFilePath = getFilesDir().absolutePath + "/data6.csv"
         val file = File(internalFilePath)
 
         try {
@@ -645,7 +635,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 file.createNewFile()
                 FileWriter(file, true).use { writer ->
                     BufferedWriter(writer).use { bufferedWriter ->
-                        bufferedWriter.write("Set, HeartRate, HeartBeat, VelocityX, VelocityY, VelocityZ, RotationX, RotationY, RotationZ, Id, Exercise Selected, Load, Reps, Name, Sex, Years Trained, Age, RPE\n")
+                        bufferedWriter.write("Set, HeartRate, VelocityX, VelocityY, VelocityZ, RotationX, RotationY, RotationZ, Id, Exercise Selected, Load, Reps, Name, Sex, Years Trained, Age, RPE\n")
                     }
                 }
             }
