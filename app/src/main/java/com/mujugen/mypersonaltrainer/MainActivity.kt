@@ -35,7 +35,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 import java.util.ArrayDeque
-import com.robinhood.spark.animation.Interpolation
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
@@ -68,7 +67,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private lateinit var binding: ActivityMainBinding
     private var exerciseStarted: Boolean = false
     private var currentSet: Int = 1
-    private var uniqueIdentifier = 0
     private val heartRateArray = mutableListOf<String>()
     private val velocityXArray = mutableListOf<String>()
     private val velocityYArray = mutableListOf<String>()
@@ -218,7 +216,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             if(isGoBtnClickable){
                 isGoBtnClickable = false
                 if (exerciseStarted == false) {
-                    uniqueIdentifier += 1
                     binding.goBtn.setBackgroundResource(R.drawable.red_circle_button)
                     exerciseStarted = true
                     binding.goBtn.text = "STOP"
@@ -264,9 +261,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
 
                 }
-                val cooldownTimer = object : CountDownTimer(5000,1000){
+                val cooldownTimer = object : CountDownTimer(2000, 1000) {
                     override fun onTick(millisUntilFinished: Long) {
-                        TODO("Not yet implemented")
+                        // No action needed here for now
                     }
 
                     override fun onFinish() {
@@ -301,6 +298,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     binding.exercisePage.startAnimation(fadeInAnimation)
                     binding.exercisePage.visibility = View.VISIBLE
                     currentSet = 1
+                    binding.setNumber.text = "Set $currentSet"
                 }
             }
         }
@@ -503,13 +501,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     rotationYGraph.adapter = SparkGraphAdapter(rotationYArrayGraph.toList())
                     rotationZGraph.adapter = SparkGraphAdapter(rotationZArrayGraph.toList())
 
-                    hrGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
-                    velocityXGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
-                    velocityYGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
-                    velocityZGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
-                    rotationXGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
-                    rotationYGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
-                    rotationZGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
+                    hrGraph.cornerRadius = 20f
+                    velocityXGraph.cornerRadius = 20f
+                    velocityYGraph.cornerRadius = 20f
+                    velocityZGraph.cornerRadius = 20f
+                    rotationXGraph.cornerRadius = 20f
+                    rotationYGraph.cornerRadius = 20f
+                    rotationZGraph.cornerRadius = 20f
 
 
 
