@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Environment
 import android.text.TextUtils
 import android.view.View
@@ -34,6 +35,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 import java.util.ArrayDeque
+import com.robinhood.spark.animation.Interpolation
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
@@ -45,7 +47,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private var wearableDeviceConnected: Boolean = false
     private var setsList: ArrayList<Sets> = ArrayList()
 
-
+    private var isGoBtnClickable = true
 
 
     private var currentAckFromWearForAppOpenCheck: String? = null
@@ -213,53 +215,67 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
 
         binding.goBtn.setOnClickListener {
-            if (exerciseStarted == false) {
-                uniqueIdentifier += 1
-                binding.goBtn.setBackgroundResource(R.drawable.red_circle_button)
-                exerciseStarted = true
-                binding.goBtn.text = "STOP"
-                binding.ExerciseSettingsSetNumber.text = "Set $currentSet"
-            } else {
-                binding.goBtn.setBackgroundResource(R.drawable.circle_button)
-                exerciseStarted = false
-                currentSet += 1
-                binding.setNumber.text = "Set $currentSet"
-                val heartRateCSV = heartRateArray.joinToString("-") { it.toString() }
-                val velocityXCSV = velocityXArray.joinToString("-") { it.toString() }
-                val velocityYCSV = velocityYArray.joinToString("-") { it.toString() }
-                val velocityZCSV = velocityZArray.joinToString("-") { it.toString() }
-                val rotationXCSV = rotationXArray.joinToString("-") { it.toString() }
-                val rotationYCSV = rotationYArray.joinToString("-") { it.toString() }
-                val rotationZCSV = rotationZArray.joinToString("-") { it.toString() }
-                sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
+            if(isGoBtnClickable){
+                isGoBtnClickable = false
+                if (exerciseStarted == false) {
+                    uniqueIdentifier += 1
+                    binding.goBtn.setBackgroundResource(R.drawable.red_circle_button)
+                    exerciseStarted = true
+                    binding.goBtn.text = "STOP"
+                    binding.ExerciseSettingsSetNumber.text = "Set $currentSet"
+                } else {
+                    binding.goBtn.setBackgroundResource(R.drawable.circle_button)
+                    exerciseStarted = false
+                    currentSet += 1
+                    binding.setNumber.text = "Set $currentSet"
+                    val heartRateCSV = heartRateArray.joinToString("-") { it.toString() }
+                    val velocityXCSV = velocityXArray.joinToString("-") { it.toString() }
+                    val velocityYCSV = velocityYArray.joinToString("-") { it.toString() }
+                    val velocityZCSV = velocityZArray.joinToString("-") { it.toString() }
+                    val rotationXCSV = rotationXArray.joinToString("-") { it.toString() }
+                    val rotationYCSV = rotationYArray.joinToString("-") { it.toString() }
+                    val rotationZCSV = rotationZArray.joinToString("-") { it.toString() }
+                    sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
 
-                // Clearing the arrays for the next set
-                heartRateArray.clear()
-                velocityXArray.clear()
-                velocityYArray.clear()
-                velocityZArray.clear()
-                rotationXArray.clear()
-                rotationYArray.clear()
-                rotationZArray.clear()
+                    // Clearing the arrays for the next set
+                    heartRateArray.clear()
+                    velocityXArray.clear()
+                    velocityYArray.clear()
+                    velocityZArray.clear()
+                    rotationXArray.clear()
+                    rotationYArray.clear()
+                    rotationZArray.clear()
 
-                heartRateArrayGraph.clear()
-                velocityXArrayGraph.clear()
-                velocityYArrayGraph.clear()
-                velocityZArrayGraph.clear()
-                rotationXArrayGraph.clear()
-                rotationYArrayGraph.clear()
-                rotationZArrayGraph.clear()
-                binding.goBtn.text = "START"
-                exerciseStarted = false
-                binding.goBtn.setBackgroundResource(R.drawable.circle_button)
-                binding.exercisePage.startAnimation(fadeOutAnimation)
-                binding.exercisePage.visibility = View.GONE
-                binding.exerciseSettingsPage.startAnimation(fadeInAnimation)
-                binding.exerciseSettingsPage.visibility = View.VISIBLE
+                    heartRateArrayGraph.clear()
+                    velocityXArrayGraph.clear()
+                    velocityYArrayGraph.clear()
+                    velocityZArrayGraph.clear()
+                    rotationXArrayGraph.clear()
+                    rotationYArrayGraph.clear()
+                    rotationZArrayGraph.clear()
+                    binding.goBtn.text = "START"
+                    exerciseStarted = false
+                    binding.goBtn.setBackgroundResource(R.drawable.circle_button)
+                    binding.exercisePage.startAnimation(fadeOutAnimation)
+                    binding.exercisePage.visibility = View.GONE
+                    binding.exerciseSettingsPage.startAnimation(fadeInAnimation)
+                    binding.exerciseSettingsPage.visibility = View.VISIBLE
 
 
 
+                }
+                val cooldownTimer = object : CountDownTimer(5000,1000){
+                    override fun onTick(millisUntilFinished: Long) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onFinish() {
+                        isGoBtnClickable = true
+                    }
+                }
+                cooldownTimer.start()
             }
+
 
 
         }
@@ -297,7 +313,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         launch(Dispatchers.Default) {
             var getNodesResBool: BooleanArray? = null
 
-            while (!wearableDeviceConnected) {
                 try {
                     getNodesResBool = getNodes(tempAct.applicationContext)
                 } catch (e: Exception) {
@@ -336,11 +351,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     }
                 }
 
-                if (!wearableDeviceConnected) {
-                    // Delay before trying again, to prevent too quick reattempts
-                    delay(10)
-                }
-            }
         }
     }
 
@@ -478,12 +488,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
                     }
                     heartRateArrayGraph.add(if (Math.abs(heartRate.toFloat()) < 1) "0.0" else heartRate)
-                    velocityXArrayGraph.add(if (Math.abs(velocityX.toFloat()) < 0.005) "0.0" else velocityX)
-                    velocityYArrayGraph.add(if (Math.abs(velocityY.toFloat()) < 0.005) "0.0" else velocityY)
-                    velocityZArrayGraph.add(if (Math.abs(velocityZ.toFloat()) < 0.005) "0.0" else velocityZ)
-                    rotationXArrayGraph.add(if (Math.abs(rotationX.toFloat()) < 0.005) "0.0" else rotationX)
-                    rotationYArrayGraph.add(if (Math.abs(rotationY.toFloat()) < 0.005) "0.0" else rotationY)
-                    rotationZArrayGraph.add(if (Math.abs(rotationZ.toFloat()) < 0.005) "0.0" else rotationZ)
+                    velocityXArrayGraph.add(if (Math.abs(velocityX.toFloat()) < 0.2) "0.0" else velocityX)
+                    velocityYArrayGraph.add(if (Math.abs(velocityY.toFloat()) < 0.2) "0.0" else velocityY)
+                    velocityZArrayGraph.add(if (Math.abs(velocityZ.toFloat()) < 0.2) "0.0" else velocityZ)
+                    rotationXArrayGraph.add(if (Math.abs(rotationX.toFloat()) < 0.2) "0.0" else rotationX)
+                    rotationYArrayGraph.add(if (Math.abs(rotationY.toFloat()) < 0.2) "0.0" else rotationY)
+                    rotationZArrayGraph.add(if (Math.abs(rotationZ.toFloat()) < 0.2) "0.0" else rotationZ)
 
                     hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
                     velocityXGraph.adapter = SparkGraphAdapter(velocityXArrayGraph.toList())
@@ -492,6 +502,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     rotationXGraph.adapter = SparkGraphAdapter(rotationXArrayGraph.toList())
                     rotationYGraph.adapter = SparkGraphAdapter(rotationYArrayGraph.toList())
                     rotationZGraph.adapter = SparkGraphAdapter(rotationZArrayGraph.toList())
+
+                    hrGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
+                    velocityXGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
+                    velocityYGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
+                    velocityZGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
+                    rotationXGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
+                    rotationYGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
+                    rotationZGraph.setInterpolation(Interpolation.CUBIC_BEZIER)
 
 
 
@@ -643,10 +661,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
     class MaxSizeArray<T>() {
-        private val deque: ArrayDeque<T> = ArrayDeque(100)
+        private val deque: ArrayDeque<T> = ArrayDeque(300)
 
         fun add(element: T) {
-            if (deque.size == 100) {
+            if (deque.size == 300) {
                 deque.pollFirst()  // Remove the oldest element
             }
             deque.addLast(element)

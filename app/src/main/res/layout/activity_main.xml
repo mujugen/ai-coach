@@ -528,7 +528,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="300px"
+                    android:layout_height="200px"
                     android:orientation="vertical"
                     android:padding="10px"
                     android:paddingTop="20px">
@@ -550,7 +550,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="300px"
+                    android:layout_height="200px"
                     android:orientation="horizontal"
                     android:padding="10px">
 
@@ -558,7 +558,7 @@
                         android:id="@+id/velocityXGraph"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10px"
+                        android:layout_margin="20px"
                         android:layout_weight="1"
                         android:background="#FFFFFF" />
 
@@ -566,7 +566,7 @@
                         android:id="@+id/velocityYGraph"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10px"
+                        android:layout_margin="20px"
                         android:layout_weight="1"
                         android:background="#FFFFFF" />
 
@@ -574,7 +574,7 @@
                         android:id="@+id/velocityZGraph"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10px"
+                        android:layout_margin="20px"
                         android:layout_weight="1"
                         android:background="#FFFFFF" />
                 </LinearLayout>
@@ -587,7 +587,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="300px"
+                    android:layout_height="200px"
                     android:orientation="horizontal"
                     android:padding="10px">
 
@@ -595,7 +595,7 @@
                         android:id="@+id/rotationXGraph"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10px"
+                        android:layout_margin="20px"
                         android:layout_weight="1"
                         android:background="#FFFFFF" />
 
@@ -603,7 +603,7 @@
                         android:id="@+id/rotationYGraph"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10px"
+                        android:layout_margin="20px"
                         android:layout_weight="1"
                         android:background="#FFFFFF" />
 
@@ -611,7 +611,7 @@
                         android:id="@+id/rotationZGraph"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10px"
+                        android:layout_margin="20px"
                         android:layout_weight="1"
                         android:background="#FFFFFF" />
                 </LinearLayout>
