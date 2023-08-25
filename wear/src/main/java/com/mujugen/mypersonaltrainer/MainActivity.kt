@@ -36,7 +36,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     private lateinit var heartRateSensor: Sensor
     private lateinit var accelerometerSensor: Sensor
     private lateinit var gyroSensor: Sensor
-
+    private var heartBeatSensor: Sensor? = null
+    private var heartBeatValue: Float = 0f
     private var heartRateValue: Float = 0f
     private var velocityValues: FloatArray? = null
     private var gyroValues: FloatArray? = null
@@ -54,6 +55,14 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     private lateinit var ambientController: AmbientModeSupport.AmbientController
 
     // Add these listeners
+    private val heartBeatListener: SensorEventListener = object : SensorEventListener {
+        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        }
+
+        override fun onSensorChanged(event: SensorEvent?) {
+            heartBeatValue = event?.values?.first() ?: 0f
+        }
+    }
 
     private val heartRateListener: SensorEventListener = object : SensorEventListener {
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
@@ -103,7 +112,14 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         heartRateSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
         gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+        if(sensorManager.getDefaultSensor(Sensor.TYPE_HEART_BEAT) != null) {
+        heartBeatSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_BEAT)
+        }
 
+
+        if (heartBeatSensor != null) {
+            sensorManager.registerListener(heartBeatListener, heartBeatSensor, SensorManager.SENSOR_DELAY_NORMAL)
+        }
         sensorManager.registerListener(heartRateListener, heartRateSensor, SensorManager.SENSOR_DELAY_NORMAL)
         sensorManager.registerListener(velocityListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL)
         sensorManager.registerListener(gyroListener, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL)
@@ -127,7 +143,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
             override fun run() {
-                //binding.hrVal.text = decimalFormat.format(randomHeartRate)
+                binding.hbVal.text = decimalFormat.format(heartBeatValue.toDouble())
                 binding.hrVal.text = decimalFormat.format(heartRateValue.toDouble())
                 binding.velocityVal.text = velocityValues?.joinToString { decimalFormat.format(it) }
                 binding.rotationVal.text = gyroValues?.joinToString { decimalFormat.format(it) }
@@ -143,11 +159,13 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                     }
 
                     val nodeId: String = messageEvent?.sourceNodeId!!
-                        val sensorData = "HeartRate: $heartRateValue, " +
-                                "Velocity: ${velocityValues?.joinToString()}, " +
-                                "Rotation: ${gyroValues?.joinToString()}"
+                    val sensorData = "HeartRate: $heartRateValue, " +
+                            "HeartBeat: $heartBeatValue, " + // <-- Add this line
+                            "Velocity: ${velocityValues?.joinToString()}, " +
+                            "Rotation: ${gyroValues?.joinToString()}"
 
-                        val payload: ByteArray = sensorData.toByteArray()
+
+                    val payload: ByteArray = sensorData.toByteArray()
 
                         val sendMessageTask =
                             Wearable.getMessageClient(activityContext!!)
