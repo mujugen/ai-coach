@@ -67,13 +67,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private lateinit var binding: ActivityMainBinding
     private var exerciseStarted: Boolean = false
     private var currentSet: Int = 1
-    private val heartRateArray = mutableListOf<String>()
-    private val velocityXArray = mutableListOf<String>()
-    private val velocityYArray = mutableListOf<String>()
-    private val velocityZArray = mutableListOf<String>()
-    private val rotationXArray = mutableListOf<String>()
-    private val rotationYArray = mutableListOf<String>()
-    private val rotationZArray = mutableListOf<String>()
+    private val heartRateArray = MaxSizeArrayLarge<String>()
+    private val velocityXArray = MaxSizeArrayLarge<String>()
+    private val velocityYArray = MaxSizeArrayLarge<String>()
+    private val velocityZArray = MaxSizeArrayLarge<String>()
+    private val rotationXArray = MaxSizeArrayLarge<String>()
+    private val rotationYArray = MaxSizeArrayLarge<String>()
+    private val rotationZArray = MaxSizeArrayLarge<String>()
     private val heartRateArrayGraph = MaxSizeArray<String>()
     private val velocityXArrayGraph = MaxSizeArray<String>()
     private val velocityYArrayGraph = MaxSizeArray<String>()
@@ -166,7 +166,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 val sex = binding.sexInput.selectedItem.toString()
                 val yearsTrained = binding.yearsTrainedInput.text
                 val age = binding.ageInput.text
-                val dataToSave = "$sensorData, $currentDateTimeString, $exerciseSelected, $currentLoad, $currentReps, $name, $sex, $yearsTrained, $age, $currentRPE\n"
+                val dataToSave = "\n$sensorData, $currentDateTimeString, $exerciseSelected, $currentLoad, $currentReps, $name, $sex, $yearsTrained, $age, $currentRPE"
                 println("dataToSave = $dataToSave")
                 saveToFileInternal(dataToSave)
 
@@ -225,13 +225,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     exerciseStarted = false
                     currentSet += 1
                     binding.setNumber.text = "Set $currentSet"
-                    val heartRateCSV = heartRateArray.joinToString("-") { it.toString() }
-                    val velocityXCSV = velocityXArray.joinToString("-") { it.toString() }
-                    val velocityYCSV = velocityYArray.joinToString("-") { it.toString() }
-                    val velocityZCSV = velocityZArray.joinToString("-") { it.toString() }
-                    val rotationXCSV = rotationXArray.joinToString("-") { it.toString() }
-                    val rotationYCSV = rotationYArray.joinToString("-") { it.toString() }
-                    val rotationZCSV = rotationZArray.joinToString("-") { it.toString() }
+                    val heartRateCSV = heartRateArray.joinToString()
+                    val velocityXCSV = velocityXArray.joinToString()
+                    val velocityYCSV = velocityYArray.joinToString()
+                    val velocityZCSV = velocityZArray.joinToString()
+                    val rotationXCSV = rotationXArray.joinToString()
+                    val rotationYCSV = rotationYArray.joinToString()
+                    val rotationZCSV = rotationZArray.joinToString()
                     sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
 
                     // Clearing the arrays for the next set
@@ -599,7 +599,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }?.absolutePath
 
         if (sdCardPath != null) {
-            val path = "$sdCardPath/data6.csv"
+            val path = "$sdCardPath/data11.csv"
             val file = File(path)
 
             try {
@@ -627,7 +627,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
     private fun saveToFileInternal(data: String) {
-        val internalFilePath = getFilesDir().absolutePath + "/data6.csv"
+        val internalFilePath = getFilesDir().absolutePath + "/data11.csv"
         val file = File(internalFilePath)
 
         try {
@@ -676,6 +676,28 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
         fun toArray(): Array<Any?> = deque.toArray()
 
+        override fun toString(): String = deque.toString()
+    }
+    class MaxSizeArrayLarge<T>() {
+        private val deque: ArrayDeque<T> = ArrayDeque(30000)
+
+        fun add(element: T) {
+            if (deque.size == 30000) {
+                deque.pollFirst()  // Remove the oldest element
+            }
+            deque.addLast(element)
+        }
+        fun clear() {
+            deque.clear()
+        }
+
+        fun toList(): List<T> {
+            return deque.toList()
+        }
+        fun toArray(): Array<Any?> = deque.toArray()
+        fun joinToString(separator: String = "-"): String {
+            return deque.joinToString(separator)
+        }
         override fun toString(): String = deque.toString()
     }
 
