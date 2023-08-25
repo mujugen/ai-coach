@@ -19,7 +19,6 @@ import android.hardware.SensorManager
 import android.os.Handler
 import android.os.Looper
 import java.text.DecimalFormat
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider,
     DataClient.OnDataChangedListener,
@@ -126,16 +125,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
         // Send sensor data every second
         val handler = Handler(Looper.getMainLooper())
-        var randomHeartRate: Double = 67.56
-        var hrCounter = 0
-        val generator = HeartRateGenerator()
         handler.postDelayed(object : Runnable {
             override fun run() {
-                hrCounter += 1
-                if(hrCounter>20){
-                    randomHeartRate = generator.generateRandomHeartRate()
-                    hrCounter = 0
-                }
                 //binding.hrVal.text = decimalFormat.format(randomHeartRate)
                 binding.hrVal.text = decimalFormat.format(heartRateValue.toDouble())
                 binding.velocityVal.text = velocityValues?.joinToString { decimalFormat.format(it) }
@@ -143,10 +134,15 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                 println("1trying to send sensor data")
                 if (mobileDeviceConnected && messageEvent != null) {
                     println("2trying to send sensor data")
+                    mobileDeviceConnected = true
 
+                    if (binding.mainPage.visibility != View.VISIBLE) {
+                        binding.startPage.visibility = View.GONE
+                        binding.connectPage.visibility = View.GONE
+                        binding.mainPage.visibility = View.VISIBLE
+                    }
 
                     val nodeId: String = messageEvent?.sourceNodeId!!
-                    if (nodeId != null) {
                         val sensorData = "HeartRate: $heartRateValue, " +
                                 "Velocity: ${velocityValues?.joinToString()}, " +
                                 "Rotation: ${gyroValues?.joinToString()}"
@@ -157,11 +153,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                             Wearable.getMessageClient(activityContext!!)
                                 .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
                         println("Sent sensor data $sensorData")
-                    } else {
-                        Log.e("send1", "Failed to send sensor data: nodeID is null.")
-                    }
                 }
-                handler.postDelayed(this, 1) // Re-run every 1 second
+                handler.postDelayed(this, 10)
             }
         }, 1000)
 
@@ -185,6 +178,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         messageEvent = p0
         mobileNodeUri = p0.sourceNodeId
         try {
+
             Log.d(TAG_MESSAGE_RECEIVED, "onMessageReceived event received")
             val s1 = String(p0.data, StandardCharsets.UTF_8)
             val messageEventPath: String = p0.path
@@ -299,32 +293,6 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             super.onExitAmbient()
         }
     }
-    class HeartRateGenerator {
-        val decimalFormat = DecimalFormat("#.##")
-        var currentHeartRate: Double = 65.23
 
-        fun generateRandomHeartRate(): Double {
-            // Calculate random increment or decrement value
-            val change = Random.nextDouble(0.1, 1.0)
-
-            // Decide whether to increment or decrement
-            if (Random.nextBoolean()) {
-                if (Random.nextBoolean()) {
-                    currentHeartRate += change
-                } else {
-                    currentHeartRate -= change
-                }
-            }
-
-            // Check boundaries
-            if (currentHeartRate < 65.23) {
-                currentHeartRate = 65.23
-            } else if (currentHeartRate > 106.23) {
-                currentHeartRate = 106.23
-            }
-            val formattedHeartRate = decimalFormat.format(currentHeartRate).toDouble()
-            return formattedHeartRate
-        }
-    }
 
 }
