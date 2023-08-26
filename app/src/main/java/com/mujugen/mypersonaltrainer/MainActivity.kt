@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 val age = binding.ageInput.text
                 val dataToSave = "\n$sensorData, $currentDateTimeString, $exerciseSelected, $currentLoad, $currentReps, $name, $sex, $yearsTrained, $age, $currentRPE"
                 println("dataToSave = $dataToSave")
-                saveToFileInternal(dataToSave)
+                saveToFile(dataToSave)
 
                 binding.loadInput.setText("")
                 binding.repsInput.setText("")
@@ -599,7 +599,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }?.absolutePath
 
         if (sdCardPath != null) {
-            val path = "$sdCardPath/data11.csv"
+            val path = "$sdCardPath/data12.csv"
             val file = File(path)
 
             try {
@@ -611,7 +611,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         }
                     }
                 }
-                println("Saving file")
+                println("Saving file internally")
                 FileWriter(file, true).use { writer ->
                     BufferedWriter(writer).use { bufferedWriter ->
                         bufferedWriter.write(data)
