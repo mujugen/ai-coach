@@ -177,11 +177,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 binding.repsInput.setText("")
                 binding.RPEInput.setSelection(0)
             }
-
-
-
-
-
         }
 
 
