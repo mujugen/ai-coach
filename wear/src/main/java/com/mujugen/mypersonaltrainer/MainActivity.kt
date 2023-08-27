@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                     println("2trying to send sensor data")
                     mobileDeviceConnected = true
 
-                    if (binding.mainPage.visibility != View.VISIBLE) {
+                    if (binding.startPage.visibility == View.VISIBLE || binding.connectPage.visibility == View.VISIBLE) {
                         binding.startPage.visibility = View.GONE
                         binding.connectPage.visibility = View.GONE
                         binding.mainPage.visibility = View.VISIBLE
