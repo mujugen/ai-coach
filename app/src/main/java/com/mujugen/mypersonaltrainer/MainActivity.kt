@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 import java.util.ArrayDeque
+import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     DataClient.OnDataChangedListener,
@@ -83,7 +84,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private val rotationYArrayGraph = MaxSizeArray<String>()
     private val rotationZArrayGraph = MaxSizeArray<String>()
     private var sensorData: String = ""
-
+    private var lastNonZeroHeartRate = "0.0"
 
     private lateinit var hrGraph: SparkView
     private lateinit var velocityXGraph: SparkView
@@ -509,13 +510,18 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
                     if(exerciseStarted == true) {
                         timeIndiceArray.add(timeIndice)
-                        heartRateArray.add(heartRate)
-                        velocityXArray.add(velocityX)
-                        velocityYArray.add(velocityY)
-                        velocityZArray.add(velocityZ)
-                        rotationXArray.add(rotationX)
-                        rotationYArray.add(rotationY)
-                        rotationZArray.add(rotationZ)
+                        if(heartRate.toFloat() == 0.0f && lastNonZeroHeartRate != "0.0") {
+                            heartRateArray.add(lastNonZeroHeartRate)
+                        } else {
+                            heartRateArray.add(heartRate)
+                            lastNonZeroHeartRate = heartRate
+                        }
+                        velocityXArray.add(toStandardNotation(velocityX.toFloat()))
+                        velocityYArray.add(toStandardNotation(velocityY.toFloat()))
+                        velocityZArray.add(toStandardNotation(velocityZ.toFloat()))
+                        rotationXArray.add(toStandardNotation(rotationX.toFloat()))
+                        rotationYArray.add(toStandardNotation(rotationY.toFloat()))
+                        rotationZArray.add(toStandardNotation(rotationZ.toFloat()))
 
 
                     }
@@ -730,7 +736,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             return deque.toList()
         }
         fun toArray(): Array<Any?> = deque.toArray()
-        fun joinToString(separator: String = "-"): String {
+        fun joinToString(separator: String = ";"): String {
             return deque
                 .filter { it.toString().isNotBlank() }
                 .joinToString(separator) { it.toString().replace(",", "").replace("\n", "").trim() }
@@ -738,7 +744,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
         override fun toString(): String = deque.toString()
     }
-
+    fun toStandardNotation(value: Float): String {
+        val formatter = DecimalFormat("0.#####") // Up to 5 decimal places, modify as needed
+        return formatter.format(value)
+    }
 }
 
 
