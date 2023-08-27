@@ -225,6 +225,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     exerciseStarted = false
                     currentSet += 1
                     binding.setNumber.text = "Set $currentSet"
+                    println("heartRateArray = $heartRateArray")
+                    println("velocityXArray = $velocityXArray")
+                    println("velocityYArray = $velocityYArray")
+                    println("velocityZArray = $velocityZArray")
+                    println("rotationXArray = $rotationXArray")
+                    println("rotationYArray = $rotationYArray")
+                    println("rotationZArray = $rotationZArray")
                     val heartRateCSV = heartRateArray.joinToString()
                     val velocityXCSV = velocityXArray.joinToString()
                     val velocityYCSV = velocityYArray.joinToString()
@@ -232,6 +239,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     val rotationXCSV = rotationXArray.joinToString()
                     val rotationYCSV = rotationYArray.joinToString()
                     val rotationZCSV = rotationZArray.joinToString()
+                    println("heartRateCSV = $heartRateCSV")
+                    println("velocityXCSV = $velocityXCSV")
+                    println("velocityYCSV = $velocityYCSV")
+                    println("velocityZCSV = $velocityZCSV")
+                    println("rotationXCSV = $rotationXCSV")
+                    println("rotationYCSV = $rotationYCSV")
+                    println("rotationZCSV = $rotationZCSV")
                     sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
 
                     // Clearing the arrays for the next set
@@ -311,17 +325,18 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         launch(Dispatchers.Default) {
             var getNodesResBool: BooleanArray? = null
 
-                try {
-                    getNodesResBool = getNodes(tempAct.applicationContext)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+            try {
+                getNodesResBool = getNodes(tempAct.applicationContext)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
                 // UI Thread
                 withContext(Dispatchers.Main) {
                     if (getNodesResBool!![0]) {
                         // if message Acknowledgement Received
                         if (getNodesResBool[1]) {
+
                             Toast.makeText(
                                 activityContext,
                                 "Wearable device paired and app is open",
@@ -623,6 +638,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             }
         } else {
             println("SD card not found")
+            saveToFileInternal(data)
         }
     }
 
