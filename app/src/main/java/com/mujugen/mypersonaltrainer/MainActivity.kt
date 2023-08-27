@@ -473,6 +473,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
                 try {
 
+                    println("received: $s")
 
                     val sensorDataParts = s.split("HeartRate:", "Velocity:", "Rotation:")
                     val heartRate = sensorDataParts[1].trim().removeSuffix(",")
@@ -486,6 +487,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     val rotationX = rotation[0].toString()
                     val rotationY = rotation[1].toString()
                     val rotationZ = rotation[2].toString()
+
+
 
 
 
