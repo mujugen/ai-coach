@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private val rotationXArray = MaxSizeArrayLarge<String>()
     private val rotationYArray = MaxSizeArrayLarge<String>()
     private val rotationZArray = MaxSizeArrayLarge<String>()
+    private val timeIndiceArray = MaxSizeArrayLarge<String>()
     private val heartRateArrayGraph = MaxSizeArray<String>()
     private val velocityXArrayGraph = MaxSizeArray<String>()
     private val velocityYArrayGraph = MaxSizeArray<String>()
@@ -243,6 +244,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     println("rotationXArray = $rotationXArray")
                     println("rotationYArray = $rotationYArray")
                     println("rotationZArray = $rotationZArray")
+                    val timeIndiceCSV = timeIndiceArray.joinToString()
                     val heartRateCSV = heartRateArray.joinToString()
                     val velocityXCSV = velocityXArray.joinToString()
                     val velocityYCSV = velocityYArray.joinToString()
@@ -257,9 +259,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     println("rotationXCSV = $rotationXCSV")
                     println("rotationYCSV = $rotationYCSV")
                     println("rotationZCSV = $rotationZCSV")
-                    sensorData = "${currentSet-1},$heartRateCSV,$velocityXCSV,$velocityYCSV,$velocityZCSV,$rotationXCSV,$rotationYCSV,$rotationZCSV"
+                    sensorData = "${currentSet-1},$timeIndiceCSV,$heartRateCSV,$velocityXCSV,$velocityYCSV,$velocityZCSV,$rotationXCSV,$rotationYCSV,$rotationZCSV"
 
                     // Clearing the arrays for the next set
+                    timeIndiceArray.clear()
                     heartRateArray.clear()
                     velocityXArray.clear()
                     velocityYArray.clear()
@@ -486,10 +489,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
                     println("received: $s")
 
-                    val sensorDataParts = s.split("HeartRate:", "Velocity:", "Rotation:")
-                    val heartRate = sensorDataParts[1].trim().removeSuffix(",")
-                    val velocity = sensorDataParts[2].trim().split(",").map { it.trim() }
-                    val rotation = sensorDataParts[3].trim().split(",").map { it.trim() }
+                    val sensorDataParts = s.split("DateTime:", "HeartRate:", "Velocity:", "Rotation:")
+                    val timeIndice = sensorDataParts[1].trim().removeSuffix(",")
+                    val heartRate = sensorDataParts[2].trim().removeSuffix(",")
+                    val velocity = sensorDataParts[3].trim().split(",").map { it.trim() }
+                    val rotation = sensorDataParts[4].trim().split(",").map { it.trim() }
 
 
                     val velocityX = velocity[0].toString()
@@ -504,6 +508,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
 
                     if(exerciseStarted == true) {
+                        timeIndiceArray.add(timeIndice)
                         heartRateArray.add(heartRate)
                         velocityXArray.add(velocityX)
                         velocityYArray.add(velocityY)
@@ -628,7 +633,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }?.absolutePath
 
         if (sdCardPath != null) {
-            val path = "$sdCardPath/data14.csv"
+            val path = "$sdCardPath/data15.csv"
             val file = File(path)
 
             try {
@@ -636,7 +641,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     file.createNewFile()
                     FileWriter(file, true).use { writer ->
                         BufferedWriter(writer).use { bufferedWriter ->
-                            bufferedWriter.write("Set,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration\n")
+                            bufferedWriter.write("Set,TimeIndice,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration\n")
                         }
                     }
                 }
@@ -657,7 +662,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
     private fun saveToFileInternal(data: String) {
-        val internalFilePath = getFilesDir().absolutePath + "/data14.csv"
+        val internalFilePath = getFilesDir().absolutePath + "/data15.csv"
         val file = File(internalFilePath)
 
         try {
@@ -665,7 +670,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 file.createNewFile()
                 FileWriter(file, true).use { writer ->
                     BufferedWriter(writer).use { bufferedWriter ->
-                        bufferedWriter.write("Set,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration\n")
+                        bufferedWriter.write("Set,TimeIndice,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration\n")
                     }
                 }
             }

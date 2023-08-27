@@ -19,6 +19,9 @@ import android.hardware.SensorManager
 import android.os.Handler
 import android.os.Looper
 import java.text.DecimalFormat
+import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider,
     DataClient.OnDataChangedListener,
@@ -143,9 +146,12 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                     }
 
                     val nodeId: String = messageEvent?.sourceNodeId!!
-                        val sensorData = "HeartRate: $heartRateValue, " +
-                                "Velocity: ${velocityValues?.joinToString()}, " +
-                                "Rotation: ${gyroValues?.joinToString()}"
+                    val sdf = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
+                    val formattedDate = sdf.format(Date())
+                    val sensorData = "DateTime: $formattedDate, " +
+                            "HeartRate: $heartRateValue, " +
+                            "Velocity: ${velocityValues?.joinToString()}, " +
+                            "Rotation: ${gyroValues?.joinToString()}"
 
                         val payload: ByteArray = sensorData.toByteArray()
 
