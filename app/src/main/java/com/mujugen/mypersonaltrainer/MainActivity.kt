@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private lateinit var rotationXGraph: SparkView
     private lateinit var rotationYGraph: SparkView
     private lateinit var rotationZGraph: SparkView
+    private var duration = 0L
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -166,7 +167,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 val sex = binding.sexInput.selectedItem.toString()
                 val yearsTrained = binding.yearsTrainedInput.text
                 val age = binding.ageInput.text
-                val dataToSave = "\n$sensorData, $currentDateTimeString, $exerciseSelected, $currentLoad, $currentReps, $name, $sex, $yearsTrained, $age, $currentRPE"
+                val dataToSave = "$sensorData,$currentDateTimeString,$exerciseSelected,$currentLoad,$currentReps,$name,$sex,$yearsTrained,$age,$currentRPE,$duration\n"
                 println("dataToSave = $dataToSave")
                 saveToFile(dataToSave)
 
@@ -211,11 +212,21 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             binding.exercisePage.startAnimation(fadeInAnimation)
             binding.exercisePage.visibility = View.VISIBLE
         }
-
+        var lastPressedTime = 0L
         binding.goBtn.setOnClickListener {
             if(isGoBtnClickable){
+                val currentTime = System.currentTimeMillis()
+                duration = 0L
+                if (lastPressedTime != 0L) {
+                    duration = currentTime - lastPressedTime
+                    println("Duration between presses: $duration ms")
+                }
+
+                lastPressedTime = currentTime
+
                 isGoBtnClickable = false
                 if (exerciseStarted == false) {
+                    // duration variable starts counting here the time it takes until next goBtn press
                     binding.goBtn.setBackgroundResource(R.drawable.red_circle_button)
                     exerciseStarted = true
                     binding.goBtn.text = "STOP"
@@ -246,7 +257,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     println("rotationXCSV = $rotationXCSV")
                     println("rotationYCSV = $rotationYCSV")
                     println("rotationZCSV = $rotationZCSV")
-                    sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
+                    sensorData = "${currentSet-1},$heartRateCSV,$velocityXCSV,$velocityYCSV,$velocityZCSV,$rotationXCSV,$rotationYCSV,$rotationZCSV"
 
                     // Clearing the arrays for the next set
                     heartRateArray.clear()
@@ -272,7 +283,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     binding.exerciseSettingsPage.startAnimation(fadeInAnimation)
                     binding.exerciseSettingsPage.visibility = View.VISIBLE
 
-
+                    // duration variable stops counting when pressed again
 
                 }
                 val cooldownTimer = object : CountDownTimer(2000, 1000) {
@@ -617,7 +628,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }?.absolutePath
 
         if (sdCardPath != null) {
-            val path = "$sdCardPath/data12.csv"
+            val path = "$sdCardPath/data14.csv"
             val file = File(path)
 
             try {
@@ -625,7 +636,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     file.createNewFile()
                     FileWriter(file, true).use { writer ->
                         BufferedWriter(writer).use { bufferedWriter ->
-                            bufferedWriter.write("Set, HeartRate, VelocityX, VelocityY, VelocityZ, RotationX, RotationY, RotationZ, Id, Exercise Selected, Load, Reps, Name, Sex, Years Trained, Age, RPE\n")
+                            bufferedWriter.write("Set,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration\n")
                         }
                     }
                 }
@@ -646,7 +657,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
     private fun saveToFileInternal(data: String) {
-        val internalFilePath = getFilesDir().absolutePath + "/data11.csv"
+        val internalFilePath = getFilesDir().absolutePath + "/data14.csv"
         val file = File(internalFilePath)
 
         try {
@@ -654,7 +665,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 file.createNewFile()
                 FileWriter(file, true).use { writer ->
                     BufferedWriter(writer).use { bufferedWriter ->
-                        bufferedWriter.write("Set, HeartRate, VelocityX, VelocityY, VelocityZ, RotationX, RotationY, RotationZ, Id, Exercise Selected, Load, Reps, Name, Sex, Years Trained, Age, RPE\n")
+                        bufferedWriter.write("Set,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration\n")
                     }
                 }
             }
@@ -715,8 +726,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
         fun toArray(): Array<Any?> = deque.toArray()
         fun joinToString(separator: String = "-"): String {
-            return deque.joinToString(separator)
+            return deque
+                .filter { it.toString().isNotBlank() }
+                .joinToString(separator) { it.toString().replace(",", "").replace("\n", "").trim() }
         }
+
         override fun toString(): String = deque.toString()
     }
 
