@@ -172,6 +172,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 .setPositiveButton("Update") { dialog, which ->
                     try {
                         currentSet = input.text.toString().toInt()
+                        binding.ExerciseSettingsSetNumber.text = "Set $currentSet"
                         Toast.makeText(it.context, "Updated to $currentSet", Toast.LENGTH_SHORT).show()
                     } catch (e: NumberFormatException) {
                         Toast.makeText(it.context, "Invalid Number", Toast.LENGTH_SHORT).show()
@@ -180,10 +181,65 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 .setNegativeButton("Cancel", null)
                 .show()
 
-            binding.ExerciseSettingsSetNumber.text = "Set $currentSet"
+
             true
         }
 
+        binding.exerciseType.setOnLongClickListener {
+            println("press")
+
+            // Create an input field for the AlertDialog
+            val input = EditText(it.context)
+            val lp = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
+            input.layoutParams = lp
+
+            // Set the current value of the global variable 'current set' to the input field
+            input.setText(exerciseSelected)
+
+            // Create the AlertDialog
+            AlertDialog.Builder(it.context)
+                .setTitle("Change Current Exercise")
+                .setView(input)
+                .setPositiveButton("Update") { dialog, which ->
+                    try {
+                        exerciseSelected = input.text.toString()
+                        binding.exerciseType.text = "$exerciseSelected"
+                        Toast.makeText(it.context, "Updated to $exerciseSelected", Toast.LENGTH_SHORT).show()
+                    } catch (e: NumberFormatException) {
+                        Toast.makeText(it.context, "Invalid", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+
+
+            true
+        }
+
+
+        binding.discardBtn.setOnLongClickListener {
+            println("discard")
+
+            exerciseStarted = false
+            binding.goBtn.setBackgroundResource(R.drawable.circle_button)
+            binding.exerciseSettingsPage.startAnimation(fadeOutAnimation)
+            binding.exerciseSettingsPage.visibility = View.GONE
+            binding.exerciseSelectionPage.startAnimation(fadeInAnimation)
+            binding.exerciseSelectionPage.visibility = View.VISIBLE
+            currentSet = 1
+            binding.loadInput.setText("")
+            binding.repsInput.setText("")
+            binding.RPEInput.setSelection(0)
+            binding.nameInput.setText("")
+            binding.sexInput.setSelection(0)
+            binding.ageInput.setText("")
+            binding.yearsTrainedInput.setText("")
+            binding.ExerciseSettingsSetNumber.text = "Set $currentSet"
+            true
+        }
 
 
 
