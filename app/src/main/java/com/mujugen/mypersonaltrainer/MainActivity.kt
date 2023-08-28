@@ -2,6 +2,7 @@ package com.mujugen.mypersonaltrainer
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
@@ -14,9 +15,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -144,11 +149,47 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
             }
         }
-
-
         setButtonListeners(binding.exerciseLayout)
 
+        binding.ExerciseSettingsSetNumber.setOnLongClickListener {
+            println("press")
+
+            // Create an input field for the AlertDialog
+            val input = EditText(it.context)
+            val lp = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
+            input.layoutParams = lp
+
+            // Set the current value of the global variable 'current set' to the input field
+            input.setText(currentSet.toString())
+
+            // Create the AlertDialog
+            AlertDialog.Builder(it.context)
+                .setTitle("Change Current Set")
+                .setView(input)
+                .setPositiveButton("Update") { dialog, which ->
+                    try {
+                        currentSet = input.text.toString().toInt()
+                        Toast.makeText(it.context, "Updated to $currentSet", Toast.LENGTH_SHORT).show()
+                    } catch (e: NumberFormatException) {
+                        Toast.makeText(it.context, "Invalid Number", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+
+            binding.ExerciseSettingsSetNumber.text = "Set $currentSet"
+            true
+        }
+
+
+
+
+
         binding.proceedBtn.setOnClickListener {
+            hideKeyboard(it)
             val currentLoad = binding.loadInput.text
             val currentReps = binding.repsInput.text
             val currentRPE = binding.RPEInput.selectedItem.toString()
@@ -169,13 +210,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 val sex = binding.sexInput.selectedItem.toString()
                 val yearsTrained = binding.yearsTrainedInput.text
                 val age = binding.ageInput.text
-                val dataToSave = "$sensorData,$currentDateTimeString,$exerciseSelected,$currentLoad,$currentReps,$name,$sex,$yearsTrained,$age,$currentRPE,$duration\n"
+                val dataToSave = "${currentSet},$sensorData,$currentDateTimeString,$exerciseSelected,$currentLoad,$currentReps,$name,$sex,$yearsTrained,$age,$currentRPE,$duration\n"
                 println("dataToSave = $dataToSave")
                 saveToFile(dataToSave)
 
                 binding.loadInput.setText("")
                 binding.repsInput.setText("")
                 binding.RPEInput.setSelection(0)
+                currentSet += 1
+                binding.setNumber.text = "Set $currentSet"
             }
         }
 
@@ -231,7 +274,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 } else {
                     binding.goBtn.setBackgroundResource(R.drawable.circle_button)
                     exerciseStarted = false
-                    currentSet += 1
                     binding.setNumber.text = "Set $currentSet"
                     println("heartRateArray = $heartRateArray")
                     println("velocityXArray = $velocityXArray")
@@ -255,7 +297,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     println("rotationXCSV = $rotationXCSV")
                     println("rotationYCSV = $rotationYCSV")
                     println("rotationZCSV = $rotationZCSV")
-                    sensorData = "${currentSet-1},$timeIndiceCSV,$heartRateCSV,$velocityXCSV,$velocityYCSV,$velocityZCSV,$rotationXCSV,$rotationYCSV,$rotationZCSV"
+                    sensorData = "$timeIndiceCSV,$heartRateCSV,$velocityXCSV,$velocityYCSV,$velocityZCSV,$rotationXCSV,$rotationYCSV,$rotationZCSV"
 
                     // Clearing the arrays for the next set
                     timeIndiceArray.clear()
@@ -715,35 +757,45 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         override fun toString(): String = deque.toString()
     }
     class MaxSizeArrayLarge<T>() {
-        private val deque: ArrayDeque<T> = ArrayDeque(30000)
+        private val list: ArrayList<T> = ArrayList()
 
         fun add(element: T) {
-            if (deque.size == 30000) {
-                deque.pollFirst()  // Remove the oldest element
-            }
-            deque.addLast(element)
+            list.add(element)
         }
+
         fun clear() {
-            deque.clear()
+            list.clear()
         }
 
         fun toList(): List<T> {
-            return deque.toList()
+            return list.toList()
         }
-        fun toArray(): Array<Any?> = deque.toArray()
+
+        fun toArray(): Array<Any?> = list.toArray()
+
         fun joinToString(separator: String = ";"): String {
-            return deque
+            return list
                 .filter { it.toString().isNotBlank() }
                 .joinToString(separator) { it.toString().replace(",", "").replace("\n", "").trim() }
         }
 
-        override fun toString(): String = deque.toString()
+        override fun toString(): String = list.toString()
     }
+
     fun toStandardNotation(value: Float): String {
         val formatter = DecimalFormat("0.#####") // Up to 5 decimal places, modify as needed
         return formatter.format(value)
     }
+
+    fun hideKeyboard(view: View) {
+        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+
+
 }
+
 
 
 
