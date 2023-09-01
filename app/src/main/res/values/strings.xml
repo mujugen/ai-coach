@@ -17,17 +17,22 @@
         <item>Female</item>
     </string-array>
 
+    <string-array name="unitInputOptions">
+        <item>Kg</item>
+        <item>Lb</item>
+    </string-array>
+
     <string-array name="RPEInputOptions">
         <item>-</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
+        <item>1-2</item>
+        <item>3-4</item>
+        <item>5-6</item>
         <item>7</item>
+        <item>7.5</item>
         <item>8</item>
+        <item>8.5</item>
         <item>9</item>
+        <item>9.5</item>
         <item>10</item>
     </string-array>
 </resources>

@@ -122,6 +122,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             R.layout.spinner_dropdown_item, sexInputOptions)
         binding.sexInput.adapter = sexInputAdapter
 
+        val unitInputOptions = resources.getStringArray(R.array.unitInputOptions)
+        val unitInputAdapter = ArrayAdapter(this,
+            R.layout.spinner_dropdown_item, unitInputOptions)
+        binding.unitInput.adapter = unitInputAdapter
+
 
         val RPEInputOptions = resources.getStringArray(R.array.RPEInputOptions)
         val RPEInputAdapter = ArrayAdapter(this,
@@ -264,12 +269,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 val sex = binding.sexInput.selectedItem.toString()
                 val yearsTrained = binding.yearsTrainedInput.text
                 val age = binding.ageInput.text
-                val dataToSave = "${currentSet},$sensorData,$currentDateTimeString,$exerciseSelected,$currentLoad,$currentReps,$name,$sex,$yearsTrained,$age,$currentRPE,$duration\n"
+                val unit = binding.unitInput.selectedItem.toString()
+                val remarks = binding.remarksInput.text
+                val dataToSave = "${currentSet},$sensorData,$currentDateTimeString,$exerciseSelected,$currentLoad $unit,$currentReps,$name,$sex,$yearsTrained,$age,$currentRPE,$duration,$remarks\n"
                 println("dataToSave = $dataToSave")
                 saveToFile(dataToSave)
 
                 binding.loadInput.setText("")
                 binding.repsInput.setText("")
+                binding.remarksInput.setText("")
                 binding.RPEInput.setSelection(0)
                 currentSet += 1
                 binding.setNumber.text = "Set $currentSet"
@@ -730,7 +738,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }?.absolutePath
 
         if (sdCardPath != null) {
-            val path = "$sdCardPath/data15.csv"
+            val path = "$sdCardPath/data20.csv"
             val file = File(path)
 
             try {
@@ -738,7 +746,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     file.createNewFile()
                     FileWriter(file, true).use { writer ->
                         BufferedWriter(writer).use { bufferedWriter ->
-                            bufferedWriter.write("Set,TimeIndice,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration\n")
+                            bufferedWriter.write("Set,TimeIndice,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration,Remarks\n")
                         }
                     }
                 }
@@ -759,7 +767,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
     private fun saveToFileInternal(data: String) {
-        val internalFilePath = getFilesDir().absolutePath + "/data15.csv"
+        val internalFilePath = getFilesDir().absolutePath + "/data20.csv"
         val file = File(internalFilePath)
 
         try {
@@ -767,7 +775,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 file.createNewFile()
                 FileWriter(file, true).use { writer ->
                     BufferedWriter(writer).use { bufferedWriter ->
-                        bufferedWriter.write("Set,TimeIndice,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration\n")
+                        bufferedWriter.write("Set,TimeIndice,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration,Remarks\n")
                     }
                 }
             }

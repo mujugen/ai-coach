@@ -87,7 +87,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="0.8"
-                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
                             android:ems="10"
                             android:gravity="center_vertical"
                             android:hint="Name"
@@ -180,7 +180,7 @@
                             android:id="@+id/yearsTrainedInput"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.6"
+                            android:layout_weight="0.5"
                             android:digits="0123456789"
                             android:ems="10"
                             android:gravity="center_vertical"
@@ -192,7 +192,7 @@
                             android:id="@+id/textView8"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.2"
+                            android:layout_weight="0.3"
                             android:gravity="center_vertical"
                             android:includeFontPadding="false"
                             android:text="Years"
@@ -271,7 +271,7 @@
                             android:id="@+id/loadInput"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.7"
+                            android:layout_weight="0.5"
                             android:digits="0123456789"
                             android:ems="10"
                             android:gravity="center_vertical"
@@ -279,15 +279,41 @@
                             android:inputType="phone"
                             android:textSize="22sp" />
 
-                        <TextView
-                            android:id="@+id/textView7"
+                        <Spinner
+                            android:id="@+id/unitInput"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.1"
+                            android:layout_weight="0.3"
+                            android:ems="22"
+                            android:gravity="center_vertical"
+                            android:textSize="22sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView61"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.2"
                             android:gravity="center_vertical"
                             android:includeFontPadding="false"
-                            android:text="Kg"
+                            android:text="Info: "
                             android:textSize="18sp" />
+
+                        <EditText
+                            android:id="@+id/remarksInput"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.8"
+                            android:ems="10"
+                            android:gravity="center_vertical"
+                            android:hint="Remarks"
+                            android:inputType="phone"
+                            android:textSize="22sp" />
                     </LinearLayout>
 
                 </LinearLayout>
