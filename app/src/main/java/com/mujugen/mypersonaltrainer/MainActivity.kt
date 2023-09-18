@@ -79,13 +79,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private val rotationYArray = MaxSizeArrayLarge<String>()
     private val rotationZArray = MaxSizeArrayLarge<String>()
     private val timeIndiceArray = MaxSizeArrayLarge<String>()
-    private val heartRateArrayGraph = MaxSizeArray<String>()
-    private val velocityXArrayGraph = MaxSizeArray<String>()
-    private val velocityYArrayGraph = MaxSizeArray<String>()
-    private val velocityZArrayGraph = MaxSizeArray<String>()
-    private val rotationXArrayGraph = MaxSizeArray<String>()
-    private val rotationYArrayGraph = MaxSizeArray<String>()
-    private val rotationZArrayGraph = MaxSizeArray<String>()
     private var sensorData: String = ""
     private var lastNonZeroHeartRate = "0.0"
 
@@ -104,14 +97,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        hrGraph = findViewById(R.id.hrGraph)
-        velocityXGraph = findViewById(R.id.velocityXGraph)
-        velocityYGraph = findViewById(R.id.velocityYGraph)
-        velocityZGraph = findViewById(R.id.velocityZGraph)
-        rotationXGraph = findViewById(R.id.rotationXGraph)
-        rotationYGraph = findViewById(R.id.rotationYGraph)
-        rotationZGraph = findViewById(R.id.rotationZGraph)
-
 
         fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
         fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
@@ -120,18 +105,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         val sexInputOptions = resources.getStringArray(R.array.sexInputOptions)
         val sexInputAdapter = ArrayAdapter(this,
             R.layout.spinner_dropdown_item, sexInputOptions)
-        binding.sexInput.adapter = sexInputAdapter
 
         val unitInputOptions = resources.getStringArray(R.array.unitInputOptions)
         val unitInputAdapter = ArrayAdapter(this,
             R.layout.spinner_dropdown_item, unitInputOptions)
-        binding.unitInput.adapter = unitInputAdapter
-
 
         val RPEInputOptions = resources.getStringArray(R.array.RPEInputOptions)
         val RPEInputAdapter = ArrayAdapter(this,
             R.layout.spinner_dropdown_item, RPEInputOptions)
-        binding.RPEInput.adapter = RPEInputAdapter
 
         binding.startBtn.setOnClickListener {
             binding.startPage.startAnimation(fadeOutAnimation)
@@ -154,166 +135,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
         setButtonListeners(binding.exerciseLayout)
 
-        binding.ExerciseSettingsSetNumber.setOnLongClickListener {
-            println("press")
-
-            // Create an input field for the AlertDialog
-            val input = EditText(it.context)
-            val lp = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-            )
-            input.layoutParams = lp
-
-            // Set the current value of the global variable 'current set' to the input field
-            input.setText(currentSet.toString())
-
-            // Create the AlertDialog
-            AlertDialog.Builder(it.context)
-                .setTitle("Change Current Set")
-                .setView(input)
-                .setPositiveButton("Update") { dialog, which ->
-                    try {
-                        currentSet = input.text.toString().toInt()
-                        binding.ExerciseSettingsSetNumber.text = "Set $currentSet"
-                        Toast.makeText(it.context, "Updated to $currentSet", Toast.LENGTH_SHORT).show()
-                    } catch (e: NumberFormatException) {
-                        Toast.makeText(it.context, "Invalid Number", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
 
 
-            true
-        }
-
-        binding.exerciseType.setOnLongClickListener {
-            println("press")
-
-            // Create an input field for the AlertDialog
-            val input = EditText(it.context)
-            val lp = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-            )
-            input.layoutParams = lp
-
-            // Set the current value of the global variable 'current set' to the input field
-            input.setText(exerciseSelected)
-
-            // Create the AlertDialog
-            AlertDialog.Builder(it.context)
-                .setTitle("Change Current Exercise")
-                .setView(input)
-                .setPositiveButton("Update") { dialog, which ->
-                    try {
-                        exerciseSelected = input.text.toString()
-                        binding.exerciseType.text = "$exerciseSelected"
-                        Toast.makeText(it.context, "Updated to $exerciseSelected", Toast.LENGTH_SHORT).show()
-                    } catch (e: NumberFormatException) {
-                        Toast.makeText(it.context, "Invalid", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
-
-
-            true
-        }
-
-
-        binding.discardBtn.setOnLongClickListener {
-            println("discard")
-
-            exerciseStarted = false
-            binding.goBtn.setBackgroundResource(R.drawable.circle_button)
-            binding.exerciseSettingsPage.startAnimation(fadeOutAnimation)
-            binding.exerciseSettingsPage.visibility = View.GONE
-            binding.exerciseSelectionPage.startAnimation(fadeInAnimation)
-            binding.exerciseSelectionPage.visibility = View.VISIBLE
-            currentSet = 1
-            binding.loadInput.setText("")
-            binding.repsInput.setText("")
-            binding.RPEInput.setSelection(0)
-            binding.nameInput.setText("")
-            binding.sexInput.setSelection(0)
-            binding.ageInput.setText("")
-            binding.yearsTrainedInput.setText("")
-            binding.ExerciseSettingsSetNumber.text = "Set $currentSet"
-            true
-        }
-
-
-
-
-        binding.proceedBtn.setOnClickListener {
-            hideKeyboard(it)
-            val currentLoad = binding.loadInput.text
-            val currentReps = binding.repsInput.text
-            val currentRPE = binding.RPEInput.selectedItem.toString()
-            if(currentLoad.isEmpty() || currentReps.isEmpty() || currentRPE == "-"){
-                println("Missing fields")
-            }else{
-                binding.exerciseSettingsPage.startAnimation(fadeOutAnimation)
-                binding.exerciseSettingsPage.visibility = View.GONE
-                binding.exercisePage.startAnimation(fadeInAnimation)
-                binding.exercisePage.visibility = View.VISIBLE
-                binding.exerciseTypeText.text = "$exerciseSelected"
-                val currentDateTime: Calendar = Calendar.getInstance()
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                val currentDateTimeString: String = dateFormat.format(currentDateTime.time)
-                // sensorData = "${currentSet-1}, $heartRateCSV, $velocityXCSV, $velocityYCSV, $velocityZCSV, $rotationXCSV, $rotationYCSV, $rotationZCSV"
-
-                val name = binding.nameInput.text
-                val sex = binding.sexInput.selectedItem.toString()
-                val yearsTrained = binding.yearsTrainedInput.text
-                val age = binding.ageInput.text
-                val unit = binding.unitInput.selectedItem.toString()
-                val remarks = binding.remarksInput.text
-                val dataToSave = "${currentSet},$sensorData,$currentDateTimeString,$exerciseSelected,$currentLoad $unit,$currentReps,$name,$sex,$yearsTrained,$age,$currentRPE,$duration,$remarks\n"
-                println("dataToSave = $dataToSave")
-                saveToFile(dataToSave)
-
-                binding.loadInput.setText("")
-                binding.repsInput.setText("")
-                binding.remarksInput.setText("")
-                binding.RPEInput.setSelection(0)
-                currentSet += 1
-                binding.setNumber.text = "Set $currentSet"
-            }
-        }
-
-
-        binding.finishBtn2.setOnClickListener {
-            binding.summaryPage.startAnimation(fadeOutAnimation)
-            binding.summaryPage.visibility = View.GONE
-            binding.exerciseSelectionPage.startAnimation(fadeInAnimation)
-            binding.exerciseSelectionPage.visibility = View.VISIBLE
-        }
-        binding.finishBtn3.setOnClickListener {
-            exerciseStarted = false
-            binding.goBtn.setBackgroundResource(R.drawable.circle_button)
-            binding.exercisePage.startAnimation(fadeOutAnimation)
-            binding.exercisePage.visibility = View.GONE
-            binding.exerciseSelectionPage.startAnimation(fadeInAnimation)
-            binding.exerciseSelectionPage.visibility = View.VISIBLE
-            currentSet = 1
-            binding.loadInput.setText("")
-            binding.repsInput.setText("")
-            binding.RPEInput.setSelection(0)
-            binding.nameInput.setText("")
-            binding.sexInput.setSelection(0)
-            binding.ageInput.setText("")
-            binding.yearsTrainedInput.setText("")
-            binding.ExerciseSettingsSetNumber.text = "Set $currentSet"
-        }
-        binding.backBtn2.setOnClickListener {
-            binding.summaryPage.startAnimation(fadeOutAnimation)
-            binding.summaryPage.visibility = View.GONE
-            binding.exercisePage.startAnimation(fadeInAnimation)
-            binding.exercisePage.visibility = View.VISIBLE
-        }
         var lastPressedTime = 0L
         binding.goBtn.setOnClickListener {
             if(isGoBtnClickable){
@@ -332,7 +155,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     binding.goBtn.setBackgroundResource(R.drawable.red_circle_button)
                     exerciseStarted = true
                     binding.goBtn.text = "STOP"
-                    binding.ExerciseSettingsSetNumber.text = "Set $currentSet"
                 } else {
                     binding.goBtn.setBackgroundResource(R.drawable.circle_button)
                     exerciseStarted = false
@@ -371,20 +193,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     rotationYArray.clear()
                     rotationZArray.clear()
 
-                    heartRateArrayGraph.clear()
-                    velocityXArrayGraph.clear()
-                    velocityYArrayGraph.clear()
-                    velocityZArrayGraph.clear()
-                    rotationXArrayGraph.clear()
-                    rotationYArrayGraph.clear()
-                    rotationZArrayGraph.clear()
                     binding.goBtn.text = "START"
                     exerciseStarted = false
                     binding.goBtn.setBackgroundResource(R.drawable.circle_button)
                     binding.exercisePage.startAnimation(fadeOutAnimation)
                     binding.exercisePage.visibility = View.GONE
-                    binding.exerciseSettingsPage.startAnimation(fadeInAnimation)
-                    binding.exerciseSettingsPage.visibility = View.VISIBLE
+                    binding.exerciseSelectionPage.startAnimation(fadeInAnimation)
+                    binding.exerciseSelectionPage.visibility = View.VISIBLE
 
                     // duration variable stops counting when pressed again
 
@@ -420,7 +235,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     val buttonText = (child as Button).text.toString()
                     exerciseSelected = buttonText
                     println("exercise selected: ${exerciseSelected}")
-                    binding.exerciseType.text = exerciseSelected
                     binding.exerciseSelectionPage.startAnimation(fadeOutAnimation)
                     binding.exerciseSelectionPage.visibility = View.GONE
                     binding.exercisePage.startAnimation(fadeInAnimation)
@@ -624,30 +438,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
 
                     }
-                    heartRateArrayGraph.add(if (Math.abs(heartRate.toFloat()) < 1) "0.0" else heartRate)
-                    velocityXArrayGraph.add(if (Math.abs(velocityX.toFloat()) < 0.2) "0.0" else velocityX)
-                    velocityYArrayGraph.add(if (Math.abs(velocityY.toFloat()) < 0.2) "0.0" else velocityY)
-                    velocityZArrayGraph.add(if (Math.abs(velocityZ.toFloat()) < 0.2) "0.0" else velocityZ)
-                    rotationXArrayGraph.add(if (Math.abs(rotationX.toFloat()) < 0.2) "0.0" else rotationX)
-                    rotationYArrayGraph.add(if (Math.abs(rotationY.toFloat()) < 0.2) "0.0" else rotationY)
-                    rotationZArrayGraph.add(if (Math.abs(rotationZ.toFloat()) < 0.2) "0.0" else rotationZ)
-
-                    hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
-                    velocityXGraph.adapter = SparkGraphAdapter(velocityXArrayGraph.toList())
-                    velocityYGraph.adapter = SparkGraphAdapter(velocityYArrayGraph.toList())
-                    velocityZGraph.adapter = SparkGraphAdapter(velocityZArrayGraph.toList())
-                    rotationXGraph.adapter = SparkGraphAdapter(rotationXArrayGraph.toList())
-                    rotationYGraph.adapter = SparkGraphAdapter(rotationYArrayGraph.toList())
-                    rotationZGraph.adapter = SparkGraphAdapter(rotationZArrayGraph.toList())
-
-                    hrGraph.cornerRadius = 20f
-                    velocityXGraph.cornerRadius = 20f
-                    velocityYGraph.cornerRadius = 20f
-                    velocityZGraph.cornerRadius = 20f
-                    rotationXGraph.cornerRadius = 20f
-                    rotationYGraph.cornerRadius = 20f
-                    rotationZGraph.cornerRadius = 20f
-
 
 
                 } catch (e: Exception) {

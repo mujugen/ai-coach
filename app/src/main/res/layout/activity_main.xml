@@ -8,489 +8,6 @@
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/exerciseSettingsPage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-
-
-        <ScrollView
-            android:id="@+id/exerciseSettingScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="124dp"
-                    android:layout_height="114dp"
-                    android:layout_marginStart="133dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginEnd="136dp"
-                    app:srcCompat="@drawable/logo" />
-
-                <TextView
-                    android:id="@+id/exerciseType"
-                    android:layout_width="316dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="38dp"
-                    android:layout_marginEnd="39dp"
-                    android:fontFamily="@font/miriam_libre"
-                    android:gravity="center"
-                    android:text="Exercise_Type"
-                    android:textColor="#000000"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/ExerciseSettingsSetNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:fontFamily="@font/miriam_libre"
-                    android:gravity="center"
-                    android:text="Set Number"
-                    android:textColor="#000000"
-                    android:textSize="17sp" />
-
-                <LinearLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="350dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="47dp"
-                    android:layout_marginEnd="47dp"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textView5"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.2"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
-                            android:text="Name: "
-                            android:textSize="18sp" />
-
-                        <EditText
-                            android:id="@+id/nameInput"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.8"
-                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
-                            android:ems="10"
-                            android:gravity="center_vertical"
-                            android:hint="Name"
-                            android:inputType="text|textNoSuggestions"
-                            android:textSize="22sp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textView4"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.2"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
-                            android:text="Sex: "
-                            android:textSize="18sp" />
-
-                        <Spinner
-                            android:id="@+id/sexInput"
-                            android:layout_width="0dp"
-                            android:layout_height="44sp"
-                            android:layout_weight="0.8"
-                            android:ems="22"
-                            android:gravity="center_vertical"
-                            android:textSize="22sp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textView2"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.2"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
-                            android:text="Age: "
-                            android:textSize="18sp" />
-
-                        <EditText
-                            android:id="@+id/ageInput"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.5"
-                            android:digits="0123456789"
-                            android:ems="10"
-                            android:gravity="center_vertical"
-                            android:hint="Age"
-                            android:inputType="phone"
-                            android:textSize="22sp" />
-
-                        <TextView
-                            android:id="@+id/textView9"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.3"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
-                            android:text="Years Old"
-                            android:textSize="18sp" />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textView3"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.2"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
-                            android:text="Years Trained: "
-                            android:textSize="18sp" />
-
-                        <EditText
-                            android:id="@+id/yearsTrainedInput"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.5"
-                            android:digits="0123456789"
-                            android:ems="10"
-                            android:gravity="center_vertical"
-                            android:hint="Years Trained"
-                            android:inputType="phone"
-                            android:textSize="22sp" />
-
-                        <TextView
-                            android:id="@+id/textView8"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.3"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
-                            android:text="Years"
-                            android:textSize="18sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textView11"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.2"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
-                            android:text="RPE: "
-                            android:textSize="18sp" />
-
-                        <Spinner
-                            android:id="@+id/RPEInput"
-                            android:layout_width="0dp"
-                            android:layout_height="44sp"
-                            android:layout_weight="0.8"
-                            android:ems="22"
-                            android:gravity="center_vertical"
-                            android:textSize="22sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textView52"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.2"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
-                            android:text="Reps: "
-                            android:textSize="18sp" />
-
-                        <EditText
-                            android:id="@+id/repsInput"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.8"
-                            android:digits="0123456789"
-                            android:ems="10"
-                            android:gravity="center_vertical"
-                            android:hint="Reps"
-                            android:inputType="phone"
-                            android:textSize="22sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textView53"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.2"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
-                            android:text="Load: "
-                            android:textSize="18sp" />
-
-                        <EditText
-                            android:id="@+id/loadInput"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.5"
-                            android:digits="0123456789"
-                            android:ems="10"
-                            android:gravity="center_vertical"
-                            android:hint="Load"
-                            android:inputType="phone"
-                            android:textSize="22sp" />
-
-                        <Spinner
-                            android:id="@+id/unitInput"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.3"
-                            android:ems="22"
-                            android:gravity="center_vertical"
-                            android:textSize="22sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textView61"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.2"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
-                            android:text="Info: "
-                            android:textSize="18sp" />
-
-                        <EditText
-                            android:id="@+id/remarksInput"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.8"
-                            android:ems="10"
-                            android:gravity="center_vertical"
-                            android:hint="Remarks"
-                            android:inputType="phone"
-                            android:textSize="22sp" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/proceedBtn"
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/rounded_button"
-                    android:elevation="15dp"
-                    android:fontFamily="@font/miriam_libre"
-                    android:gravity="center_horizontal"
-                    android:paddingTop="5sp"
-                    android:stateListAnimator="@null"
-                    android:text="Proceed"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
-                    android:textColorLink="#202587"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/discardBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@android:color/transparent"
-                    android:fontFamily="@font/miriam_libre"
-                    android:text="Discard"
-                    android:textAllCaps="false"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.944"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.031" />
-            </LinearLayout>
-        </ScrollView>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/summaryPage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:layout_editor_absoluteX="-113dp"
-        tools:layout_editor_absoluteY="-229dp"
-        tools:visibility="gone">
-
-        <TextView
-            android:id="@+id/workoutSummaryText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="11dp"
-            android:layout_marginBottom="666dp"
-            android:fontFamily="@font/miriam_libre"
-            android:shadowColor="#000000"
-            android:text="Workout Summary"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView9000" />
-
-        <TextView
-            android:id="@+id/exerciseTypeText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="634dp"
-            android:fontFamily="@font/miriam_libre"
-            android:shadowColor="#000000"
-            android:text="Exercise_Type"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="24sp"
-            android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/workoutSummaryText" />
-
-        <ImageView
-            android:id="@+id/imageView9000"
-            android:layout_width="124dp"
-            android:layout_height="114dp"
-            android:layout_marginStart="133dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginEnd="136dp"
-            android:layout_marginBottom="709dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo" />
-
-        <Button
-            android:id="@+id/backBtn2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="304dp"
-            android:layout_marginBottom="765dp"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/miriam_libre"
-            android:text="Back"
-            android:textAllCaps="false"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/finishBtn2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="305dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="765dp"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/miriam_libre"
-            android:text="Finish"
-            android:textAllCaps="false"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ScrollView
-            android:id="@+id/scrollView"
-            android:layout_width="0dp"
-            android:layout_height="600dp"
-            android:layout_marginTop="64dp"
-            android:contentDescription="@string/app_name"
-            android:paddingBottom="50dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.981">
-
-            <LinearLayout
-                android:id="@+id/setsContainer"
-                android:layout_width="391dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="1dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="1dp"
-                android:layout_marginBottom="33dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-
-            </LinearLayout>
-        </ScrollView>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/exercisePage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -543,126 +60,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setNumber" />
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="20dp"
-            app:cardCornerRadius="20dp"
-            app:cardPreventCornerOverlap="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/goBtn">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#C4C4C8"
-                android:orientation="vertical"
-                android:padding="40px"
-                android:paddingLeft="40px"
-                android:paddingRight="40px">
-
-                <TextView
-                    android:id="@+id/textView10"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Heart Rate" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="200px"
-                    android:orientation="vertical"
-                    android:padding="10px"
-                    android:paddingTop="20px">
-
-                    <com.robinhood.spark.SparkView
-                        android:id="@+id/hrGraph"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10px"
-                        android:background="#FFFFFF" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/textView12"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Velocity (XYZ)" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="200px"
-                    android:orientation="horizontal"
-                    android:padding="10px">
-
-                    <com.robinhood.spark.SparkView
-                        android:id="@+id/velocityXGraph"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20px"
-                        android:layout_weight="1"
-                        android:background="#FFFFFF" />
-
-                    <com.robinhood.spark.SparkView
-                        android:id="@+id/velocityYGraph"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20px"
-                        android:layout_weight="1"
-                        android:background="#FFFFFF" />
-
-                    <com.robinhood.spark.SparkView
-                        android:id="@+id/velocityZGraph"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20px"
-                        android:layout_weight="1"
-                        android:background="#FFFFFF" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/textView13"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Rotation (XYZ)" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="200px"
-                    android:orientation="horizontal"
-                    android:padding="10px">
-
-                    <com.robinhood.spark.SparkView
-                        android:id="@+id/rotationXGraph"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20px"
-                        android:layout_weight="1"
-                        android:background="#FFFFFF" />
-
-                    <com.robinhood.spark.SparkView
-                        android:id="@+id/rotationYGraph"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20px"
-                        android:layout_weight="1"
-                        android:background="#FFFFFF" />
-
-                    <com.robinhood.spark.SparkView
-                        android:id="@+id/rotationZGraph"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20px"
-                        android:layout_weight="1"
-                        android:background="#FFFFFF" />
-                </LinearLayout>
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/setNumber"
@@ -856,6 +253,137 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dailyPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:layout_editor_absoluteX="-63dp"
+        tools:layout_editor_absoluteY="84dp"
+        tools:visibility="visible">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/navbar_white"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView10"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        app:srcCompat="@drawable/calendar_solid"
+                        app:tint="#202587" />
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Daily"
+                        android:textAlignment="center"
+                        android:textColor="#202587"
+                        android:textSize="15dp"
+                        tools:ignore="TextSizeCheck" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView11"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        app:srcCompat="@drawable/dumbbell_solid"
+                        app:tint="#757575" />
+
+                    <TextView
+                        android:id="@+id/textView11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Workout"
+                        android:textAlignment="center"
+                        android:textColor="#757575"
+                        android:textSize="15dp"
+                        tools:ignore="TextSizeCheck" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView12"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        app:srcCompat="@drawable/star_solid"
+                        app:tint="#757575" />
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Goals"
+                        android:textAlignment="center"
+                        android:textColor="#757575"
+                        android:textSize="15dp"
+                        tools:ignore="TextSizeCheck" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView13"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        app:srcCompat="@drawable/user_solid"
+                        app:tint="#757575" />
+
+                    <TextView
+                        android:id="@+id/textView13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Me"
+                        android:textAlignment="center"
+                        android:textColor="#757575"
+                        android:textSize="15dp"
+                        tools:ignore="TextSizeCheck" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/connectPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -866,16 +394,16 @@
             android:id="@+id/connectBtn"
             android:layout_width="227dp"
             android:layout_height="57dp"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/rounded_button_blue"
             android:elevation="15dp"
-            android:fontFamily="@font/miriam_libre"
+            android:fontFamily="@font/ropa_sans"
             android:stateListAnimator="@null"
-            android:text="Connect"
+            android:text="CONNECT"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textColorLink="#202587"
-            android:textSize="34sp"
+            android:textSize="25dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -939,42 +467,56 @@
         android:id="@+id/startPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/startpagebg"
         android:visibility="visible"
         tools:visibility="gone">
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="0dp"
-            android:layout_height="243dp"
+            android:layout_height="200dp"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="152dp"
             android:layout_marginEnd="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.69"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.22000003"
-            app:srcCompat="@drawable/logo_name" />
+            app:srcCompat="@drawable/logo" />
 
         <Button
             android:id="@+id/startBtn"
-            android:layout_width="227dp"
-            android:layout_height="57dp"
-            android:background="@drawable/rounded_button"
+            android:layout_width="247dp"
+            android:layout_height="52dp"
+            android:layout_marginBottom="128dp"
+            android:background="@drawable/rounded_button_white"
             android:elevation="15dp"
-            android:fontFamily="@font/miriam_libre"
+            android:fontFamily="@font/ropa_sans"
             android:stateListAnimator="@null"
             android:text="START"
             android:textAlignment="center"
-            android:textColor="#FFFFFF"
+            android:textColor="#000000"
             android:textColorLink="#202587"
-            android:textSize="34sp"
+            android:textSize="25dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="61dp"
+            android:layout_marginEnd="61dp"
+            android:fontFamily="@font/pt_sans"
+            android:text="MuscleMax"
+            android:textColor="#FFFFFF"
+            android:textSize="60dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.515" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
