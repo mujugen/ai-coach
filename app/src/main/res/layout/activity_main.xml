@@ -253,13 +253,371 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/workoutPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:layout_editor_absoluteX="-59dp"
+        tools:layout_editor_absoluteY="-80dp"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/pt_sans"
+            android:text="WORKOUTS"
+            android:textColor="#000000"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:fontFamily="@font/ropa_sans"
+            android:text="Select Exercise:"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="30dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView5"
+            tools:layout_editor_absoluteX="129dp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/navbar_white"
+            android:elevation="5dp"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView10"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        app:srcCompat="@drawable/calendar_solid"
+                        app:tint="#757575" />
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Daily"
+                        android:textAlignment="center"
+                        android:textColor="#757575"
+                        android:textSize="15dp"
+                        tools:ignore="TextSizeCheck" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView11"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        app:srcCompat="@drawable/dumbbell_solid"
+                        app:tint="#202587" />
+
+                    <TextView
+                        android:id="@+id/textView11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Workout"
+                        android:textAlignment="center"
+                        android:textColor="#202587"
+                        android:textSize="15dp"
+                        tools:ignore="TextSizeCheck" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView12"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        app:srcCompat="@drawable/star_solid"
+                        app:tint="#757575" />
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Goals"
+                        android:textAlignment="center"
+                        android:textColor="#757575"
+                        android:textSize="15dp"
+                        tools:ignore="TextSizeCheck" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView13"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        app:srcCompat="@drawable/user_solid"
+                        app:tint="#757575" />
+
+                    <TextView
+                        android:id="@+id/textView13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Me"
+                        android:textAlignment="center"
+                        android:textColor="#757575"
+                        android:textSize="15dp"
+                        tools:ignore="TextSizeCheck" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="28dp"
+            android:fontFamily="@font/pt_sans"
+            android:text="THURSDAY, SEPTEMBER 7"
+            android:textColor="#757575"
+            android:textSize="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="21dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="26dp"
+                android:paddingEnd="26dp"
+                android:paddingBottom="300dp"
+                app:layout_constraintTop_toBottomOf="@+id/textView4"
+                tools:layout_editor_absoluteX="26dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:background="@drawable/benchpress"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Bench Press"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/backrow"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Back Rows"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/tricep"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Tricep Pushdown"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/bicep"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Bicep Curl"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/latpulldown"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Lat Pulldown"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/crosshammer"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Cross Body Hammer Curl"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/shoulder"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Shoulder Press"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/fly"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Chest Fly"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/dailyPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
         tools:layout_editor_absoluteX="-63dp"
         tools:layout_editor_absoluteY="84dp"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <TextView
             android:id="@+id/textView5"
@@ -683,6 +1041,7 @@
                     android:layout_height="150dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -696,7 +1055,7 @@
                             android:id="@+id/view2"
                             android:layout_width="9dp"
                             android:layout_height="100dp"
-                            android:background="@drawable/rounded_blue"
+                            android:background="@drawable/rounded_blue_no_shadow"
                             android:backgroundTint="#757575" />
 
                         <TextView
@@ -722,7 +1081,7 @@
                             android:id="@+id/view2"
                             android:layout_width="9dp"
                             android:layout_height="60dp"
-                            android:background="@drawable/rounded_blue"
+                            android:background="@drawable/rounded_blue_no_shadow"
                             android:backgroundTint="#757575" />
 
                         <TextView
@@ -731,7 +1090,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:fontFamily="@font/pt_sans"
-                            android:text="S"
+                            android:text="M"
                             android:textAlignment="center"
                             android:textColor="#757575"
                             android:textSize="15dp" />
@@ -748,7 +1107,7 @@
                             android:id="@+id/view2"
                             android:layout_width="9dp"
                             android:layout_height="90dp"
-                            android:background="@drawable/rounded_blue"
+                            android:background="@drawable/rounded_blue_no_shadow"
                             android:backgroundTint="#757575" />
 
                         <TextView
@@ -757,7 +1116,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:fontFamily="@font/pt_sans"
-                            android:text="S"
+                            android:text="T"
                             android:textAlignment="center"
                             android:textColor="#757575"
                             android:textSize="15dp" />
@@ -774,7 +1133,7 @@
                             android:id="@+id/view2"
                             android:layout_width="9dp"
                             android:layout_height="50dp"
-                            android:background="@drawable/rounded_blue"
+                            android:background="@drawable/rounded_blue_no_shadow"
                             android:backgroundTint="#757575" />
 
                         <TextView
@@ -783,7 +1142,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:fontFamily="@font/pt_sans"
-                            android:text="S"
+                            android:text="W"
                             android:textAlignment="center"
                             android:textColor="#757575"
                             android:textSize="15dp" />
@@ -800,7 +1159,7 @@
                             android:id="@+id/view2"
                             android:layout_width="9dp"
                             android:layout_height="100dp"
-                            android:background="@drawable/rounded_blue" />
+                            android:background="@drawable/rounded_blue_no_shadow" />
 
                         <TextView
                             android:id="@+id/textView16"
@@ -808,7 +1167,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:fontFamily="@font/pt_sans"
-                            android:text="S"
+                            android:text="T"
                             android:textAlignment="center"
                             android:textColor="#757575"
                             android:textSize="15dp" />
@@ -816,8 +1175,8 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="match_parent"
+                        android:layout_weight="1"
                         android:gravity="bottom|center_horizontal"
                         android:orientation="vertical">
 
@@ -825,7 +1184,7 @@
                             android:id="@+id/view2"
                             android:layout_width="9dp"
                             android:layout_height="10dp"
-                            android:background="@drawable/rounded_blue"
+                            android:background="@drawable/rounded_blue_no_shadow"
                             android:backgroundTint="#757575" />
 
                         <TextView
@@ -834,7 +1193,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:fontFamily="@font/pt_sans"
-                            android:text="S"
+                            android:text="F"
                             android:textAlignment="center"
                             android:textColor="#757575"
                             android:textSize="15dp" />
@@ -842,8 +1201,8 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="match_parent"
+                        android:layout_weight="1"
                         android:gravity="bottom|center_horizontal"
                         android:orientation="vertical">
 
@@ -851,7 +1210,7 @@
                             android:id="@+id/view2"
                             android:layout_width="9dp"
                             android:layout_height="10dp"
-                            android:background="@drawable/rounded_blue"
+                            android:background="@drawable/rounded_blue_no_shadow"
                             android:backgroundTint="#757575" />
 
                         <TextView
