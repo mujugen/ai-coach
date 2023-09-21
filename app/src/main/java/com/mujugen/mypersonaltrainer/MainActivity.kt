@@ -112,6 +112,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 }
                 R.id.menu_item_me -> {
                     println("Me")
+                    replaceFragment(MePage())
                 }
             }
             true

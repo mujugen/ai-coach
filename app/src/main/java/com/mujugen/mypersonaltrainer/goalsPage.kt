@@ -34,7 +34,7 @@ class GoalsPage : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_workout_page, container, false)
+        return inflater.inflate(R.layout.fragment_goals_page, container, false)
     }
 
     companion object {
