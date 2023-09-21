@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GoalsPage">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/workoutPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        tools:layout_editor_absoluteX="-59dp"
+        tools:layout_editor_absoluteY="-80dp"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/workoutPageTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/workoutPageDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/pt_sans"
+            android:text="WORKOUTS"
+            android:textColor="#000000"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/workoutPageSubtitle"
+            app:layout_constraintTop_toBottomOf="@+id/workoutPageTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:fontFamily="@font/ropa_sans"
+            android:text="Select Exercise:"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="30dp"
+            tools:layout_editor_absoluteX="129dp" />
+
+        <TextView
+            android:id="@+id/workoutPageDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="28dp"
+            android:fontFamily="@font/pt_sans"
+            android:text="THURSDAY, SEPTEMBER 7"
+            android:textColor="#757575"
+            android:textSize="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ScrollView
+            app:layout_constraintTop_toBottomOf="@+id/workoutPageSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="21dp">
+
+            <LinearLayout
+                app:layout_constraintTop_toBottomOf="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="26dp"
+                android:paddingEnd="26dp"
+                android:paddingBottom="300dp"
+                tools:layout_editor_absoluteX="26dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:background="@drawable/benchpress"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/workoutPageWorkoutTitle1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Bench Press"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/backrow"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/workoutPageWorkoutTitle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Back Rows"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/tricep"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/workoutPageWorkoutTitle3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Tricep Pushdown"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/bicep"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/workoutPageWorkoutTitle4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Bicep Curl"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/latpulldown"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/workoutPageWorkoutTitle5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Lat Pulldown"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/crosshammer"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/workoutPageWorkoutTitle6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Cross Body Hammer Curl"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/shoulder"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/workoutPageWorkoutTitle7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Shoulder Press"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="21dp"
+                    android:background="@drawable/fly"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/workoutPageWorkoutTitle8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:text="Chest Fly"
+                        android:textColor="#FFFFFF"
+                        android:textSize="23dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</FrameLayout>

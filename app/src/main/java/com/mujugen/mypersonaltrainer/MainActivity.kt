@@ -2,7 +2,6 @@ package com.mujugen.mypersonaltrainer
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
@@ -18,11 +17,11 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.mujugen.mypersonaltrainer.databinding.ActivityMainBinding
@@ -34,7 +33,6 @@ import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.nio.charset.StandardCharsets
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 import java.util.ArrayDeque
@@ -97,6 +95,31 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        replaceFragment(DailyPage())
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.menu_item_daily -> {
+                    println("Daily")
+                    replaceFragment(DailyPage())
+                }
+                R.id.menu_item_workout -> {
+                    println("Workout")
+                    replaceFragment(WorkoutPage())
+                }
+                R.id.menu_item_goals -> {
+                    println("Goals")
+                    replaceFragment(GoalsPage())
+                }
+                R.id.menu_item_me -> {
+                    println("Me")
+                }
+            }
+            true
+        }
+
+
+
+
 
         fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
         fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
@@ -114,7 +137,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         val RPEInputAdapter = ArrayAdapter(this,
             R.layout.spinner_dropdown_item, RPEInputOptions)
 
-        binding.startBtn.setOnClickListener {
+        /*binding.startBtn.setOnClickListener {
             binding.startPage.startAnimation(fadeOutAnimation)
             binding.startPage.visibility = View.GONE
             binding.connectPage.startAnimation(fadeInAnimation)
@@ -218,7 +241,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
 
 
-        }
+        }*/
 
 
     }
@@ -235,12 +258,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     val buttonText = (child as Button).text.toString()
                     exerciseSelected = buttonText
                     println("exercise selected: ${exerciseSelected}")
-                    binding.exerciseSelectionPage.startAnimation(fadeOutAnimation)
+                    /*binding.exerciseSelectionPage.startAnimation(fadeOutAnimation)
                     binding.exerciseSelectionPage.visibility = View.GONE
                     binding.exercisePage.startAnimation(fadeInAnimation)
                     binding.exercisePage.visibility = View.VISIBLE
                     currentSet = 1
-                    binding.setNumber.text = "Set $currentSet"
+                    binding.setNumber.text = "Set $currentSet"*/
                 }
             }
         }
@@ -270,9 +293,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                                 "Wearable device paired and app is open",
                                 Toast.LENGTH_LONG
                             ).show()
-                            binding.connectionStatusText.text =
+                            /*binding.connectionStatusText.text =
                                 "Status: Connected"
-                            binding.connectBtn.text = "Next"
+                            binding.connectBtn.text = "Next"*/
                             wearableDeviceConnected = true
                         } else {
                             Toast.makeText(
@@ -401,7 +424,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
                 try {
 
-                    println("received: $s")
 
                     val sensorDataParts = s.split("DateTime:", "HeartRate:", "Velocity:", "Rotation:")
                     val timeIndice = sensorDataParts[1].trim().removeSuffix(",")
@@ -644,6 +666,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
+    private fun replaceFragment(fragment: Fragment) {
+        println("replaceFragment")
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frameLayout, fragment)
+        fragmentTransaction.commit()
+    }
 
 
 }

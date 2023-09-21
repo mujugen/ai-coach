@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Daily menu item -->
+    <item
+        android:id="@+id/menu_item_daily"
+        android:enabled="true"
+        android:icon="@drawable/calendar_solid"
+        android:title="Daily"
+        android:visible="true" />
+
+    <!-- Workout menu item -->
+    <item
+        android:id="@+id/menu_item_workout"
+        android:enabled="true"
+        android:icon="@drawable/dumbbell_solid"
+        android:title="Workout"
+        android:visible="true" />
+
+    <!-- Goals menu item -->
+    <item
+        android:id="@+id/menu_item_goals"
+        android:enabled="true"
+        android:icon="@drawable/star_solid"
+        android:title="Goals"
+        android:visible="true" />
+
+    <!-- Me menu item -->
+    <item
+        android:id="@+id/menu_item_me"
+        android:enabled="true"
+        android:icon="@drawable/user_solid"
+        android:title="Me"
+        android:visible="true" />
+</menu>
