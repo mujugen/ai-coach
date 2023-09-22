@@ -1,10 +1,13 @@
 package com.mujugen.mypersonaltrainer
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,6 +39,47 @@ class WorkoutPage : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_workout_page, container, false)
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val workoutPageWorkoutIds = arrayOf(
+            R.id.workoutPageWorkout1,
+            R.id.workoutPageWorkout2,
+            R.id.workoutPageWorkout3,
+            R.id.workoutPageWorkout4,
+            R.id.workoutPageWorkout5,
+            R.id.workoutPageWorkout6,
+            R.id.workoutPageWorkout7,
+            R.id.workoutPageWorkout8
+        )
+
+        for (i in 0 until workoutPageWorkoutIds.size) {
+            val workoutPageWorkout = view.findViewById<LinearLayout>(workoutPageWorkoutIds[i])
+
+            workoutPageWorkout.setOnClickListener {
+                val intent = Intent(requireContext(), WorkoutActivity::class.java)
+
+                // You can customize the exercise type based on the index or any other logic you want.
+                val exerciseType = when (i) {
+                    0 -> "Bench Press"
+                    1 -> "Back Rows"
+                    2 -> "Tricep Pushdown"
+                    3 -> "Bicep Curl"
+                    4 -> "Lat Pulldown"
+                    5 -> "Hammer Curl"
+                    6 -> "Shoulder Press"
+                    7 -> "Chest Fly"
+                    else -> "Undefined"
+                }
+
+                intent.putExtra("exerciseType", exerciseType)
+                startActivity(intent)
+            }
+        }
+
+    }
+
 
     companion object {
         /**

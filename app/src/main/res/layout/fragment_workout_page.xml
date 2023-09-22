@@ -73,13 +73,13 @@
                 tools:layout_editor_absoluteX="26dp">
 
                 <LinearLayout
+                    android:id="@+id/workoutPageWorkout1"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:background="@drawable/benchpress"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/workoutPageWorkoutTitle1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -93,6 +93,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/workoutPageWorkout2"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_marginTop="21dp"
@@ -100,7 +101,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/workoutPageWorkoutTitle2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -114,6 +114,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/workoutPageWorkout3"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_marginTop="21dp"
@@ -121,7 +122,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/workoutPageWorkoutTitle3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -135,6 +135,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/workoutPageWorkout4"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_marginTop="21dp"
@@ -142,7 +143,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/workoutPageWorkoutTitle4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -156,6 +156,8 @@
                 </LinearLayout>
 
                 <LinearLayout
+
+                    android:id="@+id/workoutPageWorkout5"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_marginTop="21dp"
@@ -163,7 +165,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/workoutPageWorkoutTitle5"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -177,6 +178,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/workoutPageWorkout6"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_marginTop="21dp"
@@ -184,7 +186,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/workoutPageWorkoutTitle6"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -198,6 +199,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/workoutPageWorkout7"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_marginTop="21dp"
@@ -205,7 +207,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/workoutPageWorkoutTitle7"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -219,6 +220,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/workoutPageWorkout8"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_marginTop="21dp"
@@ -226,7 +228,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/workoutPageWorkoutTitle8"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
