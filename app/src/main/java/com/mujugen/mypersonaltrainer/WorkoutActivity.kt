@@ -3,6 +3,7 @@ package com.mujugen.mypersonaltrainer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Environment
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -15,6 +16,10 @@ import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
 import java.text.DecimalFormat
 
 class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedListener {
@@ -68,7 +73,16 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         hrGraph = findViewById(R.id.hrGraph)
         hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
 
+        var lastPressedTime = 0L
         fun goFunction(){
+            val currentTime = System.currentTimeMillis()
+            duration = 0L
+            if (lastPressedTime != 0L) {
+                duration = currentTime - lastPressedTime
+                println("Duration between presses: $duration ms")
+            }
+
+            lastPressedTime = currentTime
 
             if (!exerciseStarted) {
                 goBtn.setImageResource(R.drawable.stop_btn)
@@ -196,6 +210,68 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             messageClient.sendMessage(node.id, "/message_path", byteMessage)
         }
     }
+
+
+    private fun saveToFile(data: String) {
+        val externalFileDirs = getExternalFilesDirs(null)
+        val sdCardPath = externalFileDirs.find { file ->
+            Environment.isExternalStorageRemovable(file)
+        }?.absolutePath
+
+        if (sdCardPath != null) {
+            val path = "$sdCardPath/data20.csv"
+            val file = File(path)
+
+            try {
+                if (!file.exists()) {
+                    file.createNewFile()
+                    FileWriter(file, true).use { writer ->
+                        BufferedWriter(writer).use { bufferedWriter ->
+                            bufferedWriter.write("Set,TimeIndice,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration,Remarks\n")
+                        }
+                    }
+                }
+                println("Saving file internally")
+                FileWriter(file, true).use { writer ->
+                    BufferedWriter(writer).use { bufferedWriter ->
+                        bufferedWriter.write(data)
+                    }
+                }
+            } catch (e: IOException) {
+                println("Error encountered")
+                e.printStackTrace()
+            }
+        } else {
+            println("SD card not found")
+            saveToFileInternal(data)
+        }
+    }
+
+    private fun saveToFileInternal(data: String) {
+        val internalFilePath = getFilesDir().absolutePath + "/data20.csv"
+        val file = File(internalFilePath)
+
+        try {
+            if (!file.exists()) {
+                file.createNewFile()
+                FileWriter(file, true).use { writer ->
+                    BufferedWriter(writer).use { bufferedWriter ->
+                        bufferedWriter.write("Set,TimeIndice,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration,Remarks\n")
+                    }
+                }
+            }
+            println("Saving file internally")
+            FileWriter(file, true).use { writer ->
+                BufferedWriter(writer).use { bufferedWriter ->
+                    bufferedWriter.write(data)
+                }
+            }
+        } catch (e: IOException) {
+            println("Error encountered")
+            e.printStackTrace()
+        }
+    }
+
 }
 
 
@@ -253,4 +329,3 @@ private class SparkGraphAdapter(private val data: List<String>) : SparkAdapter()
 
     override fun getY(index: Int) = getItem(index)
 }
-
