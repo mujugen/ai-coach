@@ -39,6 +39,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     private lateinit var messageClient: MessageClient
     private var connectionStatus = false
 
+    private lateinit var goBtn: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_workout)
@@ -47,9 +48,11 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         messageClient.addListener(this)
         connectToSmartwatch()
 
+
+
         val exerciseType = intent.getStringExtra("exerciseType")
         val exerciseTypeText = findViewById<TextView>(R.id.exerciseTypeText)
-        val goBtn = findViewById<ImageView>(R.id.goBtn)
+        goBtn = findViewById<ImageView>(R.id.goBtn)
         val setNumber = findViewById<TextView>(R.id.setText)
         val hrText = findViewById<TextView>(R.id.hrText)
         exerciseTypeText.text = exerciseType
@@ -148,6 +151,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         val message = String(messageEvent.data)
         if (message == "Go") {
             println("Go")
+            goBtn.performClick()
         }
     }
 
