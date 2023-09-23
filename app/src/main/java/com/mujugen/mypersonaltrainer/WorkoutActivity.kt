@@ -211,67 +211,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         }
     }
 
-
-    private fun saveToFile(data: String) {
-        val externalFileDirs = getExternalFilesDirs(null)
-        val sdCardPath = externalFileDirs.find { file ->
-            Environment.isExternalStorageRemovable(file)
-        }?.absolutePath
-
-        if (sdCardPath != null) {
-            val path = "$sdCardPath/data20.csv"
-            val file = File(path)
-
-            try {
-                if (!file.exists()) {
-                    file.createNewFile()
-                    FileWriter(file, true).use { writer ->
-                        BufferedWriter(writer).use { bufferedWriter ->
-                            bufferedWriter.write("Set,TimeIndice,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration,Remarks\n")
-                        }
-                    }
-                }
-                println("Saving file internally")
-                FileWriter(file, true).use { writer ->
-                    BufferedWriter(writer).use { bufferedWriter ->
-                        bufferedWriter.write(data)
-                    }
-                }
-            } catch (e: IOException) {
-                println("Error encountered")
-                e.printStackTrace()
-            }
-        } else {
-            println("SD card not found")
-            saveToFileInternal(data)
-        }
-    }
-
-    private fun saveToFileInternal(data: String) {
-        val internalFilePath = getFilesDir().absolutePath + "/data20.csv"
-        val file = File(internalFilePath)
-
-        try {
-            if (!file.exists()) {
-                file.createNewFile()
-                FileWriter(file, true).use { writer ->
-                    BufferedWriter(writer).use { bufferedWriter ->
-                        bufferedWriter.write("Set,TimeIndice,HeartRate,VelocityX,VelocityY,VelocityZ,RotationX,RotationY,RotationZ,Id,Exercise Selected,Load,Reps,Name,Sex,Years Trained,Age,RPE,Duration,Remarks\n")
-                    }
-                }
-            }
-            println("Saving file internally")
-            FileWriter(file, true).use { writer ->
-                BufferedWriter(writer).use { bufferedWriter ->
-                    bufferedWriter.write(data)
-                }
-            }
-        } catch (e: IOException) {
-            println("Error encountered")
-            e.printStackTrace()
-        }
-    }
-
 }
 
 
