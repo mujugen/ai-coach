@@ -29,13 +29,31 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     CapabilityClient.OnCapabilityChangedListener {
     private var activityContext: Context? = null
 
+    private var exerciseStarted = false
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val dataSenderRunnable = object : Runnable {
+        override fun run() {
+            println("sent sensor data")
+            if (exerciseStarted) {
+                val sdf = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
+                val formattedDate = sdf.format(Date())
+                val sensorData = "DateTime: $formattedDate, " +
+                        "HeartRate: $heartRateValue, " +
+                        "Velocity: ${velocityValues?.joinToString()}, " +
+                        "Rotation: ${gyroValues?.joinToString()}"
+                sendMessageToSmartphone(sensorData)
+
+            }
+            if (exerciseStarted) {
+                handler.postDelayed(this, 10)
+            }
+        }
+    }
+
     private lateinit var messageClient: MessageClient
     private lateinit var binding: ActivityMainBinding
     private var connectedNode: Node? = null
-    private val TAG_MESSAGE_RECEIVED = "receive1"
-    private val APP_OPEN_WEARABLE_PAYLOAD_PATH = "/APP_OPEN_WEARABLE_PAYLOAD"
-    private val decimalFormat = DecimalFormat("#.##")
-    private var mobileDeviceConnected: Boolean = false
     private lateinit var sensorManager: SensorManager
     private lateinit var heartRateSensor: Sensor
     private lateinit var accelerometerSensor: Sensor
@@ -46,19 +64,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     private var velocityValues: FloatArray? = null
     private var gyroValues: FloatArray? = null
 
-
-    // Payload string items
-    private val wearableAppCheckPayloadReturnACK = "AppOpenWearableACK"
-
-    private val MESSAGE_ITEM_RECEIVED_PATH: String = "/message-item-received"
-
-
-    private var messageEvent: MessageEvent? = null
-    private var mobileNodeUri: String? = null
-
     private lateinit var ambientController: AmbientModeSupport.AmbientController
-
-    // Add these listeners
 
     private val heartRateListener: SensorEventListener = object : SensorEventListener {
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
@@ -123,56 +129,30 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
         binding.goBtn.setOnClickListener{
             sendMessageToSmartphone("Go")
-        }
-
-        // Send sensor data every second
-        /*
-        val handler = Handler(Looper.getMainLooper())
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-                //binding.hrVal.text = decimalFormat.format(randomHeartRate)
-                binding.hrVal.text = decimalFormat.format(heartRateValue.toDouble())
-                binding.velocityVal.text = velocityValues?.joinToString { decimalFormat.format(it) }
-                binding.rotationVal.text = gyroValues?.joinToString { decimalFormat.format(it) }
-                println("1trying to send sensor data")
-                if (mobileDeviceConnected && messageEvent != null) {
-                    println("2trying to send sensor data")
-                    mobileDeviceConnected = true
-
-                    if (binding.startPage.visibility == View.VISIBLE || binding.connectPage.visibility == View.VISIBLE) {
-                        binding.startPage.visibility = View.GONE
-                        binding.connectPage.visibility = View.GONE
-                        binding.mainPage.visibility = View.VISIBLE
-                    }
-
-                    val nodeId: String = messageEvent?.sourceNodeId!!
-                    val sdf = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
-                    val formattedDate = sdf.format(Date())
-                    val sensorData = "DateTime: $formattedDate, " +
-                            "HeartRate: $heartRateValue, " +
-                            "Velocity: ${velocityValues?.joinToString()}, " +
-                            "Rotation: ${gyroValues?.joinToString()}"
-
-                        val payload: ByteArray = sensorData.toByteArray()
-
-                        val sendMessageTask =
-                            Wearable.getMessageClient(activityContext!!)
-                                .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
-                        println("Sent sensor data $sensorData")
-                }
-                handler.postDelayed(this, 10)
+            if (!exerciseStarted) {
+                exerciseStarted = true
+                startSendingData()
+                binding.goBtn.text = "Stop"
+            } else {
+                exerciseStarted = false
+                stopSendingData()
+                binding.goBtn.text = "Start"
             }
-        }, 1000)
-        */
-
-
-
-
+        }
 
 
 
     }
 
+    private fun startSendingData() {
+        // Post the initial runnable
+        handler.post(dataSenderRunnable)
+    }
+
+    private fun stopSendingData() {
+        // Remove the dataSenderRunnable if exercise is stopped
+        handler.removeCallbacks(dataSenderRunnable)
+    }
     override fun onDataChanged(p0: DataEventBuffer) {
     }
 

@@ -152,6 +152,8 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         if (message == "Go") {
             println("Go")
             goBtn.performClick()
+        }else{
+            println(message)
         }
     }
 
