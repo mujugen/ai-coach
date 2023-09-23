@@ -81,12 +81,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private var lastNonZeroHeartRate = "0.0"
 
     private lateinit var hrGraph: SparkView
-    private lateinit var velocityXGraph: SparkView
-    private lateinit var velocityYGraph: SparkView
-    private lateinit var velocityZGraph: SparkView
-    private lateinit var rotationXGraph: SparkView
-    private lateinit var rotationYGraph: SparkView
-    private lateinit var rotationZGraph: SparkView
     private var duration = 0L
 
     @SuppressLint("SetTextI18n")

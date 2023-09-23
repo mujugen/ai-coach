@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources><style name="circular">
     <item name="cornerSize">50%</item>
-</style></resources>
+
+</style>
+<style name="MySparkViewStyle">
+    <item name="spark_lineColor">@android:color/holo_orange_light</item>
+    <item name="spark_lineWidth">3dp</item>
+    <item name="spark_cornerRadius">100dp</item>
+    <item name="spark_fill">false</item>
+    <item name="spark_baseLineColor">#456789</item>
+    <item name="spark_baseLineWidth">5dp</item>
+    <item name="spark_animateChanges">true</item>
+</style>
+
+</resources>

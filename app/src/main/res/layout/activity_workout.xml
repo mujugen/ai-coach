@@ -70,7 +70,58 @@
             android:layout_height="122dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/rounded_black_no_shadow"
+            android:backgroundTint="#0B0B0B"
             android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.robinhood.spark.SparkView
+                    android:id="@+id/hrGraph"
+                    style="@style/MySparkViewStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|start"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:includeFontPadding="false"
+                        android:text="HeartRate"
+                        android:textColor="#AFAFAF"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/hrText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|start"
+                        android:layout_marginStart="20dp"
+                        android:fontFamily="@font/pt_sans"
+                        android:includeFontPadding="false"
+                        android:text="75"
+                        android:textColor="#FFFFFF"
+                        android:textSize="25dp"
+                        android:textStyle="bold" />
+
+
+
+                </LinearLayout>
+
+            </FrameLayout>
 
         </LinearLayout>
 
