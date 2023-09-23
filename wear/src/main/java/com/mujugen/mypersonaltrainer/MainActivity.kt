@@ -168,6 +168,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         if(message == "Connect"){
             println("Received connection request")
             connectionStatus = true
+            binding.startPage.visibility = View.GONE
             binding.connectPage.visibility = View.GONE
             binding.mainPage.visibility = View.VISIBLE
         }
