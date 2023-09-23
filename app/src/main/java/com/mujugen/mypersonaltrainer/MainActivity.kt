@@ -38,10 +38,7 @@ import kotlin.math.roundToInt
 import java.util.ArrayDeque
 import java.text.DecimalFormat
 
-class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
-    DataClient.OnDataChangedListener,
-    MessageClient.OnMessageReceivedListener,
-    CapabilityClient.OnCapabilityChangedListener {
+class MainActivity : AppCompatActivity(){
     var activityContext: Context? = null
     private val wearableAppCheckPayload = "AppOpenWearable"
     private val wearableAppCheckPayloadReturnACK = "AppOpenWearableACK"
@@ -49,6 +46,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private var setsList: ArrayList<Sets> = ArrayList()
 
     private var isGoBtnClickable = true
+
 
 
     private var currentAckFromWearForAppOpenCheck: String? = null
@@ -88,6 +86,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
+
+
+
         setContentView(view)
         replaceFragment(DailyPage())
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
@@ -264,7 +265,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
     }
 
-
+/*
     @SuppressLint("SetTextI18n")
     private fun initialiseDevicePairing(tempAct: Activity) {
         // Coroutine
@@ -312,9 +313,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
         }
     }
+*/
 
-
-
+/*
     private fun getNodes(context: Context): BooleanArray {
         val nodeResults = HashSet<String>()
         val resBool = BooleanArray(2)
@@ -397,9 +398,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
 
-    override fun onDataChanged(p0: DataEventBuffer) {
-    }
-
+    /*
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
         //println("message received")
@@ -467,33 +466,18 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
     }
 
-
+    */
     override fun onCapabilityChanged(p0: CapabilityInfo) {
     }
-
+*/
 
     override fun onPause() {
         super.onPause()
-        try {
-            Wearable.getDataClient(activityContext!!).removeListener(this)
-            Wearable.getMessageClient(activityContext!!).removeListener(this)
-            Wearable.getCapabilityClient(activityContext!!).removeListener(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
 
     override fun onResume() {
         super.onResume()
-        try {
-            Wearable.getDataClient(activityContext!!).addListener(this)
-            Wearable.getMessageClient(activityContext!!).addListener(this)
-            Wearable.getCapabilityClient(activityContext!!)
-                .addListener(this, Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
 
@@ -670,7 +654,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
 
+
 }
+
 
 
 

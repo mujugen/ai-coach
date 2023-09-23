@@ -29,8 +29,9 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     CapabilityClient.OnCapabilityChangedListener {
     private var activityContext: Context? = null
 
+    private lateinit var messageClient: MessageClient
     private lateinit var binding: ActivityMainBinding
-
+    private var connectedNode: Node? = null
     private val TAG_MESSAGE_RECEIVED = "receive1"
     private val APP_OPEN_WEARABLE_PAYLOAD_PATH = "/APP_OPEN_WEARABLE_PAYLOAD"
     private val decimalFormat = DecimalFormat("#.##")
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     private lateinit var accelerometerSensor: Sensor
     private lateinit var gyroSensor: Sensor
 
+    private var connectionStatus = false
     private var heartRateValue: Float = 0f
     private var velocityValues: FloatArray? = null
     private var gyroValues: FloatArray? = null
@@ -91,10 +93,11 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        val messageClient = Wearable.getMessageClient(this)
+
+        messageClient = Wearable.getMessageClient(this)
         messageClient.addListener(this)
 
-
+        connectToSmartphone()
         activityContext = this
 
         // Enables Always-on
@@ -117,16 +120,13 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             binding.connectPage.visibility = View.VISIBLE
         }
 
-        // Set click listener for connect button
-        binding.connectBtn.setOnClickListener {
-            if(mobileDeviceConnected == true){
-                binding.connectPage.visibility = View.GONE
-                binding.mainPage.visibility = View.VISIBLE
-            }
 
+        binding.goBtn.setOnClickListener{
+            sendMessageToSmartphone("Go")
         }
 
         // Send sensor data every second
+        /*
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
             override fun run() {
@@ -163,6 +163,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                 handler.postDelayed(this, 10)
             }
         }, 1000)
+        */
 
 
 
@@ -180,109 +181,38 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
 
     @SuppressLint("SetTextI18n")
-    override fun onMessageReceived(p0: MessageEvent) {
-        messageEvent = p0
-        mobileNodeUri = p0.sourceNodeId
-        try {
+    override fun onMessageReceived(messageEvent: MessageEvent) {
+        val message = String(messageEvent.data)
+        println("message $message")
+        if(message == "Connect"){
+            println("Received connection request")
+            connectionStatus = true
+            binding.connectPage.visibility = View.GONE
+            binding.mainPage.visibility = View.VISIBLE
+        }
+    }
 
-            Log.d(TAG_MESSAGE_RECEIVED, "onMessageReceived event received")
-            val s1 = String(p0.data, StandardCharsets.UTF_8)
-            val messageEventPath: String = p0.path
-
-            Log.d(
-                TAG_MESSAGE_RECEIVED,
-                "onMessageReceived() A message from watch was received:"
-                        + p0.requestId
-                        + " "
-                        + messageEventPath
-                        + " "
-                        + s1
-            )
-
-            //Send back a message back to the source node
-            //This acknowledges that the receiver activity is open
-            if (messageEventPath.isNotEmpty() && messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
-                try {
-                    val nodeId: String = p0.sourceNodeId.toString()
-                    val returnPayloadAck = wearableAppCheckPayloadReturnACK
-                    val payload: ByteArray = returnPayloadAck.toByteArray()
-
-                    val sendMessageTask =
-                        Wearable.getMessageClient(activityContext!!)
-                            .sendMessage(nodeId, APP_OPEN_WEARABLE_PAYLOAD_PATH, payload)
-
-                    Log.d(
-                        TAG_MESSAGE_RECEIVED,
-                        "Acknowledgement message successfully with payload : $returnPayloadAck"
-                    )
-
-                    messageEvent = p0
-                    mobileNodeUri = p0.sourceNodeId
-
-                    sendMessageTask.addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            Log.d(TAG_MESSAGE_RECEIVED, "Message sent successfully")
-
-                            val sbTemp = StringBuilder()
-                            sbTemp.append("\nMobile device connected.")
-                            Log.d("receive1", " $sbTemp")
-
-                            mobileDeviceConnected = true
-                            binding.connectionStatus.text = "Status: Connected"
-
-
-                        } else {
-                            Log.d(TAG_MESSAGE_RECEIVED, "Message failed.")
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }//emd of if
-            else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
-                try {
-
-                    val sbTemp = StringBuilder()
-                    sbTemp.append("\n")
-                    sbTemp.append(s1)
-                    sbTemp.append(" - (Received from mobile)")
-                    Log.d("receive1", " $sbTemp")
-                    mobileDeviceConnected = true
-                    binding.connectionStatus.text = "Status: Connected"
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+    private fun connectToSmartphone() {
+        // Check if there are already connected nodes (smartphones)
+        Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
+            if (nodes.isNotEmpty()) {
+                // Use the first connected node for simplicity, or choose the desired one
+                connectedNode = nodes[0]
+                connectionStatus = true
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        }
+    }
+
+    private fun sendMessageToSmartphone(message: String) {
+        connectedNode?.let { node ->
+            // Build the message
+            val byteMessage = message.toByteArray()
+            // Send the message to the connected node (smartphone)
+            messageClient.sendMessage(node.id, "/message_path", byteMessage)
         }
     }
 
 
-    override fun onPause() {
-        super.onPause()
-        try {
-            Wearable.getDataClient(activityContext!!).removeListener(this)
-            Wearable.getMessageClient(activityContext!!).removeListener(this)
-            Wearable.getCapabilityClient(activityContext!!).removeListener(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        try {
-            Wearable.getDataClient(activityContext!!).addListener(this)
-            Wearable.getMessageClient(activityContext!!).addListener(this)
-            Wearable.getCapabilityClient(activityContext!!)
-                .addListener(this, Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
     override fun getAmbientCallback(): AmbientCallback = MyAmbientCallback()
 
@@ -298,6 +228,11 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         override fun onExitAmbient() {
             super.onExitAmbient()
         }
+    }
+
+    override fun onDestroy() {
+        messageClient.removeListener(this)
+        super.onDestroy()
     }
 
 

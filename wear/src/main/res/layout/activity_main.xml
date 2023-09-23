@@ -20,65 +20,19 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/hrText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dp"
+            <Button
+                android:id="@+id/goBtn"
+                android:layout_width="112dp"
+                android:layout_height="39dp"
+                android:background="@drawable/rounded_button"
+                android:elevation="15dp"
                 android:fontFamily="@font/miriam_libre"
-                android:text="Heart Rate:"
-                android:textColor="#000000"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/hrVal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:fontFamily="@font/miriam_libre"
-                android:text="0"
-                android:textColor="#000000"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/velocityTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:fontFamily="@font/miriam_libre"
-                android:text="Acceleration:"
-                android:textColor="#000000"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/velocityVal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:fontFamily="@font/miriam_libre"
-                android:text="0"
-                android:textColor="#000000"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/rotationText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:fontFamily="@font/miriam_libre"
-                android:text="Rotation:"
-                android:textColor="#000000"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/rotationVal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:fontFamily="@font/miriam_libre"
-                android:text="0"
-                android:textColor="#000000"
-                android:textSize="14sp" />
+                android:stateListAnimator="@null"
+                android:text="GO"
+                android:textColor="#82CBF2"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:ignore="TouchTargetSizeCheck" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -91,57 +45,20 @@
         android:visibility="gone"
         tools:visibility="gone">
 
-        <Button
-            android:id="@+id/connectBtn"
-            android:layout_width="125dp"
-            android:layout_height="35dp"
-            android:background="@drawable/rounded_button"
-            android:elevation="15dp"
-            android:fontFamily="@font/miriam_libre"
-            android:stateListAnimator="@null"
-            android:text="Next"
-            android:textAllCaps="false"
-            android:textColor="#82CBF2"
-            android:textSize="20sp"
-            android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.617"
-            tools:ignore="TouchTargetSizeCheck" />
-
         <TextView
             android:id="@+id/textView"
             android:layout_width="165dp"
-            android:layout_height="81dp"
+            android:layout_height="150dp"
             android:fontFamily="@font/miriam_libre"
-            android:text="Connect to Companion App"
+            android:gravity="center"
+            android:text="Waiting for Companion App"
             android:textAlignment="center"
             android:textColor="#000000"
-            android:textSize="20sp"
+            android:textSize="25dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.533"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.161" />
-
-        <TextView
-            android:id="@+id/connectionStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:fontFamily="@font/miriam_libre"
-            android:text="Status: Not Connected"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.506"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.953" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
