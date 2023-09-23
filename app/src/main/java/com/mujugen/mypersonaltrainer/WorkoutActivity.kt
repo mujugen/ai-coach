@@ -11,8 +11,11 @@ import com.robinhood.spark.SparkView
 import java.util.ArrayDeque
 import java.util.ArrayList
 import kotlin.random.Random
-
-class WorkoutActivity : AppCompatActivity() {
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.Node
+import com.google.android.gms.wearable.Wearable
+class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedListener {
 
     private var currentSet = 1
     private var exerciseStarted = false
@@ -31,11 +34,20 @@ class WorkoutActivity : AppCompatActivity() {
     private lateinit var hrGraph: SparkView
     private var duration = 0L
     private var isGoBtnClickable = true
+
+    private var connectedNode: Node? = null
+    private lateinit var messageClient: MessageClient
+    private var connectionStatus = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_workout)
-        val exerciseType = intent.getStringExtra("exerciseType")
 
+        messageClient = Wearable.getMessageClient(this)
+        messageClient.addListener(this)
+        connectToSmartwatch()
+
+        val exerciseType = intent.getStringExtra("exerciseType")
         val exerciseTypeText = findViewById<TextView>(R.id.exerciseTypeText)
         val goBtn = findViewById<ImageView>(R.id.goBtn)
         val setNumber = findViewById<TextView>(R.id.setText)
@@ -131,7 +143,36 @@ class WorkoutActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onMessageReceived(messageEvent: MessageEvent) {
+        val message = String(messageEvent.data)
+        if (message == "Go") {
+            println("Go")
+        }
+    }
+
+    fun connectToSmartwatch() {
+        // Check if there are already connected nodes (smartwatches)
+        Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
+            if (nodes.isNotEmpty()) {
+                // Use the first connected node for simplicity, or choose the desired one
+                connectedNode = nodes[0]
+                sendMessageToSmartwatch("Connect")
+                connectionStatus = true
+            }
+        }
+    }
+
+    private fun sendMessageToSmartwatch(message: String) {
+        connectedNode?.let { node ->
+            // Build the message
+            val byteMessage = message.toByteArray()
+            // Send the message to the connected node (smartwatch)
+            messageClient.sendMessage(node.id, "/message_path", byteMessage)
+        }
+    }
 }
+
 
 class MaxSizeArray<T>() {
     private val deque: ArrayDeque<T> = ArrayDeque(300)
