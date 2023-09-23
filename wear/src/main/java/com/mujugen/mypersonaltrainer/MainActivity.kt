@@ -128,12 +128,13 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
 
         binding.goBtn.setOnClickListener{
-            sendMessageToSmartphone("Go")
             if (!exerciseStarted) {
+                sendMessageToSmartphone("Go")
                 exerciseStarted = true
                 startSendingData()
                 binding.goBtn.text = "Stop"
             } else {
+                sendMessageToSmartphone("Stop")
                 exerciseStarted = false
                 stopSendingData()
                 binding.goBtn.text = "Start"
@@ -169,6 +170,16 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             connectionStatus = true
             binding.connectPage.visibility = View.GONE
             binding.mainPage.visibility = View.VISIBLE
+        }
+        if(message == "Go"){
+            if(!exerciseStarted){
+                binding.goBtn.performClick()
+            }
+        }
+        if(message == "Stop"){
+            if(exerciseStarted){
+                binding.goBtn.performClick()
+            }
         }
     }
 

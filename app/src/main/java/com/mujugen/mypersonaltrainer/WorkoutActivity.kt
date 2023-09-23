@@ -17,6 +17,7 @@ import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedListener {
 
+    private var goFromWatch = false
     private var currentSet = 1
     private var exerciseStarted = false
     private val heartRateArray = MainActivity.MaxSizeArrayLarge<String>()
@@ -33,7 +34,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     private val heartRateArrayGraph = MaxSizeArray<String>()
     private lateinit var hrGraph: SparkView
     private var duration = 0L
-    private var isGoBtnClickable = true
 
     private var connectedNode: Node? = null
     private lateinit var messageClient: MessageClient
@@ -79,70 +79,54 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         heartRateArrayGraph.add(Random.nextInt(0, 101).toString())
         hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
 
+        fun goFunction(){
 
-        var lastPressedTime = 0L
-        goBtn.setOnClickListener {
-            if(isGoBtnClickable){
-                val currentTime = System.currentTimeMillis()
-                duration = 0L
-                if (lastPressedTime != 0L) {
-                    duration = currentTime - lastPressedTime
-                    println("Duration between presses: $duration ms")
-                }
+            if (!exerciseStarted) {
+                goBtn.setImageResource(R.drawable.stop_btn)
+                exerciseStarted = true
+                val randomInt = Random.nextInt(0, 101)
+                heartRateArrayGraph.add(randomInt.toString())
+                hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
+                hrText.text = "$randomInt"
+                sendMessageToSmartwatch("Go")
+            } else {
+                goBtn.setImageResource(R.drawable.go_btn)
+                setNumber.text = "Set $currentSet"
+                val timeIndiceCSV = timeIndiceArray.joinToString()
+                val heartRateCSV = heartRateArray.joinToString()
+                val velocityXCSV = velocityXArray.joinToString()
+                val velocityYCSV = velocityYArray.joinToString()
+                val velocityZCSV = velocityZArray.joinToString()
+                val rotationXCSV = rotationXArray.joinToString()
+                val rotationYCSV = rotationYArray.joinToString()
+                val rotationZCSV = rotationZArray.joinToString()
+                println("heartRateCSV = $heartRateCSV")
+                println("velocityXCSV = $velocityXCSV")
+                println("velocityYCSV = $velocityYCSV")
+                println("velocityZCSV = $velocityZCSV")
+                println("rotationXCSV = $rotationXCSV")
+                println("rotationYCSV = $rotationYCSV")
+                println("rotationZCSV = $rotationZCSV")
+                sensorData = "$timeIndiceCSV,$heartRateCSV,$velocityXCSV,$velocityYCSV,$velocityZCSV,$rotationXCSV,$rotationYCSV,$rotationZCSV"
 
-                lastPressedTime = currentTime
+                timeIndiceArray.clear()
+                heartRateArray.clear()
+                velocityXArray.clear()
+                velocityYArray.clear()
+                velocityZArray.clear()
+                rotationXArray.clear()
+                rotationYArray.clear()
+                rotationZArray.clear()
 
-                isGoBtnClickable = false
-                if (!exerciseStarted) {
-                    goBtn.setImageResource(R.drawable.stop_btn)
-                    exerciseStarted = true
-                    val randomInt = Random.nextInt(0, 101)
-                    heartRateArrayGraph.add(randomInt.toString())
-                    hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
-                    hrText.text = "$randomInt"
-                } else {
-                    goBtn.setImageResource(R.drawable.go_btn)
-                    setNumber.text = "Set $currentSet"
-                    val timeIndiceCSV = timeIndiceArray.joinToString()
-                    val heartRateCSV = heartRateArray.joinToString()
-                    val velocityXCSV = velocityXArray.joinToString()
-                    val velocityYCSV = velocityYArray.joinToString()
-                    val velocityZCSV = velocityZArray.joinToString()
-                    val rotationXCSV = rotationXArray.joinToString()
-                    val rotationYCSV = rotationYArray.joinToString()
-                    val rotationZCSV = rotationZArray.joinToString()
-                    println("heartRateCSV = $heartRateCSV")
-                    println("velocityXCSV = $velocityXCSV")
-                    println("velocityYCSV = $velocityYCSV")
-                    println("velocityZCSV = $velocityZCSV")
-                    println("rotationXCSV = $rotationXCSV")
-                    println("rotationYCSV = $rotationYCSV")
-                    println("rotationZCSV = $rotationZCSV")
-                    sensorData = "$timeIndiceCSV,$heartRateCSV,$velocityXCSV,$velocityYCSV,$velocityZCSV,$rotationXCSV,$rotationYCSV,$rotationZCSV"
+                exerciseStarted = false
 
-                    timeIndiceArray.clear()
-                    heartRateArray.clear()
-                    velocityXArray.clear()
-                    velocityYArray.clear()
-                    velocityZArray.clear()
-                    rotationXArray.clear()
-                    rotationYArray.clear()
-                    rotationZArray.clear()
-
-
-                    exerciseStarted = false
-
-                }
-                val cooldownTimer = object : CountDownTimer(2000, 1000) {
-                    override fun onTick(millisUntilFinished: Long) {
-                    }
-
-                    override fun onFinish() {
-                        isGoBtnClickable = true
-                    }
-                }
-                cooldownTimer.start()
+                sendMessageToSmartwatch("Stop")
             }
+
+        }
+
+        goBtn.setOnClickListener {
+            goFunction()
         }
 
     }
@@ -151,9 +135,15 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         val message = String(messageEvent.data)
         if (message == "Go") {
             println("Go")
-            goBtn.performClick()
-        }else{
-            println(message)
+            if(!exerciseStarted){
+                goBtn.performClick()
+            }
+        }
+        if (message == "Stop") {
+            println("Stop")
+            if(exerciseStarted){
+                goBtn.performClick()
+            }
         }
     }
 
