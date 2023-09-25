@@ -16,5 +16,6 @@ class StartActivity : AppCompatActivity() {
         binding.startBtn.setOnClickListener{
             println("Hello world")
         }
+        binding.initializationProgress.progress = 0
     }
 }
