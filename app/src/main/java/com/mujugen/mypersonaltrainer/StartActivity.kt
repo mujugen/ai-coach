@@ -1,5 +1,6 @@
 package com.mujugen.mypersonaltrainer
 
+import android.content.Context
 import android.content.Intent
 import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
@@ -10,8 +11,24 @@ import android.view.animation.AnimationUtils
 import android.widget.RadioButton
 import com.mujugen.mypersonaltrainer.databinding.ActivityStartBinding
 import android.widget.Toast
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+
 class StartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityStartBinding
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+
+    private val NAME_KEY = stringPreferencesKey("name")
+    private val SEX_KEY = stringPreferencesKey("sex")
+    private val EXPERIENCE_KEY = stringPreferencesKey("experience")
+    private val BIRTHDAY_KEY = stringPreferencesKey("birthday")
     private var name = ""
     private var sex = ""
     private var experience = ""
@@ -20,6 +37,7 @@ class StartActivity : AppCompatActivity() {
     private var currentPage = "Start"
     private lateinit var fadeInAnimation: Animation
     private lateinit var fadeOutAnimation: Animation
+    private lateinit var buttonClickAnimation: Animation
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStartBinding.inflate(layoutInflater)
@@ -28,8 +46,12 @@ class StartActivity : AppCompatActivity() {
         setContentView(view)
         fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
         fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
+        buttonClickAnimation = AnimationUtils.loadAnimation(this, R.anim.button_click_animation)
+
+        loadSavedData()
 
         binding.startBtn.setOnClickListener{
+            binding.startBtn.startAnimation(buttonClickAnimation)
             if(name == "" || sex == "" || experience == "" || birthday == "" ){
                 println("2")
                 currentPage = "Name"
@@ -44,6 +66,8 @@ class StartActivity : AppCompatActivity() {
         }
 
         binding.nextBtn.setOnClickListener {
+            binding.nextBtn.startAnimation(buttonClickAnimation)
+
             if(currentPage == "Name"){
                 println("Name = ${binding.nameTextInput.text}")
                 if(binding.nameTextInput.text.toString() == ""){
@@ -98,11 +122,15 @@ class StartActivity : AppCompatActivity() {
                 binding.startPage.visibility = View.VISIBLE
                 binding.initializationProgress.progress = 0
                 currentPage = "Start"
+                runBlocking {
+                    saveDataToDataStore()
+                }
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             }
 
             println("Name: $name Sex: $sex Experience: $experience Age: $age")
+
         }
 
         binding.sexRadioGroup.setOnCheckedChangeListener { group, checkedId ->
@@ -118,6 +146,8 @@ class StartActivity : AppCompatActivity() {
         }
 
     }
+
+
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
@@ -167,6 +197,26 @@ class StartActivity : AppCompatActivity() {
             }
         } else {
             super.onBackPressed()
+        }
+    }
+
+    private fun loadSavedData() {
+        GlobalScope.launch {
+            val preferences = dataStore.data.first()
+            name = preferences[NAME_KEY] ?: ""
+            sex = preferences[SEX_KEY] ?: ""
+            experience = preferences[EXPERIENCE_KEY] ?: ""
+            birthday = preferences[BIRTHDAY_KEY] ?: ""
+        }
+    }
+
+    // Function to save data to DataStore
+    private suspend fun saveDataToDataStore() {
+        dataStore.edit { preferences ->
+            preferences[NAME_KEY] = name
+            preferences[SEX_KEY] = sex
+            preferences[EXPERIENCE_KEY] = experience
+            preferences[BIRTHDAY_KEY] = birthday
         }
     }
 }

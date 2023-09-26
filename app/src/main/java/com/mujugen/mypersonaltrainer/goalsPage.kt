@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
@@ -41,9 +43,14 @@ class GoalsPage : Fragment() {
     private var weightChangeProgress = kotlin.math.abs(currentWeight - startingWeight)
 
 
+    private lateinit var buttonClickAnimation: Animation
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        buttonClickAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.button_click_animation)
+
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -83,8 +90,13 @@ class GoalsPage : Fragment() {
 
         val setGoalBtn = view.findViewById<Button>(R.id.setGoalBtn)
         val confirmGoalBtn = view.findViewById<Button>(R.id.confirmGoalBtn)
+
+
         val setGoalsPopup = view.findViewById<FrameLayout>(R.id.setGoalsPopup)
-        setGoalBtn.setOnClickListener { setGoalsPopup.visibility = View.VISIBLE }
+        setGoalBtn.setOnClickListener {
+            setGoalBtn.startAnimation(buttonClickAnimation)
+            setGoalsPopup.visibility = View.VISIBLE
+        }
 
 
         val setGoalsVolumeText = view.findViewById<EditText>(R.id.setGoalsVolumeText)

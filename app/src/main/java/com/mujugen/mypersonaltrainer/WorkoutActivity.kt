@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Environment
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -37,6 +39,8 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     private var sensorData: String = ""
     private var lastNonZeroHeartRate = "0.0"
 
+    private lateinit var buttonClickAnimation: Animation
+
     private val heartRateArrayGraph = MaxSizeArray<String>()
     private lateinit var hrGraph: SparkView
     private var duration = 0L
@@ -55,6 +59,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         messageClient.addListener(this)
         connectToSmartwatch()
 
+        buttonClickAnimation = AnimationUtils.loadAnimation(this, R.anim.button_click_animation)
 
 
         val exerciseType = intent.getStringExtra("exerciseType")
@@ -75,6 +80,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
         var lastPressedTime = 0L
         fun goFunction(){
+            goBtn.startAnimation(buttonClickAnimation)
             val currentTime = System.currentTimeMillis()
             duration = 0L
             if (lastPressedTime != 0L) {
