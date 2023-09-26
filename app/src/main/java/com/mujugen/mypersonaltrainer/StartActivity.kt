@@ -9,7 +9,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RadioButton
 import com.mujugen.mypersonaltrainer.databinding.ActivityStartBinding
-
+import android.widget.Toast
 class StartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityStartBinding
     private var name = ""
@@ -47,6 +47,7 @@ class StartActivity : AppCompatActivity() {
             if(currentPage == "Name"){
                 println("Name = ${binding.nameTextInput.text}")
                 if(binding.nameTextInput.text.toString() == ""){
+                    showToast("Enter your name")
                     return@setOnClickListener
                 }
                 name = binding.nameTextInput.text.toString()
@@ -57,6 +58,7 @@ class StartActivity : AppCompatActivity() {
                 val selectedSexRadioButtonId = binding.sexRadioGroup.checkedRadioButtonId
 
                 if (selectedSexRadioButtonId == -1) {
+                    showToast("Select your sex")
                     return@setOnClickListener
                 }
 
@@ -70,6 +72,7 @@ class StartActivity : AppCompatActivity() {
                 val selectedExperienceRadioButtonId = binding.experienceRadioGroup.checkedRadioButtonId
 
                 if (selectedExperienceRadioButtonId == -1) {
+                    showToast("Select your experience level")
                     return@setOnClickListener
                 }
                 val selectedExperienceRadioButton = findViewById<RadioButton>(selectedExperienceRadioButtonId)
@@ -87,6 +90,7 @@ class StartActivity : AppCompatActivity() {
                 age = calculateAge(year, month, day)
 
                 if (age.toInt() < 5) {
+                    showToast("Ages 5 and above only")
                     return@setOnClickListener
                 }
                 binding.ageLayout.visibility = View.GONE
@@ -114,7 +118,9 @@ class StartActivity : AppCompatActivity() {
         }
 
     }
-
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
     fun switchPage(currentPage: View, nextPage: View) {
         //currentPage.startAnimation(fadeOutAnimation)
         currentPage.visibility = View.GONE
