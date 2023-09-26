@@ -63,6 +63,7 @@
         android:id="@+id/initializationPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         tools:visibility="visible">
 
         <RelativeLayout
@@ -217,7 +218,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/birthdayLayout"
+            android:id="@+id/ageLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
@@ -237,7 +238,7 @@
 
             <!-- Date picker for birthday -->
             <DatePicker
-                android:id="@+id/birthdayDatePicker"
+                android:id="@+id/ageDatePicker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:calendarViewShown="false"
