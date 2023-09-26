@@ -123,11 +123,16 @@
             android:id="@+id/sexLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
             android:layout_marginTop="50dp"
+            android:layout_marginEnd="26dp"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            tools:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -141,27 +146,40 @@
             <!-- Radio buttons for sex -->
             <RadioGroup
                 android:id="@+id/sexRadioGroup"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginTop="50dp"
+                android:orientation="vertical">
 
                 <RadioButton
                     android:id="@+id/maleRadioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Male" />
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    android:background="@drawable/rounded_light_blue"
+                    android:button="@null"
+                    android:buttonTintMode="multiply"
+                    android:fontFamily="@font/ropa_sans"
+                    android:gravity="top|left"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:text="Male"
+                    android:textColor="@color/radio_text_color"
+                    android:textSize="30dp" />
 
                 <RadioButton
                     android:id="@+id/femaleRadioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Female" />
-
-                <RadioButton
-                    android:id="@+id/otherRadioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Other" />
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/rounded_pink"
+                    android:button="@null"
+                    android:fontFamily="@font/ropa_sans"
+                    android:gravity="top|left"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:text="Female"
+                    android:textColor="@color/radio_text_color"
+                    android:textSize="30dp" />
             </RadioGroup>
         </LinearLayout>
 
@@ -169,11 +187,16 @@
             android:id="@+id/experienceLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
             android:layout_marginTop="50dp"
+            android:layout_marginEnd="26dp"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            tools:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -185,36 +208,67 @@
                 android:textSize="35dp" />
 
             <!-- Radio buttons for years of experience -->
+
             <RadioGroup
                 android:id="@+id/experienceRadioGroup"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginTop="30dp"
+                android:orientation="vertical">
 
                 <RadioButton
-                    android:id="@+id/lessThan1YearRadioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Less than 1 year" />
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/extra_rounded_blue_radio"
+                    android:button="@null"
+                    android:fontFamily="@font/ropa_sans"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="20dp"
+                    android:text="Less than 1 year"
+                    android:textColor="@color/radio_text_color"
+                    android:textSize="25dp" />
 
                 <RadioButton
-                    android:id="@+id/oneYearRadioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1 year" />
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/extra_rounded_blue_radio"
+                    android:button="@null"
+                    android:fontFamily="@font/ropa_sans"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="20dp"
+                    android:text="1 year"
+                    android:textColor="@color/radio_text_color"
+                    android:textSize="25dp" />
 
                 <RadioButton
-                    android:id="@+id/twoYearsRadioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2 years" />
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/extra_rounded_blue_radio"
+                    android:button="@null"
+                    android:fontFamily="@font/ropa_sans"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="20dp"
+                    android:text="2 years"
+                    android:textColor="@color/radio_text_color"
+                    android:textSize="25dp" />
 
                 <RadioButton
-                    android:id="@+id/threeOrMoreYearsRadioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="3 or more years" />
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/extra_rounded_blue_radio"
+                    android:button="@null"
+                    android:fontFamily="@font/ropa_sans"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="20dp"
+                    android:text="3 or more years"
+                    android:textColor="@color/radio_text_color"
+                    android:textSize="25dp" />
             </RadioGroup>
+
         </LinearLayout>
 
         <LinearLayout
@@ -225,7 +279,9 @@
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            tools:layout_editor_absoluteX="26dp"
+            tools:visibility="visible">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -239,8 +295,9 @@
             <!-- Date picker for birthday -->
             <DatePicker
                 android:id="@+id/ageDatePicker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="30dp"
                 android:calendarViewShown="false"
                 android:datePickerMode="spinner" />
         </LinearLayout>
