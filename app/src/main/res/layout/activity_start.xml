@@ -95,7 +95,8 @@
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            tools:visibility="visible">
 
             <TextView
 
@@ -114,7 +115,7 @@
                 android:layout_marginTop="150dp"
                 android:ems="20"
                 android:inputType="text"
-                android:text="Name"
+                android:hint="Name"
                 android:textSize="25dp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -281,7 +282,7 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
             tools:layout_editor_absoluteX="26dp"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"

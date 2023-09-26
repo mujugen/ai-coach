@@ -12,10 +12,11 @@ import com.mujugen.mypersonaltrainer.databinding.ActivityStartBinding
 
 class StartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityStartBinding
-    private var hasName = false
-    private var hasSex = false
-    private var hasExperience = false
-    private var hasAge = false
+    private var name = ""
+    private var sex = ""
+    private var experience = ""
+    private var birthday  = ""
+    private var age  = ""
     private var currentPage = "Start"
     private lateinit var fadeInAnimation: Animation
     private lateinit var fadeOutAnimation: Animation
@@ -29,36 +30,75 @@ class StartActivity : AppCompatActivity() {
         fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
 
         binding.startBtn.setOnClickListener{
-            if(!hasName || !hasSex || !hasExperience || !hasAge ){
+            if(name == "" || sex == "" || experience == "" || birthday == "" ){
+                println("2")
                 currentPage = "Name"
                 binding.startPage.visibility = View.GONE
                 binding.initializationPage.visibility = View.VISIBLE
                 binding.initializationPage.startAnimation(fadeInAnimation)
                 binding.nameLayout.visibility = View.VISIBLE
+            }else{
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
             }
         }
 
         binding.nextBtn.setOnClickListener {
             if(currentPage == "Name"){
+                println("Name = ${binding.nameTextInput.text}")
+                if(binding.nameTextInput.text.toString() == ""){
+                    return@setOnClickListener
+                }
+                name = binding.nameTextInput.text.toString()
                 switchPage(binding.nameLayout,binding.sexLayout)
                 binding.initializationProgress.progress = 25
                 currentPage = "Sex"
             }else if(currentPage == "Sex"){
+                val selectedSexRadioButtonId = binding.sexRadioGroup.checkedRadioButtonId
+
+                if (selectedSexRadioButtonId == -1) {
+                    return@setOnClickListener
+                }
+
+                val selectedSexRadioButton = findViewById<RadioButton>(selectedSexRadioButtonId)
+                sex = selectedSexRadioButton.text.toString()
+
                 switchPage(binding.sexLayout,binding.experienceLayout)
                 binding.initializationProgress.progress = 50
                 currentPage = "Experience"
             }else if(currentPage == "Experience"){
+                val selectedExperienceRadioButtonId = binding.experienceRadioGroup.checkedRadioButtonId
+
+                if (selectedExperienceRadioButtonId == -1) {
+                    return@setOnClickListener
+                }
+                val selectedExperienceRadioButton = findViewById<RadioButton>(selectedExperienceRadioButtonId)
+                experience = selectedExperienceRadioButton.text.toString()
+
+
                 switchPage(binding.experienceLayout,binding.ageLayout)
                 binding.initializationProgress.progress = 75
                 currentPage = "Age"
             }else if(currentPage == "Age"){
-                binding.experienceLayout.visibility = View.GONE
+                val year = binding.ageDatePicker.year.toInt()
+                val month = binding.ageDatePicker.month.toInt()
+                val day = binding.ageDatePicker.dayOfMonth.toInt()
+                birthday = "$year $month $day"
+                age = calculateAge(year, month, day)
+
+                if (age.toInt() < 5) {
+                    return@setOnClickListener
+                }
+                binding.ageLayout.visibility = View.GONE
                 binding.initializationPage.visibility = View.GONE
-                binding.initializationProgress.progress = 100
+                binding.startPage.visibility = View.VISIBLE
+                binding.initializationProgress.progress = 0
                 currentPage = "Start"
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             }
+
+            println("Name: $name Sex: $sex Experience: $experience Age: $age")
         }
 
         binding.sexRadioGroup.setOnCheckedChangeListener { group, checkedId ->
@@ -80,6 +120,20 @@ class StartActivity : AppCompatActivity() {
         currentPage.visibility = View.GONE
         nextPage.visibility = View.VISIBLE
         nextPage.startAnimation(fadeInAnimation)
+    }
+
+    private fun calculateAge(birthYear: Int, birthMonth: Int, birthDay: Int): String {
+        val currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
+        val currentMonth = java.util.Calendar.getInstance().get(java.util.Calendar.MONTH) + 1 // Month is zero-based
+        val currentDay = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH)
+
+        var age = currentYear - birthYear
+
+        if (currentMonth < birthMonth || (currentMonth == birthMonth && currentDay < birthDay)) {
+            age--
+        }
+
+        return age.toString()
     }
 
     override fun onBackPressed() {
