@@ -79,7 +79,7 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/dailyPageWorkoutDuration"
+                            android:id="@+id/workoutDuration"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
@@ -117,7 +117,7 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/dailyPageWeight"
+                            android:id="@+id/currentWeight"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
@@ -134,7 +134,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="187dp"
                     android:layout_marginTop="21dp"
                     android:background="@drawable/rounded_light_blue"
                     android:minHeight="187dp"
@@ -151,141 +151,19 @@
                         android:textSize="17dp"
                         android:textStyle="bold" />
 
-                    <LinearLayout
+                    <ScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="20dp">
 
                         <LinearLayout
+                            android:id="@+id/dailyWorkoutContainer"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginTop="10dp"
-                                android:fontFamily="@font/pt_sans"
-                                android:text="Bench Press"
-                                android:textColor="#000000"
-                                android:textSize="20dp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="20dp"
-                                android:layout_weight="1"
-                                android:fontFamily="@font/pt_sans"
-                                android:text="3 sets 12 reps"
-                                android:textAlignment="viewEnd"
-                                android:textColor="#FFFFFF"
-                                android:textSize="17dp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginTop="10dp"
-                                android:fontFamily="@font/pt_sans"
-                                android:text="Bench Press"
-                                android:textColor="#000000"
-                                android:textSize="20dp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="20dp"
-                                android:layout_weight="1"
-                                android:fontFamily="@font/pt_sans"
-                                android:text="3 sets 12 reps"
-                                android:textAlignment="viewEnd"
-                                android:textColor="#FFFFFF"
-                                android:textSize="17dp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginTop="10dp"
-                                android:fontFamily="@font/pt_sans"
-                                android:text="Bench Press"
-                                android:textColor="#000000"
-                                android:textSize="20dp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="20dp"
-                                android:layout_weight="1"
-                                android:fontFamily="@font/pt_sans"
-                                android:text="3 sets 12 reps"
-                                android:textAlignment="viewEnd"
-                                android:textColor="#FFFFFF"
-                                android:textSize="17dp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginTop="10dp"
-                                android:fontFamily="@font/pt_sans"
-                                android:text="Bench Press"
-                                android:textColor="#000000"
-                                android:textSize="20dp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="20dp"
-                                android:layout_weight="1"
-                                android:fontFamily="@font/pt_sans"
-                                android:text="3 sets 12 reps"
-                                android:textAlignment="viewEnd"
-                                android:textColor="#FFFFFF"
-                                android:textSize="17dp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                    </LinearLayout>
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            android:orientation="vertical" />
+                    </ScrollView>
 
                 </LinearLayout>
 

@@ -1,37 +1,49 @@
 package com.mujugen.mypersonaltrainer
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import android.graphics.Color
+import android.graphics.Typeface
+import android.widget.LinearLayout.LayoutParams
+import androidx.core.content.res.ResourcesCompat
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [daily.newInstance] factory method to
- * create an instance of this fragment.
- */
 class DailyPage : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var monday_volume = 0
+    private var tuesday_volume = 0
+    private var wednesday_volume = 0
+    private var thursday_volume = 0
+    private var friday_volume = 0
+    private var saturday_volume = 0
+    private var sunday_volume = 0
+    private var workout_duration = 0
+    private var current_weight = 0
+    private var daily_bench_press_sets_left = 0
+    private var daily_back_rows_sets_left = 0
+    private var daily_bicep_curl_sets_left = 0
+    private var daily_tricep_pushdown_sets_left = 0
+    private var daily_lat_pulldown_sets_left = 0
+    private var daily_chest_fly_sets_left = 0
+    private var daily_shoulder_press_sets_left = 0
+    private var daily_hammer_curl_sets_left = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
@@ -48,24 +60,154 @@ class DailyPage : Fragment() {
         val currentDate = Date()
         val dateFormat = SimpleDateFormat("EEEE, MMMM d", Locale.US)
         date.text = dateFormat.format(currentDate)
+
+        runBlocking { loadData() }
+        val dailyWorkoutContainer = view.findViewById<LinearLayout>(R.id.dailyWorkoutContainer)
+        if (daily_bench_press_sets_left > 1) {
+            dailyWorkoutContainer.addView(createExerciseLayout("Bench Press", "$daily_bench_press_sets_left sets"))
+        }
+        if (daily_back_rows_sets_left > 1) {
+            dailyWorkoutContainer.addView(createExerciseLayout("Back Rows", "$daily_back_rows_sets_left sets"))
+        }
+        if (daily_bicep_curl_sets_left > 1) {
+            dailyWorkoutContainer.addView(createExerciseLayout("Bicep Curls", "$daily_bicep_curl_sets_left sets"))
+        }
+        if (daily_tricep_pushdown_sets_left > 1) {
+            dailyWorkoutContainer.addView(createExerciseLayout("Tricep Pushdown", "$daily_tricep_pushdown_sets_left sets"))
+        }
+        if (daily_lat_pulldown_sets_left > 1) {
+            dailyWorkoutContainer.addView(createExerciseLayout("Lat Pulldown", "$daily_lat_pulldown_sets_left sets"))
+        }
+        if (daily_chest_fly_sets_left > 1) {
+            dailyWorkoutContainer.addView(createExerciseLayout("Chest Fly", "$daily_chest_fly_sets_left sets"))
+        }
+        if (daily_shoulder_press_sets_left > 1) {
+            dailyWorkoutContainer.addView(createExerciseLayout("Shoulder Press", "$daily_shoulder_press_sets_left sets"))
+        }
+        if (daily_hammer_curl_sets_left > 1) {
+            dailyWorkoutContainer.addView(createExerciseLayout("Hammer Curl", "$daily_hammer_curl_sets_left sets"))
+        }
+
+        val currentWeight = view.findViewById<TextView>(R.id.currentWeight)
+        val workoutDuration = view.findViewById<TextView>(R.id.workoutDuration)
+        currentWeight.text = "$current_weight kg"
+        workoutDuration.text = "$workout_duration mins"
+
+        val density = resources.displayMetrics.density
+        val maxHeight = (100 * density).toInt()  // 100dp in pixels
+        val minHeight = (10 * density).toInt()   // 10dp in pixels
+        val maxVolume = listOf(monday_volume, tuesday_volume, wednesday_volume, thursday_volume, friday_volume, saturday_volume, sunday_volume).maxOrNull() ?: 1
+        val ratio = maxHeight.toDouble() / maxVolume.toDouble()
+        val dailyPageVolumeBar1 = view.findViewById<View>(R.id.dailyPageVolumeBar1)
+        val dailyPageVolumeBar2 = view.findViewById<View>(R.id.dailyPageVolumeBar2)
+        val dailyPageVolumeBar3 = view.findViewById<View>(R.id.dailyPageVolumeBar3)
+        val dailyPageVolumeBar4 = view.findViewById<View>(R.id.dailyPageVolumeBar4)
+        val dailyPageVolumeBar5 = view.findViewById<View>(R.id.dailyPageVolumeBar5)
+        val dailyPageVolumeBar6 = view.findViewById<View>(R.id.dailyPageVolumeBar6)
+        val dailyPageVolumeBar7 = view.findViewById<View>(R.id.dailyPageVolumeBar7)
+
+        dailyPageVolumeBar1.layoutParams.height = computeBarHeight(sunday_volume, ratio, minHeight)
+        dailyPageVolumeBar2.layoutParams.height = computeBarHeight(monday_volume, ratio, minHeight)
+        dailyPageVolumeBar3.layoutParams.height = computeBarHeight(tuesday_volume, ratio, minHeight)
+        dailyPageVolumeBar4.layoutParams.height = computeBarHeight(wednesday_volume, ratio, minHeight)
+        dailyPageVolumeBar5.layoutParams.height = computeBarHeight(thursday_volume, ratio, minHeight)
+        dailyPageVolumeBar6.layoutParams.height = computeBarHeight(friday_volume, ratio, minHeight)
+        dailyPageVolumeBar7.layoutParams.height = computeBarHeight(saturday_volume, ratio, minHeight)
+
+        val currentDayOfWeek = SimpleDateFormat("EEEE", Locale.US).format(currentDate)
+
+        setVolumeBarBackgroundTint(dailyPageVolumeBar1, "Sunday", currentDayOfWeek)
+        setVolumeBarBackgroundTint(dailyPageVolumeBar2, "Monday", currentDayOfWeek)
+        setVolumeBarBackgroundTint(dailyPageVolumeBar3, "Tuesday", currentDayOfWeek)
+        setVolumeBarBackgroundTint(dailyPageVolumeBar4, "Wednesday", currentDayOfWeek)
+        setVolumeBarBackgroundTint(dailyPageVolumeBar5, "Thursday", currentDayOfWeek)
+        setVolumeBarBackgroundTint(dailyPageVolumeBar6, "Friday", currentDayOfWeek)
+        setVolumeBarBackgroundTint(dailyPageVolumeBar7, "Saturday", currentDayOfWeek)
     }
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment workoutPage.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DailyPage().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+
+    private fun loadData() {
+        lifecycleScope.launch {
+            try {
+                val preferences = requireContext().dataStore.data.first()
+                daily_bench_press_sets_left = preferences[stringPreferencesKey("daily_bench_press_sets_left")]?.toInt() ?: 0
+                daily_back_rows_sets_left = preferences[stringPreferencesKey("daily_back_rows_sets_left")]?.toInt() ?: 0
+                daily_bicep_curl_sets_left = preferences[stringPreferencesKey("daily_bicep_curl_sets_left")]?.toInt() ?: 0
+                daily_tricep_pushdown_sets_left = preferences[stringPreferencesKey("daily_tricep_pushdown_sets_left")]?.toInt() ?: 0
+                daily_lat_pulldown_sets_left = preferences[stringPreferencesKey("daily_lat_pulldown_sets_left")]?.toInt() ?: 0
+                daily_chest_fly_sets_left = preferences[stringPreferencesKey("daily_chest_fly_sets_left")]?.toInt() ?: 0
+                daily_shoulder_press_sets_left = preferences[stringPreferencesKey("daily_shoulder_press_sets_left")]?.toInt() ?: 0
+                daily_hammer_curl_sets_left = preferences[stringPreferencesKey("daily_hammer_curl_sets_left")]?.toInt() ?: 0
+                current_weight = preferences[stringPreferencesKey("current_weight")]?.toInt() ?: 0
+                monday_volume = preferences[stringPreferencesKey("monday_volume")]?.toInt() ?: 0
+                tuesday_volume = preferences[stringPreferencesKey("tuesday_volume")]?.toInt() ?: 0
+                wednesday_volume = preferences[stringPreferencesKey("wednesday_volume")]?.toInt() ?: 0
+                thursday_volume = preferences[stringPreferencesKey("thursday_volume")]?.toInt() ?: 0
+                friday_volume = preferences[stringPreferencesKey("friday_volume")]?.toInt() ?: 0
+                saturday_volume = preferences[stringPreferencesKey("saturday_volume")]?.toInt() ?: 0
+                sunday_volume = preferences[stringPreferencesKey("sunday_volume")]?.toInt() ?: 0
+
+            } catch (e: Exception) {
+                println("Error loading data: ${e.message}")
             }
+        }
     }
+
+    fun computeBarHeight(volume: Int, ratio: Double, minHeight: Int): Int {
+        val computedHeight = (volume * ratio).toInt()
+        return Math.max(computedHeight, minHeight)  // Ensure it's not below minHeight
+    }
+
+    private fun setVolumeBarBackgroundTint(bar: View, barDay: String, currentDay: String) {
+        if (barDay == currentDay) {
+            bar.backgroundTintList = null  // Removes the background tint
+        } else {
+            bar.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#757575"))
+        }
+    }
+
+    private fun createExerciseLayout(exerciseName: String, sets: String): LinearLayout {
+        val context = requireContext()
+        val typeface = ResourcesCompat.getFont(context, R.font.pt_sans)
+        val exerciseLayout = LinearLayout(context)
+        exerciseLayout.layoutParams = LayoutParams(
+            LayoutParams.MATCH_PARENT,
+            LayoutParams.MATCH_PARENT
+        ).apply {
+            setMargins(50, 0, 30, 0)
+        }
+        exerciseLayout.orientation = LinearLayout.HORIZONTAL
+
+        val exerciseNameTextView = TextView(context)
+        exerciseNameTextView.layoutParams = LayoutParams(
+            LayoutParams.WRAP_CONTENT,
+            LayoutParams.WRAP_CONTENT
+        ).apply {
+            setMargins(10, 10, 0, 0)
+        }
+        exerciseNameTextView.typeface = typeface
+        exerciseNameTextView.text = exerciseName
+        exerciseNameTextView.setTextColor((Color.parseColor("#262626")))
+        exerciseNameTextView.textSize = 20f
+        exerciseNameTextView.setTypeface(null, Typeface.BOLD)
+        exerciseLayout.addView(exerciseNameTextView)
+
+        val setsTextView = TextView(context)
+        setsTextView.layoutParams = LayoutParams(
+            LayoutParams.WRAP_CONTENT,
+            LayoutParams.WRAP_CONTENT,
+            1f
+        ).apply {
+            setMargins(10, 10, 40, 0)
+        }
+        setsTextView.typeface = typeface
+        setsTextView.text = sets
+        setsTextView.textAlignment = TextView.TEXT_ALIGNMENT_VIEW_END
+        setsTextView.setTextColor(Color.parseColor("#FFFFFF"))  // Use parseColor for consistency
+        setsTextView.textSize = 17f
+        setsTextView.setTypeface(null, Typeface.BOLD)
+        exerciseLayout.addView(setsTextView)
+
+        return exerciseLayout
+    }
+
 }

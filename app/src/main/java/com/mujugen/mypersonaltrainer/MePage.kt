@@ -94,7 +94,7 @@ class MePage : Fragment() {
         lifecycleScope.launch {
             try {
                 val preferences = requireContext().dataStore.data.first()
-                highest_bench_press = preferences[stringPreferencesKey("highest_bench_press")] ?: ""
+                highest_bench_press = preferences[stringPreferencesKey("highest_bench_press")] ?: "0"
                 highest_back_rows = preferences[stringPreferencesKey("highest_back_rows")] ?: "0"
                 highest_bicep_curl = preferences[stringPreferencesKey("highest_bicep_curl")] ?: "0"
                 highest_tricep_pushdown = preferences[stringPreferencesKey("highest_tricep_pushdown")] ?: "0"
