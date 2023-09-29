@@ -21,14 +21,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 class StartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityStartBinding
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
-    private val NAME_KEY = stringPreferencesKey("name")
-    private val SEX_KEY = stringPreferencesKey("sex")
-    private val EXPERIENCE_KEY = stringPreferencesKey("experience")
-    private val BIRTHDAY_KEY = stringPreferencesKey("birthday")
     private var name = ""
     private var sex = ""
     private var experience = ""
@@ -203,52 +198,53 @@ class StartActivity : AppCompatActivity() {
     private fun loadSavedData() {
         GlobalScope.launch {
             val preferences = dataStore.data.first()
-            name = preferences[NAME_KEY] ?: ""
-            sex = preferences[SEX_KEY] ?: ""
-            experience = preferences[EXPERIENCE_KEY] ?: ""
-            birthday = preferences[BIRTHDAY_KEY] ?: ""
+            name = preferences[stringPreferencesKey("name")] ?: ""
+            sex = preferences[stringPreferencesKey("sex")] ?: ""
+            experience = preferences[stringPreferencesKey("experience")] ?: ""
+            birthday = preferences[stringPreferencesKey("birthday")] ?: ""
         }
     }
 
     // Function to save data to DataStore
     private suspend fun saveDataToDataStore() {
         dataStore.edit { preferences ->
-            preferences[NAME_KEY] = name
-            preferences[SEX_KEY] = sex
-            preferences[EXPERIENCE_KEY] = experience
-            preferences[BIRTHDAY_KEY] = birthday
-            preferences[stringPreferencesKey("highest_bench_press")] = "0"
-            preferences[stringPreferencesKey("highest_back_rows")] = "0"
-            preferences[stringPreferencesKey("highest_bicep_curl")] = "0"
-            preferences[stringPreferencesKey("highest_tricep_pushdown")] = "0"
-            preferences[stringPreferencesKey("highest_lat_pulldown")] = "0"
-            preferences[stringPreferencesKey("highest_chest_fly")] = "0"
-            preferences[stringPreferencesKey("highest_shoulder_press")] = "0"
-            preferences[stringPreferencesKey("highest_hammer_curl")] = "0"
-            preferences[stringPreferencesKey("highest_all_time")] = "0"
-            preferences[stringPreferencesKey("workout_streak")] = "0"
-            preferences[stringPreferencesKey("current_weight")] = "0"
-            preferences[stringPreferencesKey("starting_weight")] = "0"
-            preferences[stringPreferencesKey("workout_duration")] = "0"
-            preferences[stringPreferencesKey("volume_goal")] = "0"
-            preferences[stringPreferencesKey("strength_goal")] = "0"
-            preferences[stringPreferencesKey("consistency_goal")] = "0"
-            preferences[stringPreferencesKey("weight_goal")] = "0"
-            preferences[stringPreferencesKey("monday_volume")] = "0"
-            preferences[stringPreferencesKey("tuesdsay_volume")] = "0"
-            preferences[stringPreferencesKey("wednesday_volume")] = "0"
-            preferences[stringPreferencesKey("thursday_volume")] = "0"
-            preferences[stringPreferencesKey("friday_volume")] = "0"
-            preferences[stringPreferencesKey("saturday_volume")] = "0"
-            preferences[stringPreferencesKey("sunday_volume")] = "0"
-            preferences[stringPreferencesKey("daily_bench_press_sets_left")] = "0"
-            preferences[stringPreferencesKey("daily_back_rows_sets_left")] = "0"
-            preferences[stringPreferencesKey("daily_bicep_curl_sets_left")] = "0"
-            preferences[stringPreferencesKey("daily_tricep_pushdown_sets_left")] = "0"
+            preferences[stringPreferencesKey("name")] = name
+            preferences[stringPreferencesKey("sex")] = sex
+            preferences[stringPreferencesKey("experience")] = experience
+            preferences[stringPreferencesKey("birthday")] = birthday
+            preferences[stringPreferencesKey("highest_bench_press")] = "50"
+            preferences[stringPreferencesKey("highest_back_rows")] = "60"
+            preferences[stringPreferencesKey("highest_bicep_curl")] = "70"
+            preferences[stringPreferencesKey("highest_tricep_pushdown")] = "80"
+            preferences[stringPreferencesKey("highest_lat_pulldown")] = "90"
+            preferences[stringPreferencesKey("highest_chest_fly")] = "100"
+            preferences[stringPreferencesKey("highest_shoulder_press")] = "110"
+            preferences[stringPreferencesKey("highest_hammer_curl")] = "120"
+            preferences[stringPreferencesKey("highest_all_time")] = "130"
+            preferences[stringPreferencesKey("highest_all_time_exercise")] = "Bicep Curl"
+            preferences[stringPreferencesKey("workout_streak")] = "150"
+            preferences[stringPreferencesKey("current_weight")] = "75"
+            preferences[stringPreferencesKey("starting_weight")] = "170"
+            preferences[stringPreferencesKey("workout_duration")] = "180"
+            preferences[stringPreferencesKey("volume_goal")] = "190"
+            preferences[stringPreferencesKey("strength_goal")] = "200"
+            preferences[stringPreferencesKey("consistency_goal")] = "52"
+            preferences[stringPreferencesKey("weight_goal")] = "13"
+            preferences[stringPreferencesKey("monday_volume")] = "50"
+            preferences[stringPreferencesKey("tuesdsay_volume")] = "60"
+            preferences[stringPreferencesKey("wednesday_volume")] = "70"
+            preferences[stringPreferencesKey("thursday_volume")] = "80"
+            preferences[stringPreferencesKey("friday_volume")] = "90"
+            preferences[stringPreferencesKey("saturday_volume")] = "50"
+            preferences[stringPreferencesKey("sunday_volume")] = "30"
+            preferences[stringPreferencesKey("daily_bench_press_sets_left")] = "3"
+            preferences[stringPreferencesKey("daily_back_rows_sets_left")] = "3"
+            preferences[stringPreferencesKey("daily_bicep_curl_sets_left")] = "2"
+            preferences[stringPreferencesKey("daily_tricep_pushdown_sets_left")] = "1"
             preferences[stringPreferencesKey("daily_lat_pulldown_sets_left")] = "0"
-            preferences[stringPreferencesKey("daily_chest_fly_sets_left")] = "0"
-            preferences[stringPreferencesKey("daily_shoulder_press_sets_left")] = "0"
-            preferences[stringPreferencesKey("daily_hammer_curl_sets_left")] = "0"
+            preferences[stringPreferencesKey("daily_chest_fly_sets_left")] = "5"
+            preferences[stringPreferencesKey("daily_shoulder_press_sets_left")] = "4"
+            preferences[stringPreferencesKey("daily_hammer_curl_sets_left")] = "3"
         }
     }
 }

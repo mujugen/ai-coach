@@ -54,7 +54,7 @@
             tools:layout_editor_absoluteX="26dp">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/profilePicture"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_centerInParent="true"
@@ -62,7 +62,7 @@
                 app:shapeAppearanceOverlay="@style/circular" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/nameText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -89,7 +89,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textView8"
+                        android:id="@+id/currentWeightText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
@@ -121,7 +121,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textView98"
+                        android:id="@+id/workoutStreakText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
@@ -192,7 +192,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/heaviestWeight"
+                                android:id="@+id/highestAllTimeText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
@@ -204,7 +204,7 @@
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/textView12"
+                                android:id="@+id/highestAllTimeExerciseText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/pt_sans"
@@ -241,7 +241,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/benchPressRecord"
+                                android:id="@+id/highestBenchPressText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="15dp"
@@ -270,7 +270,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/backRowsRecord"
+                                android:id="@+id/highestBackRowsText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="15dp"
@@ -306,7 +306,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/tricepPushdownRecord"
+                                android:id="@+id/highestTricepPushdownText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="15dp"
@@ -335,7 +335,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/latPulldownRecord"
+                                android:id="@+id/highestLatPulldownText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="15dp"
@@ -371,7 +371,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/bicepCurlRecord"
+                                android:id="@+id/highestBicepCurlText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="15dp"
@@ -400,7 +400,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/chestFlyRecord"
+                                android:id="@+id/highestChestFlyText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="15dp"
@@ -436,7 +436,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/shoulderPressRecord"
+                                android:id="@+id/highestShoulderPressText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="15dp"
@@ -465,7 +465,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/hammerCurlRecord"
+                                android:id="@+id/highestHammerCurlText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="15dp"

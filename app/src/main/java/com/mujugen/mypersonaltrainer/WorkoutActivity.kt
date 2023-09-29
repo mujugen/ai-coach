@@ -28,14 +28,14 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
     private var currentSet = 1
     private var exerciseStarted = false
-    private val heartRateArray = MainActivity.MaxSizeArrayLarge<String>()
-    private val velocityXArray = MainActivity.MaxSizeArrayLarge<String>()
-    private val velocityYArray = MainActivity.MaxSizeArrayLarge<String>()
-    private val velocityZArray = MainActivity.MaxSizeArrayLarge<String>()
-    private val rotationXArray = MainActivity.MaxSizeArrayLarge<String>()
-    private val rotationYArray = MainActivity.MaxSizeArrayLarge<String>()
-    private val rotationZArray = MainActivity.MaxSizeArrayLarge<String>()
-    private val timeIndiceArray = MainActivity.MaxSizeArrayLarge<String>()
+    private val heartRateArray = MaxSizeArrayLarge<String>()
+    private val velocityXArray = MaxSizeArrayLarge<String>()
+    private val velocityYArray = MaxSizeArrayLarge<String>()
+    private val velocityZArray = MaxSizeArrayLarge<String>()
+    private val rotationXArray = MaxSizeArrayLarge<String>()
+    private val rotationYArray = MaxSizeArrayLarge<String>()
+    private val rotationZArray = MaxSizeArrayLarge<String>()
+    private val timeIndiceArray = MaxSizeArrayLarge<String>()
     private var sensorData: String = ""
     private var lastNonZeroHeartRate = "0.0"
 

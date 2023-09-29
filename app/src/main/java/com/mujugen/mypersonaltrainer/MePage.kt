@@ -5,55 +5,107 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.lifecycle.lifecycleScope
+import com.mujugen.mypersonaltrainer.databinding.FragmentMePageBinding
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MePage.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MePage : Fragment() {
-    // TODO: Rename and change types of parameters
+    private var _binding: FragmentMePageBinding? = null
+    private val binding get() = _binding!!
     private var param1: String? = null
     private var param2: String? = null
+    private var highest_bench_press = "0"
+    private var highest_back_rows = "0"
+    private var highest_bicep_curl = "0"
+    private var highest_tricep_pushdown = "0"
+    private var highest_lat_pulldown = "0"
+    private var highest_chest_fly = "0"
+    private var highest_shoulder_press = "0"
+    private var highest_hammer_curl = "0"
+    private var highest_all_time = "0"
+    private var highest_all_time_exercise = "Undefined"
+    private var workout_streak = "0"
+    private var current_weight = "0"
+    private var name = "Ernest Khalimov"
+    private var sex = "Male"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
 
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        runBlocking { loadData()}
+        binding.highestBenchPressText.text = "$highest_bench_press kg"
+        binding.highestBackRowsText.text = "$highest_back_rows kg"
+        binding.highestBicepCurlText.text = "$highest_bicep_curl kg"
+        binding.highestTricepPushdownText.text = "$highest_tricep_pushdown kg"
+        binding.highestLatPulldownText.text = "$highest_lat_pulldown kg"
+        binding.highestChestFlyText.text = "$highest_chest_fly kg"
+        binding.highestShoulderPressText.text = "$highest_shoulder_press kg"
+        binding.highestHammerCurlText.text = "$highest_hammer_curl kg"
+        binding.highestAllTimeText.text = "$highest_all_time kg"
+        binding.highestAllTimeExerciseText.text = highest_all_time_exercise
+        binding.workoutStreakText.text = "$workout_streak Weeks"
+        binding.currentWeightText.text = "$current_weight kg"
+        binding.nameText.text = name
+        if(sex == "Male"){
+            binding.profilePicture.setBackgroundResource(R.drawable.female_profile)
+        }else{
+            binding.profilePicture.setBackgroundResource(R.drawable.male_profile)
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_me_page, container, false)
+        _binding = FragmentMePageBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Avoid memory leaks
+        _binding = null
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MePage.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MePage().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun loadData() {
+        lifecycleScope.launch {
+            try {
+                val preferences = requireContext().dataStore.data.first()
+                highest_bench_press = preferences[stringPreferencesKey("highest_bench_press")] ?: ""
+                highest_back_rows = preferences[stringPreferencesKey("highest_back_rows")] ?: "0"
+                highest_bicep_curl = preferences[stringPreferencesKey("highest_bicep_curl")] ?: "0"
+                highest_tricep_pushdown = preferences[stringPreferencesKey("highest_tricep_pushdown")] ?: "0"
+                highest_lat_pulldown = preferences[stringPreferencesKey("highest_lat_pulldown")] ?: "0"
+                highest_chest_fly = preferences[stringPreferencesKey("highest_chest_fly")] ?: "0"
+                highest_shoulder_press = preferences[stringPreferencesKey("highest_shoulder_press")] ?: "0"
+                highest_hammer_curl = preferences[stringPreferencesKey("highest_hammer_curl")] ?: "0"
+                highest_all_time = preferences[stringPreferencesKey("highest_all_time")] ?: "0"
+                highest_all_time_exercise = preferences[stringPreferencesKey("highest_all_time_exercise")] ?: "Undefined"
+                workout_streak = preferences[stringPreferencesKey("workout_streak")] ?: "0"
+                current_weight = preferences[stringPreferencesKey("current_weight")] ?: "0"
+                name = preferences[stringPreferencesKey("name")] ?: "Ernest Khalimov"
+                sex = preferences[stringPreferencesKey("sex")] ?: "Male"
+            } catch (e: Exception) {
+                println("Error loading data: ${e.message}")
             }
+        }
     }
+
+
+
 }
