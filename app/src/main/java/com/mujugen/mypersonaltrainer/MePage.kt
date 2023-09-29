@@ -62,10 +62,10 @@ class MePage : Fragment() {
         binding.workoutStreakText.text = "$workout_streak Weeks"
         binding.currentWeightText.text = "$current_weight kg"
         binding.nameText.text = name
-        if(sex == "Male"){
-            binding.profilePicture.setBackgroundResource(R.drawable.female_profile)
+        if(sex == "Female"){
+            binding.profilePicture.setImageResource(R.drawable.female_profile)
         }else{
-            binding.profilePicture.setBackgroundResource(R.drawable.male_profile)
+            binding.profilePicture.setImageResource(R.drawable.male_profile)
         }
     }
 
