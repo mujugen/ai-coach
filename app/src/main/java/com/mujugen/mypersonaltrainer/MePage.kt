@@ -5,12 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import com.mujugen.mypersonaltrainer.databinding.FragmentMePageBinding
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,6 +52,10 @@ class MePage : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val date = view.findViewById<TextView>(R.id.date)
+        val currentDate = Date()
+        val dateFormat = SimpleDateFormat("EEEE, MMMM d", Locale.US)
+        date.text = dateFormat.format(currentDate)
         runBlocking { loadData()}
         binding.highestBenchPressText.text = "$highest_bench_press kg"
         binding.highestBackRowsText.text = "$highest_back_rows kg"

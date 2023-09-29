@@ -20,6 +20,9 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -73,6 +76,11 @@ class GoalsPage : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val date = view.findViewById<TextView>(R.id.date)
+        val currentDate = Date()
+        val dateFormat = SimpleDateFormat("EEEE, MMMM d", Locale.US)
+        date.text = dateFormat.format(currentDate)
 
         val volumeGoalsProgressBar = view.findViewById<ProgressBar>(R.id.volumeGoalsProgressBar)
         val strengthGoalsProgressBar = view.findViewById<ProgressBar>(R.id.strengthGoalsProgressBar)

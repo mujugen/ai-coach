@@ -27,10 +27,10 @@
             android:textSize="30dp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dailyPageDate" />
+            app:layout_constraintTop_toBottomOf="@+id/date" />
 
         <TextView
-            android:id="@+id/dailyPageDate"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="26dp"

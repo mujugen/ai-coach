@@ -6,7 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -42,6 +46,11 @@ class WorkoutPage : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val date = view.findViewById<TextView>(R.id.date)
+        val currentDate = Date()
+        val dateFormat = SimpleDateFormat("EEEE, MMMM d", Locale.US)
+        date.text = dateFormat.format(currentDate)
 
         val workoutPageWorkoutIds = arrayOf(
             R.id.workoutPageWorkout1,
