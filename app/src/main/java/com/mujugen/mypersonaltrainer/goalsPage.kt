@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.first
@@ -132,6 +133,14 @@ class GoalsPage : Fragment() {
                 weightChangeGoal = kotlin.math.abs(startingWeight - weightGoal)
                 weightChangeProgress = kotlin.math.abs(currentWeight - startingWeight)
 
+                lifecycleScope.launch {
+                    requireContext().dataStore.edit { preferences ->
+                        preferences[stringPreferencesKey("volume_goal")] = volumeGoal.toString()
+                        preferences[stringPreferencesKey("strength_goal")] = strengthGoal.toString()
+                        preferences[stringPreferencesKey("consistency_goal")] = consistencyGoal.toString()
+                        preferences[stringPreferencesKey("weight_goal")] = weightGoal.toString()
+                    }
+                }
 
                 volumeGoalsProgressBar.progress = ((volumeProgress.toFloat() / volumeGoal) * 100).toInt()
                 strengthGoalsProgressBar.progress = ((strengthProgress.toFloat() / strengthGoal) * 100).toInt()
