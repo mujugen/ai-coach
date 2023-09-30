@@ -465,6 +465,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="13dp"
                             android:fontFamily="@font/ropa_sans"
                             android:text="kg"
                             android:textAlignment="center"

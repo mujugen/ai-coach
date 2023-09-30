@@ -55,12 +55,14 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     private var inputLoad = "0"
     private var predictedRPE = "0"
     private var recommendedLoad = "0"
+    private lateinit var fadeInAnimation: Animation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWorkoutBinding.inflate(layoutInflater)  // Initialize binding
         setContentView(binding.root)
 
+        fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_2)
         messageClient = Wearable.getMessageClient(this)
         messageClient.addListener(this)
         connectToSmartwatch()
@@ -97,6 +99,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 binding.goBtn.setImageResource(R.drawable.go_btn)
 
                 binding.popup.visibility = View.VISIBLE
+                binding.popup.startAnimation(fadeInAnimation)
                 binding.setInputPage.visibility = View.VISIBLE
                 val timeIndiceCSV = timeIndiceArray.joinToString()
                 val heartRateCSV = heartRateArray.joinToString()
@@ -145,6 +148,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 Toast.makeText(this@WorkoutActivity, "Please input workout details", Toast.LENGTH_SHORT).show()
             } else {
                 binding.setInputPage.visibility = View.GONE
+                binding.loadingPage.startAnimation(fadeInAnimation)
                 binding.loadingPage.visibility = View.VISIBLE
                 hideKeyboard()
                 calculateResults()
@@ -162,7 +166,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
 
     fun calculateResults(){
-        val targetRPE = Random.nextInt(1, 11)  // This will give a random value between 1 (inclusive) and 11 (exclusive), so effectively 1 to 10.
+        val targetRPE = Random.nextInt(1, 11)
         val RPEDifference = targetRPE - predictedRPE.toInt()
         recommendedLoad = (((RPEDifference * 0.04) + 1) * inputLoad.toInt()).toInt().toString()
         binding.recommendedLoadText.text = recommendedLoad
@@ -172,6 +176,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
         Handler(Looper.getMainLooper()).postDelayed({
             binding.loadingPage.visibility = View.GONE
+            binding.resultPage.startAnimation(fadeInAnimation)
             binding.resultPage.visibility = View.VISIBLE
         }, 5000)
     }
