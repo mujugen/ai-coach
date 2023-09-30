@@ -1,14 +1,20 @@
 package com.mujugen.mypersonaltrainer
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import com.robinhood.spark.SparkAdapter
 import com.robinhood.spark.SparkView
 import java.util.ArrayDeque
@@ -18,6 +24,7 @@ import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
+import com.mujugen.mypersonaltrainer.databinding.ActivityWorkoutBinding
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -25,7 +32,7 @@ import java.io.IOException
 import java.text.DecimalFormat
 
 class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedListener {
-
+    private lateinit var binding: ActivityWorkoutBinding
     private var currentSet = 1
     private var exerciseStarted = false
     private val heartRateArray = MaxSizeArrayLarge<String>()
@@ -38,22 +45,21 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     private val timeIndiceArray = MaxSizeArrayLarge<String>()
     private var sensorData: String = ""
     private var lastNonZeroHeartRate = "0.0"
-
     private lateinit var buttonClickAnimation: Animation
-
     private val heartRateArrayGraph = MaxSizeArray<String>()
-    private lateinit var hrGraph: SparkView
     private var duration = 0L
-
     private var connectedNode: Node? = null
     private lateinit var messageClient: MessageClient
     private var connectionStatus = false
+    private var inputReps = "0"
+    private var inputLoad = "0"
+    private var predictedRPE = "0"
+    private var recommendedLoad = "0"
 
-    private lateinit var goBtn: ImageView
-    private lateinit var hrText: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_workout)
+        binding = ActivityWorkoutBinding.inflate(layoutInflater)  // Initialize binding
+        setContentView(binding.root)
 
         messageClient = Wearable.getMessageClient(this)
         messageClient.addListener(this)
@@ -62,25 +68,17 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         buttonClickAnimation = AnimationUtils.loadAnimation(this, R.anim.button_click_animation)
 
 
+
         val exerciseType = intent.getStringExtra("exerciseType")
-        val exerciseTypeText = findViewById<TextView>(R.id.exerciseTypeText)
-        goBtn = findViewById<ImageView>(R.id.goBtn)
-        val setNumber = findViewById<TextView>(R.id.setText)
-        hrText = findViewById<TextView>(R.id.hrText)
-        exerciseTypeText.text = exerciseType
-        setNumber.text = "Set $currentSet"
-        val loadProgressBar = findViewById<ProgressBar>(R.id.loadProgressBar)
-        loadProgressBar.progress = 70
-
-        val repsProgressBar = findViewById<ProgressBar>(R.id.repsProgressBar)
-        repsProgressBar.progress = 20
-
-        hrGraph = findViewById(R.id.hrGraph)
-        hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
+        binding.exerciseTypeText.text = exerciseType
+        binding.setText.text = "Set $currentSet"
+        binding.loadProgressBar.progress = 70
+        binding.repsProgressBar.progress = 20
+        binding.hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
 
         var lastPressedTime = 0L
         fun goFunction(){
-            goBtn.startAnimation(buttonClickAnimation)
+            binding.goBtn.startAnimation(buttonClickAnimation)
             val currentTime = System.currentTimeMillis()
             duration = 0L
             if (lastPressedTime != 0L) {
@@ -91,12 +89,15 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             lastPressedTime = currentTime
 
             if (!exerciseStarted) {
-                goBtn.setImageResource(R.drawable.stop_btn)
+                binding.goBtn.setImageResource(R.drawable.stop_btn)
                 exerciseStarted = true
                 sendMessageToSmartwatch("Go")
             } else {
-                goBtn.setImageResource(R.drawable.go_btn)
-                setNumber.text = "Set $currentSet"
+                sendMessageToSmartwatch("Stop")
+                binding.goBtn.setImageResource(R.drawable.go_btn)
+
+                binding.popup.visibility = View.VISIBLE
+                binding.setInputPage.visibility = View.VISIBLE
                 val timeIndiceCSV = timeIndiceArray.joinToString()
                 val heartRateCSV = heartRateArray.joinToString()
                 val velocityXCSV = velocityXArray.joinToString()
@@ -125,29 +126,76 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
                 exerciseStarted = false
 
-                sendMessageToSmartwatch("Stop")
+
+
             }
 
         }
 
-        goBtn.setOnClickListener {
+        binding.goBtn.setOnClickListener {
             goFunction()
         }
 
+        binding.confirmInputBtn.setOnClickListener {
+            inputReps = binding.inputReps.text.toString().trim()
+            inputLoad = binding.inputLoad.text.toString().trim()
+
+            if (inputReps.isEmpty() || inputLoad.isEmpty()) {
+                // Display a toast when there's no input
+                Toast.makeText(this@WorkoutActivity, "Please input workout details", Toast.LENGTH_SHORT).show()
+            } else {
+                binding.setInputPage.visibility = View.GONE
+                binding.loadingPage.visibility = View.VISIBLE
+                hideKeyboard()
+                calculateResults()
+            }
+        }
+
+
+        binding.continueBtn.setOnClickListener {
+            binding.resultPage.visibility = View.GONE
+            binding.popup.visibility = View.GONE
+        }
+
+
     }
+
+
+    fun calculateResults(){
+        val targetRPE = Random.nextInt(1, 11)  // This will give a random value between 1 (inclusive) and 11 (exclusive), so effectively 1 to 10.
+        val RPEDifference = targetRPE - predictedRPE.toInt()
+        recommendedLoad = (((RPEDifference * 0.04) + 1) * inputLoad.toInt()).toInt().toString()
+        binding.recommendedLoadText.text = recommendedLoad
+        binding.rpeText.text = targetRPE.toString()
+
+        binding.inputLoad.setText(recommendedLoad)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.loadingPage.visibility = View.GONE
+            binding.resultPage.visibility = View.VISIBLE
+        }, 5000)
+    }
+
+    fun hideKeyboard() {
+        val view = currentFocus ?: binding.root
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
         val message = String(messageEvent.data)
         if (message == "Go") {
             println("Go")
             if(!exerciseStarted){
-                goBtn.performClick()
+                binding.goBtn.performClick()
             }
         }
         if (message == "Stop") {
             println("Stop")
             if(exerciseStarted){
-                goBtn.performClick()
+                binding.goBtn.performClick()
             }
         }
         if (message.startsWith("DateTime:")) {
@@ -170,11 +218,11 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             if(exerciseStarted == true) {
                 timeIndiceArray.add(timeIndice)
                 if(heartRate.toFloat() == 0.0f && lastNonZeroHeartRate != "0.0") {
-                    hrText.text = "$lastNonZeroHeartRate"
+                    binding.hrText.text = "$lastNonZeroHeartRate"
                     heartRateArray.add(lastNonZeroHeartRate)
                     heartRateArrayGraph.add(lastNonZeroHeartRate)
                 } else {
-                    hrText.text = "$heartRate"
+                    binding.hrText.text = "$heartRate"
                     heartRateArray.add(heartRate)
                     heartRateArrayGraph.add(heartRate)
                     lastNonZeroHeartRate = heartRate
@@ -186,7 +234,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 rotationYArray.add(toStandardNotation(rotationY.toFloat()))
                 rotationZArray.add(toStandardNotation(rotationZ.toFloat()))
 
-                hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
+                binding.hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
             }
         }
     }
