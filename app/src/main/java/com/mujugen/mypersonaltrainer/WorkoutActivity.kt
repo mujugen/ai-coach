@@ -90,10 +90,9 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         connectToSmartwatch()
 
         buttonClickAnimation = AnimationUtils.loadAnimation(this, R.anim.button_click_animation)
+        exerciseType = intent.getStringExtra("exerciseType").toString()
         runBlocking { loadData() }
 
-
-        exerciseType = intent.getStringExtra("exerciseType").toString()
         binding.exerciseTypeText.text = exerciseType
         binding.setText.text = "Set $currentSet"
         binding.loadProgressBar.progress = 70
@@ -113,6 +112,14 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             lastPressedTime = currentTime
 
             if (!exerciseStarted) {
+                timeIndiceArray.clear()
+                heartRateArray.clear()
+                velocityXArray.clear()
+                velocityYArray.clear()
+                velocityZArray.clear()
+                rotationXArray.clear()
+                rotationYArray.clear()
+                rotationZArray.clear()
                 binding.goBtn.setImageResource(R.drawable.stop_btn)
                 exerciseStarted = true
                 sendMessageToSmartwatch("Go")
@@ -123,6 +130,9 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 binding.popup.visibility = View.VISIBLE
                 binding.popup.startAnimation(fadeInAnimation)
                 binding.setInputPage.visibility = View.VISIBLE
+                binding.mainLayout.isClickable = false;
+                binding.goBtn.isClickable = false;
+
                 val timeIndiceCSV = timeIndiceArray.joinToString()
                 val heartRateCSV = heartRateArray.joinToString()
                 val velocityXCSV = velocityXArray.joinToString()
@@ -140,14 +150,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 println("rotationZCSV = $rotationZCSV")
                 sensorData = "$timeIndiceCSV,$heartRateCSV,$velocityXCSV,$velocityYCSV,$velocityZCSV,$rotationXCSV,$rotationYCSV,$rotationZCSV"
 
-                timeIndiceArray.clear()
-                heartRateArray.clear()
-                velocityXArray.clear()
-                velocityYArray.clear()
-                velocityZArray.clear()
-                rotationXArray.clear()
-                rotationYArray.clear()
-                rotationZArray.clear()
 
                 exerciseStarted = false
 
@@ -173,7 +175,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 binding.loadingPage.startAnimation(fadeInAnimation)
                 binding.loadingPage.visibility = View.VISIBLE
 
-                print("Reps: $inputReps, Load: $inputLoad, Exercised Selected: $exerciseType, Duration: $duration, Set: $currentSet, Sex: $sex, Age: $age, Experience: $yearsTrained, HeartRate: $heartRateArray, VelocityX: $velocityXArray, VelocityY: $velocityYArray, VelocityZ: $velocityZArray, RotationX: $rotationXArray, RotationY: $rotationYArray, RotationZ: $rotationZArray")
+
 
                 runBlocking {  lifecycleScope.launch {
                     try {
@@ -193,27 +195,26 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                         val currentDate = Date()
                         val currentDayOfWeek = SimpleDateFormat("EEEE", Locale.US).format(currentDate)
                         when (currentDayOfWeek) {
-                            "Sunday" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("sunday_volume")] = inputLoad;preferences[stringPreferencesKey("monday_volume")] = "0";preferences[stringPreferencesKey("tuesday_volume")] = "0";preferences[stringPreferencesKey("wednesday_volume")] = "0";preferences[stringPreferencesKey("thursday_volume")] = "0";preferences[stringPreferencesKey("friday_volume")] = "0";preferences[stringPreferencesKey("saturday_volume")] = "0";}
-                            "Monday" -> dataStore.edit { preferences -> preferences[stringPreferencesKey("monday_volume")] = inputLoad;preferences[stringPreferencesKey("tuesday_volume")] = "0";preferences[stringPreferencesKey("wednesday_volume")] = "0";preferences[stringPreferencesKey("thursday_volume")] = "0";preferences[stringPreferencesKey("friday_volume")] = "0";preferences[stringPreferencesKey("saturday_volume")] = "0";}
-                            "Tuesday" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("tuesday_volume")] = inputLoad;preferences[stringPreferencesKey("wednesday_volume")] = "0";preferences[stringPreferencesKey("thursday_volume")] = "0";preferences[stringPreferencesKey("friday_volume")] = "0";preferences[stringPreferencesKey("saturday_volume")] = "0";}
-                            "Wednesday" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("wednesday_volume")] = inputLoad;preferences[stringPreferencesKey("thursday_volume")] = "0";preferences[stringPreferencesKey("friday_volume")] = "0";preferences[stringPreferencesKey("saturday_volume")] = "0";}
-                            "Thursday" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("thursday_volume")] = inputLoad;preferences[stringPreferencesKey("friday_volume")] = "0";preferences[stringPreferencesKey("saturday_volume")] = "0";}
-                            "Friday" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("friday_volume")] = inputLoad;preferences[stringPreferencesKey("saturday_volume")] = "0";}
-                            "Saturday" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("saturday_volume")] = inputLoad}
+                            "Sunday" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("sunday_volume")] = todayVolume.toString();preferences[stringPreferencesKey("monday_volume")] = "0";preferences[stringPreferencesKey("tuesday_volume")] = "0";preferences[stringPreferencesKey("wednesday_volume")] = "0";preferences[stringPreferencesKey("thursday_volume")] = "0";preferences[stringPreferencesKey("friday_volume")] = "0";preferences[stringPreferencesKey("saturday_volume")] = "0";}
+                            "Monday" -> dataStore.edit { preferences -> preferences[stringPreferencesKey("monday_volume")] = todayVolume.toString();preferences[stringPreferencesKey("tuesday_volume")] = "0";preferences[stringPreferencesKey("wednesday_volume")] = "0";preferences[stringPreferencesKey("thursday_volume")] = "0";preferences[stringPreferencesKey("friday_volume")] = "0";preferences[stringPreferencesKey("saturday_volume")] = "0";}
+                            "Tuesday" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("tuesday_volume")] = todayVolume.toString();preferences[stringPreferencesKey("wednesday_volume")] = "0";preferences[stringPreferencesKey("thursday_volume")] = "0";preferences[stringPreferencesKey("friday_volume")] = "0";preferences[stringPreferencesKey("saturday_volume")] = "0";}
+                            "Wednesday" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("wednesday_volume")] = todayVolume.toString();preferences[stringPreferencesKey("thursday_volume")] = "0";preferences[stringPreferencesKey("friday_volume")] = "0";preferences[stringPreferencesKey("saturday_volume")] = "0";}
+                            "Thursday" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("thursday_volume")] = todayVolume.toString();preferences[stringPreferencesKey("friday_volume")] = "0";preferences[stringPreferencesKey("saturday_volume")] = "0";}
+                            "Friday" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("friday_volume")] = todayVolume.toString();preferences[stringPreferencesKey("saturday_volume")] = "0";}
+                            "Saturday" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("saturday_volume")] = todayVolume.toString()}
 
                         }
-
                         if (setsLeftOfSelectedExercise>0) {
                             setsLeftOfSelectedExercise -= 1
                             when (exerciseType) {
-                                "Bench Press" -> dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_bench_press_sets_left")] = setsLeftOfSelectedExercise.toString()}
-                                "Back Rows" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_back_rows_sets_left")] = setsLeftOfSelectedExercise.toString()}
-                                "Tricep Pushdown" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_tricep_pushdown_sets_left")] = setsLeftOfSelectedExercise.toString()}
-                                "Bicep Curl" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_bicep_curl_sets_left")] = setsLeftOfSelectedExercise.toString()}
-                                "Lat Pulldown" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_lat_pulldown_sets_left")] = setsLeftOfSelectedExercise.toString()}
-                                "Hammer Curl" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_hammer_curl_sets_left")] = setsLeftOfSelectedExercise.toString()}
-                                "Shoulder Press" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_shoulder_press_sets_left")] = setsLeftOfSelectedExercise.toString()}
-                                "Chest Fly" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_chest_fly_sets_left")] = setsLeftOfSelectedExercise.toString()}}
+                                "Bench Press" -> dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_bench_press_sets_left")] = setsLeftOfSelectedExercise.toString() }
+                                "Back Rows" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_back_rows_sets_left")] = setsLeftOfSelectedExercise.toString() }
+                                "Tricep Pushdown" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_tricep_pushdown_sets_left")] = setsLeftOfSelectedExercise.toString() }
+                                "Bicep Curl" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_bicep_curl_sets_left")] = setsLeftOfSelectedExercise.toString() }
+                                "Lat Pulldown" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_lat_pulldown_sets_left")] = setsLeftOfSelectedExercise.toString() }
+                                "Hammer Curl" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_hammer_curl_sets_left")] = setsLeftOfSelectedExercise.toString() }
+                                "Shoulder Press" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_shoulder_press_sets_left")] = setsLeftOfSelectedExercise.toString() }
+                                "Chest Fly" ->  dataStore.edit { preferences -> preferences[stringPreferencesKey("daily_chest_fly_sets_left")] = setsLeftOfSelectedExercise.toString() }}
                         }
 
                         if(inputLoad.toInt()>highestAllTime){
@@ -240,6 +241,9 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             binding.resultPage.visibility = View.GONE
             binding.popup.visibility = View.GONE
             currentSet += 1
+            binding.setText.text = "Set $currentSet"
+            binding.mainLayout.isClickable = true;
+            binding.goBtn.isClickable = true;
         }
 
 
@@ -249,6 +253,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
 
     fun calculateResults(){
+        println("Reps: $inputReps, Load: $inputLoad, Exercised Selected: $exerciseType, Duration: $duration, Set: $currentSet, Sex: $sex, Age: $age, Experience: $yearsTrained, HeartRate: $heartRateArray, VelocityX: $velocityXArray, VelocityY: $velocityYArray, VelocityZ: $velocityZArray, RotationX: $rotationXArray, RotationY: $rotationYArray, RotationZ: $rotationZArray")
         val targetRPE = Random.nextInt(1, 11)
         val RPEDifference = targetRPE - predictedRPE.toInt()
         recommendedLoad = (((RPEDifference * 0.04) + 1) * inputLoad.toInt()).toInt().toString()
@@ -261,7 +266,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             binding.loadingPage.visibility = View.GONE
             binding.resultPage.startAnimation(fadeInAnimation)
             binding.resultPage.visibility = View.VISIBLE
-        }, 5000)
+        }, 2000)
     }
 
     fun hideKeyboard() {
@@ -350,6 +355,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             val byteMessage = message.toByteArray()
             // Send the message to the connected node (smartwatch)
             messageClient.sendMessage(node.id, "/message_path", byteMessage)
+            println("sent to $node.id")
         }
     }
 
@@ -359,6 +365,18 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 val preferences = dataStore.data.first()
 
 
+                val currentDate = Date()
+                val currentDayOfWeek = SimpleDateFormat("EEEE", Locale.US).format(currentDate)
+                todayVolume = when (currentDayOfWeek) {
+                    "Sunday" ->  preferences[stringPreferencesKey("sunday_volume")]?.toInt() ?: 0
+                    "Monday" ->   preferences[stringPreferencesKey("monday_volume")]?.toInt() ?: 0
+                    "Tuesday" ->   preferences[stringPreferencesKey("tuesday_volume")]?.toInt() ?: 0
+                    "Wednesday" ->   preferences[stringPreferencesKey("wednesday_volume")]?.toInt() ?: 0
+                    "Thursday" ->   preferences[stringPreferencesKey("thursday_volume")]?.toInt() ?: 0
+                    "Friday" ->   preferences[stringPreferencesKey("friday_volume")]?.toInt() ?: 0
+                    "Saturday" ->   preferences[stringPreferencesKey("saturday_volume")]?.toInt() ?: 0
+                    else -> 0
+                }
 
                 highestLoadOfSelectedExercise = when (exerciseType) {
                     "Bench Press" ->  preferences[stringPreferencesKey("highest_bench_press")]?.toInt() ?: 0
@@ -373,17 +391,18 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 }
 
                 setsLeftOfSelectedExercise = when (exerciseType) {
-                    "Bench Press" ->  preferences[stringPreferencesKey("daily_bench_press_sets_left")]?.toInt() ?: 0
-                    "Back Rows" ->  preferences[stringPreferencesKey("daily_back_rows_sets_left")]?.toInt() ?: 0
-                    "Tricep Pushdown" ->  preferences[stringPreferencesKey("daily_tricep_pushdown_sets_left")]?.toInt() ?: 0
-                    "Bicep Curl" ->  preferences[stringPreferencesKey("daily_bicep_curl_sets_left")]?.toInt() ?: 0
-                    "Lat Pulldown" ->  preferences[stringPreferencesKey("daily_lat_pulldown_sets_left")]?.toInt() ?: 0
-                    "Hammer Curl" ->  preferences[stringPreferencesKey("daily_hammer_curl_sets_left")]?.toInt() ?: 0
-                    "Shoulder Press" ->  preferences[stringPreferencesKey("daily_shoulder_press_sets_left")]?.toInt() ?: 0
-                    "Chest Fly" ->  preferences[stringPreferencesKey("daily_chest_fly_sets_left")]?.toInt() ?: 0
+                    "Bench Press" ->  preferences[stringPreferencesKey("daily_bench_press_sets_left")]?.toInt() ?: 1
+                    "Back Rows" ->  preferences[stringPreferencesKey("daily_back_rows_sets_left")]?.toInt() ?: 2
+                    "Tricep Pushdown" ->  preferences[stringPreferencesKey("daily_tricep_pushdown_sets_left")]?.toInt() ?: 3
+                    "Bicep Curl" ->  preferences[stringPreferencesKey("daily_bicep_curl_sets_left")]?.toInt() ?: 4
+                    "Lat Pulldown" ->  preferences[stringPreferencesKey("daily_lat_pulldown_sets_left")]?.toInt() ?: 5
+                    "Hammer Curl" ->  preferences[stringPreferencesKey("daily_hammer_curl_sets_left")]?.toInt() ?: 6
+                    "Shoulder Press" ->  preferences[stringPreferencesKey("daily_shoulder_press_sets_left")]?.toInt() ?: 7
+                    "Chest Fly" ->  preferences[stringPreferencesKey("daily_chest_fly_sets_left")]?.toInt() ?: 8
                     else -> 0
                 }
-
+                println("setsLeftOfSelectedExercise = $setsLeftOfSelectedExercise")
+                println("exerciseType = $exerciseType")
                 highestAllTime = preferences[stringPreferencesKey("highest_all_time")]?.toInt() ?: 0
                 highestAllTimeExercise = preferences[stringPreferencesKey("highest_all_time_exercise")] ?: ""
 
