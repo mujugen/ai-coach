@@ -38,6 +38,7 @@ import java.io.FileWriter
 import java.io.IOException
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -408,14 +409,40 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
                 sex = preferences[stringPreferencesKey("sex")] ?: "Male"
                 yearsTrained = preferences[stringPreferencesKey("experience")] ?: "1 year"
-                age = preferences[stringPreferencesKey("age")] ?: "18"
+                val birthday = preferences[stringPreferencesKey("birthday")] ?: "2000 1 13"
+                age = calculateAge(birthday).toString()
             } catch (e: Exception) {
                 println("Error loading data: ${e.message}")
             }
         }
     }
 }
+fun calculateAge(birthday: String): Int {
+    // Define a date format for parsing the birthday string
+    val dateFormat = SimpleDateFormat("yyyy MM dd", Locale.US)
 
+    try {
+        // Parse the birthday string into a Date object
+        val birthDate = dateFormat.parse(birthday)
+
+        // Get the current date
+        val currentDate = Date()
+
+        // Calculate the age
+        val calendar = Calendar.getInstance()
+        calendar.time = birthDate
+        val birthYear = calendar.get(Calendar.YEAR)
+
+        calendar.time = currentDate
+        val currentYear = calendar.get(Calendar.YEAR)
+
+        return currentYear - birthYear
+    } catch (e: Exception) {
+        e.printStackTrace()
+        // Return a default age or handle the error as needed
+        return -1
+    }
+}
 
 class MaxSizeArray<T>() {
     private val deque: ArrayDeque<T> = ArrayDeque(300)
