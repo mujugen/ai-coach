@@ -79,6 +79,19 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     private var highestAllTime = 0
     private var highestAllTimeExercise = ""
 
+    val hrScaler = Scaler(120.87912471418338F, 336.81169055093727F, 18.352430099333912F)
+    val velocityXScaler = Scaler(0.28474263905653524F, 4.502188808343257F, 2.121836187914434F)
+    val velocityYScaler = Scaler(-0.01708707717539571F, 3.11117869551704F, 1.763853365650626F)
+    val velocityZScaler = Scaler(0.018215556643212536F, 3.170740814602218F, 1.7806574107902446F)
+    val rotationXScaler = Scaler(-0.001519272578286769F, 0.5526113558272687F, 0.7433783396274529F)
+    val rotationYScaler = Scaler(-0.007975453497757624F, 1.107300984044279F, 1.0522836994101348F)
+    val rotationZScaler = Scaler(-0.010379680204315959F, 0.9448132175788371F, 0.9720150295025469F)
+    val durationScaler = Scaler(37248.40177252585F,199441953.93015933F,14122.391933739813F)
+    val reps_scaler = Scaler(11.983751846381093F,22.683635554372515F,4.762734041952428F)
+    val years_trained_scaler = Scaler(3.1979320531757756F,7.497011971749551F,2.7380671963539447F)
+    val load_scaler = Scaler(21.127910983751846F,239.6682326946075F,15.481221938032137F)
+    val age_scaler = Scaler(20.734121122599703F,4.741716103497706F,2.1775481862630977F)
+
 
     fun readJsonFromAssets(context: Context, fileName: String): String {
         val assetManager = context.assets
@@ -505,38 +518,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             }
         }
     }
-/*
-    private fun loadModel(): Interpreter  {
-        val assetFileDescriptor  = assets.openFd("model1.tflite")
-        val fileInputStream = FileInputStream(assetFileDescriptor.fileDescriptor)
-        val fileChannel = fileInputStream.channel
-        val startOffset = assetFileDescriptor.startOffset
-        val declaredLength = assetFileDescriptor.declaredLength
 
-        val mappedByteBuffer: MappedByteBuffer = fileChannel.map(
-            FileChannel.MapMode.READ_ONLY,
-            startOffset,
-            declaredLength
-        )
-
-        return Interpreter(mappedByteBuffer)
-    }
-
-    private fun useModel() {
-        val interpreter = loadModel()
-
-        // Assuming you have an input tensor of shape [1, inputSize] and output tensor of shape [1, outputSize]
-        val inputArray = Array(1) { FloatArray(1) }
-        val outputArray = Array(1) { FloatArray(1) }
-
-        // Fill the inputArray with your data
-
-        interpreter.run(inputArray, outputArray)
-
-        // Now, the outputArray contains the predictions
-    }
-
- */
 }
 
 
@@ -624,4 +606,43 @@ private class SparkGraphAdapter(private val data: List<String>) : SparkAdapter()
     override fun getItem(index: Int) = data[index].toFloat()
 
     override fun getY(index: Int) = getItem(index)
+}
+
+data class Scaler(val mean: Float, val var_: Float, val scale: Float) {
+    fun transform(value: Float): Float {
+        return (value - mean) / scale
+    }
+}
+
+fun encodeExerciseSelected(exercise: String): Float {
+    return when(exercise) {
+        "back rows" -> 0.0F
+        "bench press" -> 1.0F
+        "bicep curl" -> 2.0F
+        "chest fly" -> 3.0F
+        "hammer curl" -> 4.0F
+        "lat pulldown" -> 5.0F
+        "shoulder press" -> 6.0F
+        "tricep pushdown" -> 7.0F
+        else -> throw IllegalArgumentException("Invalid Exercise Selected: $exercise")
+    }
+}
+
+fun encodeSex(sex: String): Float {
+    return when(sex) {
+        "female" -> 0.0F
+        "male" -> 1.0F
+        else -> throw IllegalArgumentException("Invalid Sex: $sex")
+    }
+}
+
+fun encodeSet(set: Int): Float {
+    return when(set) {
+        1 -> 0.0F
+        2 -> 1.0F
+        3 -> 2.0F
+        4 -> 3.0F
+        5 -> 4.0F
+        else -> 5.0F
+    }
 }
