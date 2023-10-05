@@ -253,9 +253,10 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 // Display a toast when there's no input
                 Toast.makeText(this@WorkoutActivity, "Please input workout details", Toast.LENGTH_SHORT).show()
             } else {
-                binding.setInputPage.visibility = View.GONE
-                binding.loadingPage.startAnimation(fadeInAnimation)
-                binding.loadingPage.visibility = View.VISIBLE
+                    binding.setInputPage.visibility = View.GONE
+                    binding.loadingPage.startAnimation(fadeInAnimation)
+                    binding.loadingPage.visibility = View.VISIBLE
+
 
 
 
@@ -313,7 +314,11 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                     }
                     } }
                     hideKeyboard()
+
+                Handler(Looper.getMainLooper()).postDelayed({
                     calculateResults()
+                }, 1000)
+
                 }
 
         }
