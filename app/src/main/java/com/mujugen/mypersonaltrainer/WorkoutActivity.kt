@@ -91,29 +91,22 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     }
 
     fun readAndParseJSON(context: Context): Array<Array<FloatArray>> {
-        val jsonData = readJsonFromAssets(context, "test_data.json")
+        val jsonData = readJsonFromAssets(context, "test_input_data.json")
 
         val gson = Gson()
-        val type = object : TypeToken<List<Map<String, Double>>>() {}.type
-        val parsedData: List<Map<String, Double>> = gson.fromJson(jsonData, type)
+        val type = object : TypeToken<Array<Array<FloatArray>>>() {}.type
+        val parsedData: Array<Array<FloatArray>> = gson.fromJson(jsonData, type)
 
-        val dataArray = Array(1) { Array<FloatArray>(parsedData.size) { FloatArray(15) } }
 
-        for ((index, map) in parsedData.withIndex()) {
-            val values = map.values.map { it.toFloat() }.toFloatArray()
-            for (j in values.indices) {
-                dataArray[0][index][j] = values[j]
-            }
-        }
-
-        return dataArray
+        return parsedData
     }
+
 
 
     fun runModel() {
         val dataArray = readAndParseJSON(this)
         println("dataArray = ")
-        println(dataArray)
+        println(dataArray[0][0][0])
         // Load model
         val assetManager = assets
         val modelStream = assetManager.open("model1.tflite")
@@ -136,9 +129,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         println(inputShape[2]) // returns 15 (which is the number of columns of my pandas dataframe)
         val byteBuffer = ByteBuffer.allocateDirect(4 * inputShape[1] * inputShape[2])
 
-        // Fill byteBuffer with your data
-        // Here we're using the generateSampleData function
-        val sampleData = generateSampleData(inputShape)
         for (i in 0 until inputShape[1]) {
             for (j in 0 until inputShape[2]) {
                 byteBuffer.putFloat(dataArray[0][i][j])
@@ -148,30 +138,26 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         val outputShape = interpreter.getOutputTensor(0).shape()
         val output = Array(outputShape[0]) { FloatArray(outputShape[1]) }
 
-        // Run inference
-        interpreter.run(byteBuffer, output)
+        interpreter.run(dataArray, output)
 
         // Use the output
         output[0].forEach { println(it) }
+
+        val predictedClassIndex = output[0].withIndex().maxByOrNull { it.value }?.index ?: -1
+        val predictedClass = when(predictedClassIndex) {
+            0 -> "Low"
+            1 -> "Moderate"
+            2 -> "High"
+            else -> "Unknown"
+        }
+        println("Predicted class is: $predictedClass")
+
 
         // Close interpreter and delegate when done
         interpreter.close()
         //gpuDelegate.close()
     }
 
-
-    private fun generateSampleData(inputShape: IntArray): Array<Array<FloatArray>> {
-        return Array(inputShape[0]) {
-            Array(inputShape[1]) {
-                FloatArray(inputShape[2]) { randomSampleValue() }
-            }
-        }
-    }
-
-    private fun randomSampleValue(): Float {
-        // Generate a random float between 0 and 1
-        return Random.nextFloat()
-    }
 
 
 
