@@ -116,10 +116,132 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
 
 
-    fun runModel() {
-        val dataArray = readAndParseJSON(this)
-        println("dataArray = ")
-        println(dataArray[0][0][0])
+    fun runModel() {// Initialize your 3D array with zeros to match the shape (1,6672,15)
+        val dataArray = Array(1) { Array(6672) { FloatArray(15) } }
+
+        val arraySize = heartRateArray.toList().size
+
+        for (i in 0 until 6672) {
+            if(i<arraySize){
+                // Exercise Selected (replace 5.0f with actual data if dynamic)
+
+                val encodedExercise = when (exerciseType) {
+                    "back rows" -> 0.0F
+                    "bench press" -> 1.0F
+                    "bicep curl" -> 2.0F
+                    "chest fly" -> 3.0F
+                    "hammer curl" -> 4.0F
+                    "lat pulldown" -> 5.0F
+                    "shoulder press" -> 6.0F
+                    "tricep pushdown" -> 7.0F
+                    else -> 0.0F
+                }
+
+                dataArray[0][i][0] = encodedExercise
+
+                // Duration (scaled)
+                dataArray[0][i][1] = durationScaler.scale(duration.toFloat())
+
+                // Reps (scaled)
+                dataArray[0][i][2] = reps_scaler.scale(inputReps.toFloat())
+
+                // Years Trained (scaled)
+                val numericYearsTrained = when (yearsTrained) {
+                    "Less than 1 year" -> 0
+                    "1 year" -> 1
+                    "2 years" -> 2
+                    "3 or more years" -> 3
+                    else -> 0
+                }
+                dataArray[0][i][3] = years_trained_scaler.scale(numericYearsTrained.toFloat())
+
+                // Sex (encoded)
+                dataArray[0][i][4] = if (sex == "Male") 1.0f else 0.0f
+
+                // Load (scaled)
+                dataArray[0][i][5] = load_scaler.scale(inputLoad.toFloat())
+
+                // Age (scaled)
+                dataArray[0][i][6] = age_scaler.scale(age.toFloat())
+
+                // Set (currentSet)
+                dataArray[0][i][7] = currentSet.toFloat()
+
+                // HeartRate (scaled)
+                dataArray[0][i][8] = hrScaler.scale(heartRateArray.toList()[i].toFloat())
+
+                // VelocityX, VelocityY, VelocityZ (scaled)
+                dataArray[0][i][9] = velocityXScaler.scale(velocityXArray.toList()[i].toFloat())
+                dataArray[0][i][10] = velocityYScaler.scale(velocityYArray.toList()[i].toFloat())
+                dataArray[0][i][11] = velocityZScaler.scale(velocityZArray.toList()[i].toFloat())
+
+                // RotationX, RotationY, RotationZ (scaled)
+                dataArray[0][i][12] = rotationXScaler.scale(rotationXArray.toList()[i].toFloat())
+                dataArray[0][i][13] = rotationYScaler.scale(rotationYArray.toList()[i].toFloat())
+                dataArray[0][i][14] = rotationZScaler.scale(rotationZArray.toList()[i].toFloat())
+            }
+            else{
+                // Exercise Selected (replace 5.0f with actual data if dynamic)
+                dataArray[0][i][0] = 5.0f
+
+                // Duration (scaled)
+                dataArray[0][i][1] = durationScaler.scale(duration.toFloat())
+
+                // Reps (scaled)
+                dataArray[0][i][2] = reps_scaler.scale(inputReps.toFloat())
+
+                // Years Trained (scaled)
+                val numericYearsTrained = when (yearsTrained) {
+                    "Less than 1 year" -> 1
+                    "1 year" -> 2
+                    "2 years" -> 3
+                    "3 or more years" -> 4
+                    else -> 0
+                }
+                dataArray[0][i][3] = years_trained_scaler.scale(numericYearsTrained.toFloat())
+
+                // Sex (encoded)
+                dataArray[0][i][4] = if (sex == "Male") 1.0f else 0.0f
+
+                // Load (scaled)
+                dataArray[0][i][5] = load_scaler.scale(inputLoad.toFloat())
+
+                // Age (scaled)
+                dataArray[0][i][6] = age_scaler.scale(age.toFloat())
+
+                // Set (currentSet)
+                dataArray[0][i][7] = currentSet.toFloat()
+
+                // HeartRate (scaled)
+                dataArray[0][i][8] = hrScaler.scale(0f)
+
+                // VelocityX, VelocityY, VelocityZ (scaled)
+                dataArray[0][i][9] = velocityXScaler.scale(0f)
+                dataArray[0][i][10] = velocityYScaler.scale(0f)
+                dataArray[0][i][11] = velocityZScaler.scale(0f)
+
+                // RotationX, RotationY, RotationZ (scaled)
+                dataArray[0][i][12] = rotationXScaler.scale(0f)
+                dataArray[0][i][13] = rotationYScaler.scale(0f)
+                dataArray[0][i][14] = rotationZScaler.scale(0f)
+            }
+
+        }
+        println("Exercise Selected ${dataArray[0][0][0]}")
+        println("Duration ${dataArray[0][0][1]}")
+        println("Reps ${dataArray[0][0][2]}")
+        println("Years Trained ${dataArray[0][0][3]}")
+        println("Sex ${dataArray[0][0][4]}")
+        println("Load ${dataArray[0][0][5]}")
+        println("Age ${dataArray[0][0][6]}")
+        println("Set ${dataArray[0][0][7]}")
+        println("HeartRate ${dataArray[0][0][8]}")
+        println("VelocityX ${dataArray[0][0][9]}")
+        println("VelocityY ${dataArray[0][0][10]}")
+        println("VelocityZ ${dataArray[0][0][11]}")
+        println("RotationX ${dataArray[0][0][12]}")
+        println("RotationY ${dataArray[0][0][13]}")
+        println("RotationZ ${dataArray[0][0][14]}")
         // Load model
         val assetManager = assets
         val modelStream = assetManager.open("model1.tflite")
@@ -609,9 +731,10 @@ private class SparkGraphAdapter(private val data: List<String>) : SparkAdapter()
 }
 
 data class Scaler(val mean: Float, val var_: Float, val scale: Float) {
-    fun transform(value: Float): Float {
+    fun scale(value: Float): Float {
         return (value - mean) / scale
     }
+
 }
 
 fun encodeExerciseSelected(exercise: String): Float {
@@ -646,3 +769,4 @@ fun encodeSet(set: Int): Float {
         else -> 5.0F
     }
 }
+
