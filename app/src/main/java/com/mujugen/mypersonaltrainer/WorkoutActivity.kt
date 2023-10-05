@@ -1,48 +1,47 @@
 package com.mujugen.mypersonaltrainer
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.Environment
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
-import com.robinhood.spark.SparkAdapter
-import com.robinhood.spark.SparkView
-import java.util.ArrayDeque
-import java.util.ArrayList
-import kotlin.random.Random
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
 import com.mujugen.mypersonaltrainer.databinding.ActivityWorkoutBinding
-import kotlinx.coroutines.GlobalScope
+import com.mujugen.mypersonaltrainer.ml.Model1
+import com.robinhood.spark.SparkAdapter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
+import org.tensorflow.lite.DataType
+import org.tensorflow.lite.Interpreter
+import org.tensorflow.lite.gpu.GpuDelegate
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import java.util.ArrayDeque
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlin.random.Random
+
 
 class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedListener {
+
     private lateinit var binding: ActivityWorkoutBinding
     private var currentSet = 1
     private var exerciseStarted = false
@@ -77,6 +76,62 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     private var age = ""
     private var highestAllTime = 0
     private var highestAllTimeExercise = ""
+
+    fun runModel() {
+        // Load model
+        val assetManager = assets
+        val modelStream = assetManager.open("model1.tflite")
+        val modelByteBuffer = ByteBuffer.allocateDirect(modelStream.available()).order(ByteOrder.nativeOrder())
+        modelByteBuffer.put(modelStream.readBytes())
+        modelStream.close()
+
+
+        // Initialize interpreter with GPU delegate
+        val options = Interpreter.Options()
+        //val gpuDelegate = GpuDelegate()
+        //options.addDelegate(gpuDelegate)
+        val interpreter = Interpreter(modelByteBuffer, options)
+
+        // Set up input and output buffers
+        val inputShape = interpreter.getInputTensor(0).shape()
+        val byteBuffer = ByteBuffer.allocateDirect(4 * inputShape[1] * inputShape[2])
+
+        // Fill byteBuffer with your data
+        // Here we're using the generateSampleData function
+        val sampleData = generateSampleData(inputShape)
+        for (i in 0 until inputShape[1]) {
+            for (j in 0 until inputShape[2]) {
+                byteBuffer.putFloat(sampleData[0][i][j])
+            }
+        }
+
+        val outputShape = interpreter.getOutputTensor(0).shape()
+        val output = Array(outputShape[0]) { FloatArray(outputShape[1]) }
+
+        // Run inference
+        interpreter.run(byteBuffer, output)
+
+        // Use the output
+        output[0].forEach { println(it) }
+
+        // Close interpreter and delegate when done
+        interpreter.close()
+        //gpuDelegate.close()
+    }
+
+
+    private fun generateSampleData(inputShape: IntArray): Array<Array<FloatArray>> {
+        return Array(inputShape[0]) {
+            Array(inputShape[1]) {
+                FloatArray(inputShape[2]) { randomSampleValue() }
+            }
+        }
+    }
+
+    private fun randomSampleValue(): Float {
+        // Generate a random float between 0 and 1
+        return Random.nextFloat()
+    }
 
 
 
@@ -262,6 +317,9 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         binding.rpeText.text = targetRPE.toString()
 
         binding.inputLoad.setText(recommendedLoad)
+        println("running model")
+        runModel()
+        println("finished running model")
 
         Handler(Looper.getMainLooper()).postDelayed({
             binding.loadingPage.visibility = View.GONE
@@ -416,7 +474,41 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             }
         }
     }
+/*
+    private fun loadModel(): Interpreter  {
+        val assetFileDescriptor  = assets.openFd("model1.tflite")
+        val fileInputStream = FileInputStream(assetFileDescriptor.fileDescriptor)
+        val fileChannel = fileInputStream.channel
+        val startOffset = assetFileDescriptor.startOffset
+        val declaredLength = assetFileDescriptor.declaredLength
+
+        val mappedByteBuffer: MappedByteBuffer = fileChannel.map(
+            FileChannel.MapMode.READ_ONLY,
+            startOffset,
+            declaredLength
+        )
+
+        return Interpreter(mappedByteBuffer)
+    }
+
+    private fun useModel() {
+        val interpreter = loadModel()
+
+        // Assuming you have an input tensor of shape [1, inputSize] and output tensor of shape [1, outputSize]
+        val inputArray = Array(1) { FloatArray(1) }
+        val outputArray = Array(1) { FloatArray(1) }
+
+        // Fill the inputArray with your data
+
+        interpreter.run(inputArray, outputArray)
+
+        // Now, the outputArray contains the predictions
+    }
+
+ */
 }
+
+
 fun calculateAge(birthday: String): Int {
     // Define a date format for parsing the birthday string
     val dateFormat = SimpleDateFormat("yyyy MM dd", Locale.US)
@@ -464,6 +556,8 @@ class MaxSizeArray<T>() {
 
     override fun toString(): String = deque.toString()
 }
+
+
 
 class MaxSizeArrayLarge<T>() {
     private val list: ArrayList<T> = ArrayList()
