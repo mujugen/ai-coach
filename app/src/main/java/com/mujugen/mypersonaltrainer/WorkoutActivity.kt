@@ -19,6 +19,8 @@ import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.mujugen.mypersonaltrainer.databinding.ActivityWorkoutBinding
 import com.mujugen.mypersonaltrainer.ml.Model1
 import com.robinhood.spark.SparkAdapter
@@ -77,7 +79,41 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     private var highestAllTime = 0
     private var highestAllTimeExercise = ""
 
+
+    fun readJsonFromAssets(context: Context, fileName: String): String {
+        val assetManager = context.assets
+        val inputStream = assetManager.open(fileName)
+        val size = inputStream.available()
+        val buffer = ByteArray(size)
+        inputStream.read(buffer)
+        inputStream.close()
+        return String(buffer, Charsets.UTF_8)
+    }
+
+    fun readAndParseJSON(context: Context): Array<Array<FloatArray>> {
+        val jsonData = readJsonFromAssets(context, "test_data.json")
+
+        val gson = Gson()
+        val type = object : TypeToken<List<Map<String, Double>>>() {}.type
+        val parsedData: List<Map<String, Double>> = gson.fromJson(jsonData, type)
+
+        val dataArray = Array(1) { Array<FloatArray>(parsedData.size) { FloatArray(15) } }
+
+        for ((index, map) in parsedData.withIndex()) {
+            val values = map.values.map { it.toFloat() }.toFloatArray()
+            for (j in values.indices) {
+                dataArray[0][index][j] = values[j]
+            }
+        }
+
+        return dataArray
+    }
+
+
     fun runModel() {
+        val dataArray = readAndParseJSON(this)
+        println("dataArray = ")
+        println(dataArray)
         // Load model
         val assetManager = assets
         val modelStream = assetManager.open("model1.tflite")
@@ -94,6 +130,10 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
         // Set up input and output buffers
         val inputShape = interpreter.getInputTensor(0).shape()
+        println("inputShape = ")
+        println(inputShape[0]) // returns 1 (the x value of the sequences used in my model)
+        println(inputShape[1]) // returns 6672 (the number of rows of my pandas dataframe)
+        println(inputShape[2]) // returns 15 (which is the number of columns of my pandas dataframe)
         val byteBuffer = ByteBuffer.allocateDirect(4 * inputShape[1] * inputShape[2])
 
         // Fill byteBuffer with your data
@@ -101,7 +141,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         val sampleData = generateSampleData(inputShape)
         for (i in 0 until inputShape[1]) {
             for (j in 0 until inputShape[2]) {
-                byteBuffer.putFloat(sampleData[0][i][j])
+                byteBuffer.putFloat(dataArray[0][i][j])
             }
         }
 
