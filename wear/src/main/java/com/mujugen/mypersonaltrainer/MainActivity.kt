@@ -132,12 +132,12 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                 sendMessageToSmartphone("Go")
                 exerciseStarted = true
                 startSendingData()
-                binding.goBtn.text = "Stop"
+                binding.goBtn.setBackgroundResource(R.drawable.stop_btn)
             } else {
                 sendMessageToSmartphone("Stop")
                 exerciseStarted = false
                 stopSendingData()
-                binding.goBtn.text = "Start"
+                binding.goBtn.setBackgroundResource(R.drawable.go_btn)
             }
         }
 

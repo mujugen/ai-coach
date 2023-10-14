@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:background="#FBFBFB"
         android:visibility="gone"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,17 +22,11 @@
 
             <Button
                 android:id="@+id/goBtn"
-                android:layout_width="112dp"
-                android:layout_height="39dp"
-                android:background="@drawable/rounded_button"
-                android:elevation="15dp"
-                android:fontFamily="@font/miriam_libre"
-                android:stateListAnimator="@null"
-                android:text="GO"
-                android:textColor="#82CBF2"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                tools:ignore="TouchTargetSizeCheck" />
+                android:layout_width="230dp"
+                android:layout_height="230dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/go_btn"
+                tools:ignore="SpeakableTextPresentCheck" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -66,9 +60,9 @@
         android:id="@+id/startPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FBFBFB"
+        android:background="@drawable/blue_white_gradient_radial"
         android:visibility="visible"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <ImageView
             android:id="@+id/imageView2"
@@ -82,18 +76,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo_name" />
+            app:srcCompat="@drawable/logo" />
 
         <Button
             android:id="@+id/startBtn"
             android:layout_width="112dp"
             android:layout_height="39dp"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/rounded_blue"
             android:elevation="15dp"
-            android:fontFamily="@font/miriam_libre"
+            android:fontFamily="@font/ropa_sans"
             android:stateListAnimator="@null"
             android:text="START"
-            android:textColor="#82CBF2"
+            android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
