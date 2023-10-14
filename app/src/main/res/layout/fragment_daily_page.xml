@@ -98,6 +98,7 @@
                         android:layout_height="match_parent" />
 
                     <LinearLayout
+                        android:id="@+id/weightBox"
                         android:layout_width="0dp"
                         android:layout_height="124dp"
                         android:layout_marginTop="21dp"

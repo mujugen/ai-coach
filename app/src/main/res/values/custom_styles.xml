@@ -12,5 +12,8 @@
     <item name="spark_baseLineWidth">5dp</item>
     <item name="spark_animateChanges">true</item>
 </style>
+<style name="NumberPickerStyle">
+    <item name="android:textSize">30dp</item>
+</style>
 
 </resources>

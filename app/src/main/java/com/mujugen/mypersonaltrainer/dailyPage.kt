@@ -1,5 +1,6 @@
 package com.mujugen.mypersonaltrainer
 
+import android.app.AlertDialog
 import android.content.res.ColorStateList
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -20,7 +21,9 @@ import java.util.Locale
 import android.graphics.Color
 import android.graphics.Typeface
 import android.widget.LinearLayout.LayoutParams
+import android.widget.NumberPicker
 import androidx.core.content.res.ResourcesCompat
+import androidx.datastore.preferences.core.edit
 
 class DailyPage : Fragment() {
     private var monday_volume = 0
@@ -160,6 +163,13 @@ class DailyPage : Fragment() {
         setVolumeBarBackgroundTint(dailyPageVolumeBar5, "Thursday", currentDayOfWeek)
         setVolumeBarBackgroundTint(dailyPageVolumeBar6, "Friday", currentDayOfWeek)
         setVolumeBarBackgroundTint(dailyPageVolumeBar7, "Saturday", currentDayOfWeek)
+
+        val weightBox = view.findViewById<LinearLayout>(R.id.weightBox)
+        weightBox.setOnLongClickListener {
+            showWeightPicker()
+            true
+        }
+
     }
 
     private fun loadData() {
@@ -202,6 +212,43 @@ class DailyPage : Fragment() {
         }
     }
 
+    // Function to show the NumberPicker for selecting a new weight.
+    private fun showWeightPicker() {
+        val numberPicker = NumberPicker(requireContext())
+        numberPicker.minValue = 30  // Set your desired min weight
+        numberPicker.maxValue = 200  // Set your desired max weight
+        numberPicker.value = current_weight
+
+        val weightPickerDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Select New Weight")
+            .setView(numberPicker)
+            .setPositiveButton("OK") { _, _ ->
+                val selectedWeight = numberPicker.value
+                updateCurrentWeight(selectedWeight)
+                saveWeightToDatastore(selectedWeight)
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        weightPickerDialog.show()
+    }
+
+    // Function to update the displayed currentWeight based on the selected value.
+    private fun updateCurrentWeight(weight: Int) {
+        current_weight = weight
+        val currentWeight = view?.findViewById<TextView>(R.id.currentWeight)
+        currentWeight?.text = "$current_weight kg"
+    }
+
+    // Function to save the updated weight to the datastore.
+    private fun saveWeightToDatastore(weight: Int) {
+        val weightKey = stringPreferencesKey("current_weight")
+        lifecycleScope.launch {
+            requireContext().dataStore.edit { preferences ->
+                preferences[weightKey] = weight.toString()
+            }
+        }
+    }
     fun computeBarHeight(volume: Int, ratio: Double, minHeight: Int): Int {
         val computedHeight = (volume * ratio).toInt()
         return Math.max(computedHeight, minHeight)  // Ensure it's not below minHeight

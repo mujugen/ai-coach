@@ -84,7 +84,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/pt_sans"
-                            android:text="Top Rep Count/day "
+                            android:text="Sum of All Reps this Week "
                             android:textAlignment="textEnd"
                             android:textColor="#757575"
                             android:textSize="15dp"
@@ -146,7 +146,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/pt_sans"
-                            android:text="Total Weight Lifted/day "
+                            android:text="Sum of All Weights Lifted "
                             android:textAlignment="textEnd"
                             android:textColor="#757575"
                             android:textSize="15dp"
@@ -270,7 +270,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/pt_sans"
-                            android:text="Weight Change "
+                            android:text="Current/Desired Weight"
                             android:textAlignment="textEnd"
                             android:textColor="#757575"
                             android:textSize="15dp"
@@ -331,7 +331,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"

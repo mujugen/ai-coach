@@ -94,6 +94,8 @@ class GoalsPage : Fragment() {
         runBlocking {  loadData()}
 
 
+        weightChangeGoal = kotlin.math.abs(startingWeight - weightGoal)
+        weightChangeProgress = kotlin.math.abs(currentWeight - startingWeight)
         volumeGoalsProgressBar.progress = ((volumeProgress.toFloat() / volumeGoal) * 100).toInt()
         strengthGoalsProgressBar.progress = ((strengthProgress.toFloat() / strengthGoal) * 100).toInt()
         consistencyGoalsProgressBar.progress = ((consistencyProgress.toFloat() / consistencyGoal) * 100).toInt()
@@ -137,7 +139,7 @@ class GoalsPage : Fragment() {
                 strengthGoal = strengthText.toInt()
                 consistencyGoal = consistencyText.toInt()
                 weightGoal = weightText.toInt()
-
+                startingWeight = currentWeight
                 weightChangeGoal = kotlin.math.abs(startingWeight - weightGoal)
                 weightChangeProgress = kotlin.math.abs(currentWeight - startingWeight)
 
@@ -147,6 +149,7 @@ class GoalsPage : Fragment() {
                         preferences[stringPreferencesKey("strength_goal")] = strengthGoal.toString()
                         preferences[stringPreferencesKey("consistency_goal")] = consistencyGoal.toString()
                         preferences[stringPreferencesKey("weight_goal")] = weightGoal.toString()
+                        preferences[stringPreferencesKey("starting_weight")] = startingWeight.toString()
                     }
                 }
 
