@@ -30,7 +30,7 @@ class DailyPage : Fragment() {
     private var friday_volume = 0
     private var saturday_volume = 0
     private var sunday_volume = 0
-    private var workout_duration = 0
+    private var today_volume = 0
     private var current_weight = 0
     private var daily_bench_press_sets_left = 0
     private var daily_back_rows_sets_left = 0
@@ -89,9 +89,9 @@ class DailyPage : Fragment() {
         }
 
         val currentWeight = view.findViewById<TextView>(R.id.currentWeight)
-        val workoutDuration = view.findViewById<TextView>(R.id.workoutDuration)
+        val todayVolumeText = view.findViewById<TextView>(R.id.todayVolume)
         currentWeight.text = "$current_weight kg"
-        workoutDuration.text = "$workout_duration mins"
+        todayVolumeText.text = "$today_volume reps"
 
         val density = resources.displayMetrics.density
         val maxHeight = (100 * density).toInt()  // 100dp in pixels
@@ -106,6 +106,45 @@ class DailyPage : Fragment() {
         val dailyPageVolumeBar6 = view.findViewById<View>(R.id.dailyPageVolumeBar6)
         val dailyPageVolumeBar7 = view.findViewById<View>(R.id.dailyPageVolumeBar7)
 
+        val currentDayOfWeek = SimpleDateFormat("EEEE", Locale.US).format(currentDate)
+
+        when (currentDayOfWeek) {
+            "Sunday" -> {
+                monday_volume = 0
+                tuesday_volume = 0
+                wednesday_volume = 0
+                thursday_volume = 0
+                friday_volume = 0
+                saturday_volume = 0
+            }
+            "Monday" -> {
+                tuesday_volume = 0
+                wednesday_volume = 0
+                thursday_volume = 0
+                friday_volume = 0
+                saturday_volume = 0
+            }
+            "Tuesday" -> {
+                wednesday_volume = 0
+                thursday_volume = 0
+                friday_volume = 0
+                saturday_volume = 0
+            }
+            "Wednesday" -> {
+                thursday_volume = 0
+                friday_volume = 0
+                saturday_volume = 0
+            }
+            "Thursday" -> {
+                friday_volume = 0
+                saturday_volume = 0
+            }
+            "Friday" -> {
+                saturday_volume = 0
+            }
+            "Saturday" -> {}
+        }
+
         dailyPageVolumeBar1.layoutParams.height = computeBarHeight(sunday_volume, ratio, minHeight)
         dailyPageVolumeBar2.layoutParams.height = computeBarHeight(monday_volume, ratio, minHeight)
         dailyPageVolumeBar3.layoutParams.height = computeBarHeight(tuesday_volume, ratio, minHeight)
@@ -113,8 +152,6 @@ class DailyPage : Fragment() {
         dailyPageVolumeBar5.layoutParams.height = computeBarHeight(thursday_volume, ratio, minHeight)
         dailyPageVolumeBar6.layoutParams.height = computeBarHeight(friday_volume, ratio, minHeight)
         dailyPageVolumeBar7.layoutParams.height = computeBarHeight(saturday_volume, ratio, minHeight)
-
-        val currentDayOfWeek = SimpleDateFormat("EEEE", Locale.US).format(currentDate)
 
         setVolumeBarBackgroundTint(dailyPageVolumeBar1, "Sunday", currentDayOfWeek)
         setVolumeBarBackgroundTint(dailyPageVolumeBar2, "Monday", currentDayOfWeek)
@@ -145,6 +182,19 @@ class DailyPage : Fragment() {
                 friday_volume = preferences[stringPreferencesKey("friday_volume")]?.toInt() ?: 0
                 saturday_volume = preferences[stringPreferencesKey("saturday_volume")]?.toInt() ?: 0
                 sunday_volume = preferences[stringPreferencesKey("sunday_volume")]?.toInt() ?: 0
+
+                val currentDate = Date()
+                val currentDayOfWeek = SimpleDateFormat("EEEE", Locale.US).format(currentDate)
+                today_volume = when (currentDayOfWeek) {
+                    "Sunday" ->  preferences[stringPreferencesKey("sunday_volume")]?.toInt() ?: 0
+                    "Monday" ->   preferences[stringPreferencesKey("monday_volume")]?.toInt() ?: 0
+                    "Tuesday" ->   preferences[stringPreferencesKey("tuesday_volume")]?.toInt() ?: 0
+                    "Wednesday" ->   preferences[stringPreferencesKey("wednesday_volume")]?.toInt() ?: 0
+                    "Thursday" ->   preferences[stringPreferencesKey("thursday_volume")]?.toInt() ?: 0
+                    "Friday" ->   preferences[stringPreferencesKey("friday_volume")]?.toInt() ?: 0
+                    "Saturday" ->   preferences[stringPreferencesKey("saturday_volume")]?.toInt() ?: 0
+                    else -> 0
+                }
 
             } catch (e: Exception) {
                 println("Error loading data: ${e.message}")

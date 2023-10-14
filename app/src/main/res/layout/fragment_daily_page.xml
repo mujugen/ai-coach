@@ -73,13 +73,13 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="10dp"
                             android:fontFamily="@font/pt_sans"
-                            android:text="Workout Duration"
+                            android:text="Today's Volume"
                             android:textColor="#FFFFFF"
                             android:textSize="17dp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/workoutDuration"
+                            android:id="@+id/todayVolume"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"

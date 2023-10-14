@@ -225,7 +225,6 @@ class StartActivity : AppCompatActivity() {
             preferences[stringPreferencesKey("workout_streak")] = "15"
             preferences[stringPreferencesKey("current_weight")] = "75"
             preferences[stringPreferencesKey("starting_weight")] = "110"
-            preferences[stringPreferencesKey("workout_duration")] = "180"
             preferences[stringPreferencesKey("volume_goal")] = "801"
             preferences[stringPreferencesKey("strength_goal")] = "401"
             preferences[stringPreferencesKey("consistency_goal")] = "13"
