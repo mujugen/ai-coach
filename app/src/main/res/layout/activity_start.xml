@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StartActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/startPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/blue_white_gradient"
+        android:visibility="visible"
+        tools:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="152dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/logo" />
+
+        <Button
+            android:id="@+id/startBtn"
+            android:layout_width="247dp"
+            android:layout_height="52dp"
+            android:layout_marginBottom="161dp"
+            android:background="@drawable/rounded_white"
+            android:elevation="15dp"
+            android:fontFamily="@font/ropa_sans"
+            android:stateListAnimator="@null"
+            android:text="START"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textColorLink="#202587"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="61dp"
+            android:layout_marginEnd="61dp"
+            android:fontFamily="@font/pt_sans"
+            android:text="MuscleMax"
+            android:textColor="#FFFFFF"
+            android:textSize="60dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/initializationPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ProgressBar
+                android:id="@+id/initializationProgress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:progressDrawable="@drawable/gradient_progress"
+                tools:progress="0" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/nameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            tools:visibility="visible">
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ropa_sans"
+                android:text="What's your name?"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="35dp" />
+
+            <EditText
+                android:id="@+id/nameTextInput"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="150dp"
+                android:ems="20"
+                android:inputType="text"
+                android:hint="Name"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/sexLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="26dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            tools:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ropa_sans"
+                android:text="Select your sex"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="35dp" />
+
+            <!-- Radio buttons for sex -->
+            <RadioGroup
+                android:id="@+id/sexRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/maleRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    android:background="@drawable/rounded_light_blue"
+                    android:button="@null"
+                    android:buttonTintMode="multiply"
+                    android:fontFamily="@font/ropa_sans"
+                    android:gravity="top|left"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:text="Male"
+                    android:textColor="@color/radio_text_color"
+                    android:textSize="30dp" />
+
+                <RadioButton
+                    android:id="@+id/femaleRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/rounded_pink"
+                    android:button="@null"
+                    android:fontFamily="@font/ropa_sans"
+                    android:gravity="top|left"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:text="Female"
+                    android:textColor="@color/radio_text_color"
+                    android:textSize="30dp" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/experienceLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="26dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            tools:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ropa_sans"
+                android:text="Select your years of experience"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="35dp" />
+
+            <!-- Radio buttons for years of experience -->
+
+            <RadioGroup
+                android:id="@+id/experienceRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/extra_rounded_blue_radio"
+                    android:button="@null"
+                    android:fontFamily="@font/ropa_sans"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="20dp"
+                    android:text="Less than 1 year"
+                    android:textColor="@color/radio_text_color"
+                    android:textSize="25dp" />
+
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/extra_rounded_blue_radio"
+                    android:button="@null"
+                    android:fontFamily="@font/ropa_sans"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="20dp"
+                    android:text="1 year"
+                    android:textColor="@color/radio_text_color"
+                    android:textSize="25dp" />
+
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/extra_rounded_blue_radio"
+                    android:button="@null"
+                    android:fontFamily="@font/ropa_sans"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="20dp"
+                    android:text="2 years"
+                    android:textColor="@color/radio_text_color"
+                    android:textSize="25dp" />
+
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/extra_rounded_blue_radio"
+                    android:button="@null"
+                    android:fontFamily="@font/ropa_sans"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="20dp"
+                    android:text="3 or more years"
+                    android:textColor="@color/radio_text_color"
+                    android:textSize="25dp" />
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ageLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            tools:layout_editor_absoluteX="26dp"
+            tools:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ropa_sans"
+                android:text="Select your birthday"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="35dp" />
+
+            <!-- Date picker for birthday -->
+            <DatePicker
+                android:id="@+id/ageDatePicker"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="30dp"
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner" />
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/nextBtn"
+            android:layout_width="247dp"
+            android:layout_height="52dp"
+            android:layout_marginBottom="161dp"
+            android:background="@drawable/rounded_blue"
+            android:elevation="15dp"
+            android:fontFamily="@font/ropa_sans"
+            android:stateListAnimator="@null"
+            android:text="NEXT"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
