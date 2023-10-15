@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/dark_blue_gradient_up"
+    android:background="@drawable/blue_gradient"
     tools:context=".WorkoutActivity">
 
     <LinearLayout
@@ -24,7 +24,7 @@
             android:id="@+id/exerciseTypeText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ropa_sans"
+            android:fontFamily="@font/pt_sans"
             android:shadowColor="#6A6A6A"
             android:shadowDx="5"
             android:shadowDy="5"
@@ -47,21 +47,20 @@
             android:text="Set #"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="30dp"
-            android:textStyle="bold" />
+            android:textSize="25dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
             android:foregroundGravity="center"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/goBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/go_btn" />
         </LinearLayout>
@@ -69,7 +68,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="122dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/rounded_black_no_shadow"
             android:backgroundTint="#0B0B0B"
             android:orientation="vertical">
@@ -127,108 +126,47 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
+            android:layout_height="122dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/rounded_black_no_shadow"
-            android:orientation="horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="15dp">
+            android:backgroundTint="#0B0B0B"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                <FrameLayout
+                <com.robinhood.spark.SparkView
+                    android:id="@+id/movementGraph"
+                    style="@style/MySparkViewStyleTwo"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center">
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="10dp" />
 
-                    <ProgressBar
-                        android:id="@+id/loadProgressBar"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_gravity="center"
-                        android:progressDrawable="@drawable/gradient_progress_circular"
-                        tools:progress="80" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/loadText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_gravity="top|start"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
                         android:fontFamily="@font/pt_sans"
-                        android:text="75kg"
-                        android:textAlignment="center"
-                        android:textColor="#FFFFFF"
-                        android:textSize="20dp"
-                        android:textStyle="bold" />
-                </FrameLayout>
+                        android:includeFontPadding="false"
+                        android:text="Movement"
+                        android:textColor="#AFAFAF"
+                        android:textSize="12dp" />
 
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans"
-                    android:text="Load"
-                    android:textAlignment="center"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
-                    tools:ignore="TextSizeCheck" />
-            </LinearLayout>
+                </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center">
-
-                    <ProgressBar
-                        android:id="@+id/repsProgressBar"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_gravity="center"
-                        android:progressDrawable="@drawable/gradient_progress_circular"
-                        android:progressTint="#00FF22"
-                        android:progressTintMode="multiply"
-                        tools:progress="80" />
-
-                    <TextView
-                        android:id="@+id/repsText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/pt_sans"
-                        android:text="6"
-                        android:textAlignment="center"
-                        android:textColor="#FFFFFF"
-                        android:textSize="30dp"
-                        android:textStyle="bold" />
-                </FrameLayout>
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pt_sans"
-                    android:text="Reps"
-                    android:textAlignment="center"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
-                    tools:ignore="TextSizeCheck" />
-            </LinearLayout>
+            </FrameLayout>
 
         </LinearLayout>
 
@@ -263,7 +201,7 @@
             android:paddingEnd="20dp"
             android:paddingBottom="30dp"
             android:visibility="gone"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -331,6 +269,7 @@
                     android:gravity="center_vertical"
                     android:hint="Load"
                     android:inputType="number"
+                    android:textColor="#474747"
                     android:textSize="18dp" />
 
                 <TextView
@@ -340,6 +279,7 @@
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"
                     android:text="Kg"
+                    android:textColor="#474747"
                     android:textSize="15dp" />
             </LinearLayout>
 
@@ -399,7 +339,7 @@
             android:orientation="vertical"
             android:paddingTop="30dp"
             android:visibility="gone"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"

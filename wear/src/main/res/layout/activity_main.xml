@@ -10,9 +10,9 @@
         android:id="@+id/mainPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FBFBFB"
+        android:background="@drawable/blue_gradient"
         android:visibility="gone"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,9 +22,9 @@
 
             <Button
                 android:id="@+id/goBtn"
-                android:layout_width="230dp"
-                android:layout_height="230dp"
-                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="7dp"
                 android:background="@drawable/go_btn"
                 tools:ignore="SpeakableTextPresentCheck" />
         </LinearLayout>
@@ -62,7 +62,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/blue_white_gradient_radial"
         android:visibility="visible"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <ImageView
             android:id="@+id/imageView2"

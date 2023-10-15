@@ -196,6 +196,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     }
 
     private fun sendMessageToSmartphone(message: String) {
+        connectToSmartphone()
         connectedNode?.let { node ->
             // Build the message
             val byteMessage = message.toByteArray()

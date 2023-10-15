@@ -59,6 +59,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     private var lastNonZeroHeartRate = "0.0"
     private lateinit var buttonClickAnimation: Animation
     private val heartRateArrayGraph = MaxSizeArray<String>()
+    private val movementArrayGraph = MaxSizeArray<String>()
     private var duration = 0L
     private var connectedNode: Node? = null
     private lateinit var messageClient: MessageClient
@@ -312,9 +313,8 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
         binding.exerciseTypeText.text = exerciseType
         binding.setText.text = "Set $currentSet"
-        binding.loadProgressBar.progress = 70
-        binding.repsProgressBar.progress = 20
         binding.hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
+        binding.movementGraph.adapter = SparkGraphAdapter(movementArrayGraph.toList())
 
         var lastPressedTime = 0L
         fun goFunction(){
@@ -337,6 +337,8 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 rotationXArray.clear()
                 rotationYArray.clear()
                 rotationZArray.clear()
+                movementArrayGraph.clear()
+                heartRateArrayGraph.clear()
                 binding.goBtn.setImageResource(R.drawable.stop_btn)
                 exerciseStarted = true
                 sendMessageToSmartwatch("Go")
@@ -349,24 +351,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 binding.setInputPage.visibility = View.VISIBLE
                 binding.mainLayout.isClickable = false;
                 binding.goBtn.isClickable = false;
-
-                val timeIndiceCSV = timeIndiceArray.joinToString()
-                val heartRateCSV = heartRateArray.joinToString()
-                val velocityXCSV = velocityXArray.joinToString()
-                val velocityYCSV = velocityYArray.joinToString()
-                val velocityZCSV = velocityZArray.joinToString()
-                val rotationXCSV = rotationXArray.joinToString()
-                val rotationYCSV = rotationYArray.joinToString()
-                val rotationZCSV = rotationZArray.joinToString()
-                println("heartRateCSV = $heartRateCSV")
-                println("velocityXCSV = $velocityXCSV")
-                println("velocityYCSV = $velocityYCSV")
-                println("velocityZCSV = $velocityZCSV")
-                println("rotationXCSV = $rotationXCSV")
-                println("rotationYCSV = $rotationYCSV")
-                println("rotationZCSV = $rotationZCSV")
-                sensorData = "$timeIndiceCSV,$heartRateCSV,$velocityXCSV,$velocityYCSV,$velocityZCSV,$rotationXCSV,$rotationYCSV,$rotationZCSV"
-
 
                 exerciseStarted = false
 
@@ -504,6 +488,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
     override fun onMessageReceived(messageEvent: MessageEvent) {
         val message = String(messageEvent.data)
+        println("Received message: $message")
         if (message == "Go") {
             println("Go")
             if(!exerciseStarted){
@@ -551,8 +536,20 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 rotationXArray.add(toStandardNotation(rotationX.toFloat()))
                 rotationYArray.add(toStandardNotation(rotationY.toFloat()))
                 rotationZArray.add(toStandardNotation(rotationZ.toFloat()))
+                when (exerciseType) {
+                    "Bench Press" -> movementArrayGraph.add(rotationZ)
+                    "Back Rows" ->  movementArrayGraph.add(rotationY)
+                    "Tricep Pushdown" ->  movementArrayGraph.add(rotationY)
+                    "Bicep Curl" ->  movementArrayGraph.add(rotationY)
+                    "Lat Pulldown" ->  movementArrayGraph.add(rotationZ)
+                    "Hammer Curl" ->  movementArrayGraph.add(rotationZ)
+                    "Shoulder Press" ->  movementArrayGraph.add(velocityX)
+                    "Chest Fly" ->  movementArrayGraph.add(rotationY)
+                    }
+
 
                 binding.hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
+                binding.movementGraph.adapter = SparkGraphAdapter(movementArrayGraph.toList())
             }
         }
     }
@@ -570,9 +567,21 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 connectedNode = nodes[0]
                 sendMessageToSmartwatch("Connect")
                 connectionStatus = true
+            } else {
+                // No connected nodes found, return to the previous activity
+                goToPreviousActivity()
             }
+        }.addOnFailureListener {
+            // Failed to retrieve connected nodes, return to the previous activity
+            goToPreviousActivity()
         }
     }
+
+    fun goToPreviousActivity() {
+        Toast.makeText(this, "Failed to connect to smartwatch", Toast.LENGTH_SHORT).show()
+        finish()  // End the current activity and return to the previous one
+    }
+
 
     private fun sendMessageToSmartwatch(message: String) {
         connectedNode?.let { node ->

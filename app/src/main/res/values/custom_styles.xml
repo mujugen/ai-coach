@@ -12,8 +12,17 @@
     <item name="spark_baseLineWidth">5dp</item>
     <item name="spark_animateChanges">true</item>
 </style>
+
 <style name="NumberPickerStyle">
     <item name="android:textSize">30dp</item>
 </style>
-
+<style name="MySparkViewStyleTwo">
+    <item name="spark_lineColor">@android:color/holo_blue_light</item>
+    <item name="spark_lineWidth">3dp</item>
+    <item name="spark_cornerRadius">10dp</item>
+    <item name="spark_fill">false</item>
+    <item name="spark_baseLineColor">#456789</item>
+    <item name="spark_baseLineWidth">5dp</item>
+    <item name="spark_animateChanges">true</item>
+</style>
 </resources>
