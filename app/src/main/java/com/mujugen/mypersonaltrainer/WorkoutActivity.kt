@@ -87,23 +87,23 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     val rotationXScaler = Scaler(33.74542F)
     val rotationYScaler = Scaler(14.00836F)
     val rotationZScaler = Scaler(16.70961F)
-    val durationScaler = Scaler(1F)
-    val reps_scaler = Scaler(1F)
-    val years_trained_scaler = Scaler(1F)
-    val load_scaler = Scaler(1F)
-    val age_scaler = Scaler(1F)
+    val durationScaler = Scaler(120199F)
+    val reps_scaler = Scaler(40F)
+    val years_trained_scaler = Scaler(3F)
+    val load_scaler = Scaler(100F)
+    val age_scaler = Scaler(45F)
 
 
-    fun runModel() {
+    fun runModel(): Float {
         val dataArray = Array(1) { Array(7193) { FloatArray(15) } }
 
         val arraySize = heartRateArray.toList().size
-
+        println(exerciseType)
         for (i in 0 until 7193) {
             if(i<arraySize){
                 // Exercise Selected (replace 5.0f with actual data if dynamic)
 
-                val encodedExercise = when (exerciseType) {
+                val encodedExercise = when (exerciseType.lowercase()) {
                     "back rows" -> 0.0F
                     "bench press" -> 1.0F
                     "bicep curl" -> 2.0F
@@ -160,7 +160,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 dataArray[0][i][14] = rotationZScaler.scale(rotationZArray.toList()[i].toFloat())
             }
             else{
-                val encodedExercise = when (exerciseType) {
+                val encodedExercise = when (exerciseType.lowercase()) {
                     "back rows" -> 0.0F
                     "bench press" -> 1.0F
                     "bicep curl" -> 2.0F
@@ -275,7 +275,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
         // Close interpreter and delegate when done
         interpreter.close()
-        //gpuDelegate.close()
+        return predictedValue
     }
 
 
@@ -444,16 +444,22 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
     fun calculateResults(){
         println("Reps: $inputReps, Load: $inputLoad, Exercised Selected: $exerciseType, Duration: $duration, Set: $currentSet, Sex: $sex, Age: $age, Experience: $yearsTrained, HeartRate: $heartRateArray, VelocityX: $velocityXArray, VelocityY: $velocityYArray, VelocityZ: $velocityZArray, RotationX: $rotationXArray, RotationY: $rotationYArray, RotationZ: $rotationZArray")
-        val targetRPE = Random.nextInt(1, 11)
-        val RPEDifference = targetRPE - predictedRPE.toInt()
-        recommendedLoad = (((RPEDifference * 0.04) + 1) * inputLoad.toInt()).toInt().toString()
+        val targetRPE = 7.0 // target RPE is now a double for precision
+        println("running model")
+        val predictedRPE = runModel() // assuming this returns a double from 0 to 10
+        println("finished running model")
+        val RPEDifference = targetRPE - predictedRPE
+
+        // Adjust load based on the RPE difference
+        // For every 0.5 RPE, we adjust by 2%
+        val loadAdjustmentFactor = 1 + (RPEDifference / 0.5) * 0.02
+        recommendedLoad = (inputLoad.toInt() * loadAdjustmentFactor).toInt().toString()
+
         binding.recommendedLoadText.text = recommendedLoad
-        binding.rpeText.text = targetRPE.toString()
+        val formattedPredictedRPE = String.format("%.1f", predictedRPE)
+        binding.rpeText.text = formattedPredictedRPE
 
         binding.inputLoad.setText(recommendedLoad)
-        println("running model")
-        runModel()
-        println("finished running model")
 
         Handler(Looper.getMainLooper()).postDelayed({
             binding.loadingPage.visibility = View.GONE
@@ -461,6 +467,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             binding.resultPage.visibility = View.VISIBLE
         }, 2000)
     }
+
 
     fun hideKeyboard() {
         val view = currentFocus ?: binding.root
