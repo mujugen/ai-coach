@@ -485,7 +485,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     }
 
 
-
+    var messageCount = 0
     override fun onMessageReceived(messageEvent: MessageEvent) {
         val message = String(messageEvent.data)
         println("Received message: $message")
@@ -547,9 +547,13 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                     "Chest Fly" ->  movementArrayGraph.add(rotationY)
                     }
 
+                messageCount++
+                if (messageCount % 20 == 0) {
+                    messageCount = 0
 
-                binding.hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
-                binding.movementGraph.adapter = SparkGraphAdapter(movementArrayGraph.toList())
+                    binding.hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
+                    binding.movementGraph.adapter = SparkGraphAdapter(movementArrayGraph.toList())
+                }
             }
         }
     }
