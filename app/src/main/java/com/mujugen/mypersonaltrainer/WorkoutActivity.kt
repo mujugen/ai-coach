@@ -80,49 +80,26 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     private var highestAllTime = 0
     private var highestAllTimeExercise = ""
 
-    val hrScaler = Scaler(120.87912471418338F, 336.81169055093727F, 18.352430099333912F)
-    val velocityXScaler = Scaler(0.28474263905653524F, 4.502188808343257F, 2.121836187914434F)
-    val velocityYScaler = Scaler(-0.01708707717539571F, 3.11117869551704F, 1.763853365650626F)
-    val velocityZScaler = Scaler(0.018215556643212536F, 3.170740814602218F, 1.7806574107902446F)
-    val rotationXScaler = Scaler(-0.001519272578286769F, 0.5526113558272687F, 0.7433783396274529F)
-    val rotationYScaler = Scaler(-0.007975453497757624F, 1.107300984044279F, 1.0522836994101348F)
-    val rotationZScaler = Scaler(-0.010379680204315959F, 0.9448132175788371F, 0.9720150295025469F)
-    val durationScaler = Scaler(37248.40177252585F,199441953.93015933F,14122.391933739813F)
-    val reps_scaler = Scaler(11.983751846381093F,22.683635554372515F,4.762734041952428F)
-    val years_trained_scaler = Scaler(3.1979320531757756F,7.497011971749551F,2.7380671963539447F)
-    val load_scaler = Scaler(21.127910983751846F,239.6682326946075F,15.481221938032137F)
-    val age_scaler = Scaler(20.734121122599703F,4.741716103497706F,2.1775481862630977F)
+    val hrScaler = Scaler(181F)
+    val velocityXScaler = Scaler(62.49824F)
+    val velocityYScaler = Scaler(59.13199F)
+    val velocityZScaler = Scaler(53.77856F)
+    val rotationXScaler = Scaler(33.74542F)
+    val rotationYScaler = Scaler(14.00836F)
+    val rotationZScaler = Scaler(16.70961F)
+    val durationScaler = Scaler(1F)
+    val reps_scaler = Scaler(1F)
+    val years_trained_scaler = Scaler(1F)
+    val load_scaler = Scaler(1F)
+    val age_scaler = Scaler(1F)
 
 
-    fun readJsonFromAssets(context: Context, fileName: String): String {
-        val assetManager = context.assets
-        val inputStream = assetManager.open(fileName)
-        val size = inputStream.available()
-        val buffer = ByteArray(size)
-        inputStream.read(buffer)
-        inputStream.close()
-        return String(buffer, Charsets.UTF_8)
-    }
-
-    fun readAndParseJSON(context: Context): Array<Array<FloatArray>> {
-        val jsonData = readJsonFromAssets(context, "test_input_data.json")
-
-        val gson = Gson()
-        val type = object : TypeToken<Array<Array<FloatArray>>>() {}.type
-        val parsedData: Array<Array<FloatArray>> = gson.fromJson(jsonData, type)
-
-
-        return parsedData
-    }
-
-
-
-    fun runModel() {// Initialize your 3D array with zeros to match the shape (1,6672,15)
-        val dataArray = Array(1) { Array(6672) { FloatArray(15) } }
+    fun runModel() {
+        val dataArray = Array(1) { Array(7193) { FloatArray(15) } }
 
         val arraySize = heartRateArray.toList().size
 
-        for (i in 0 until 6672) {
+        for (i in 0 until 7193) {
             if(i<arraySize){
                 // Exercise Selected (replace 5.0f with actual data if dynamic)
 
@@ -157,7 +134,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 dataArray[0][i][3] = years_trained_scaler.scale(numericYearsTrained.toFloat())
 
                 // Sex (encoded)
-                dataArray[0][i][4] = if (sex == "Male") 1.0f else 0.0f
+                dataArray[0][i][4] = if (sex == "Male") 2.0f else 1.0f
 
                 // Load (scaled)
                 dataArray[0][i][5] = load_scaler.scale(inputLoad.toFloat())
@@ -166,7 +143,8 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 dataArray[0][i][6] = age_scaler.scale(age.toFloat())
 
                 // Set (currentSet)
-                dataArray[0][i][7] = currentSet.toFloat()
+                val adjustedSet = currentSet.coerceIn(1, 6) - 1
+                dataArray[0][i][7] = adjustedSet.toFloat()
 
                 // HeartRate (scaled)
                 dataArray[0][i][8] = hrScaler.scale(heartRateArray.toList()[i].toFloat())
@@ -182,8 +160,19 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 dataArray[0][i][14] = rotationZScaler.scale(rotationZArray.toList()[i].toFloat())
             }
             else{
-                // Exercise Selected (replace 5.0f with actual data if dynamic)
-                dataArray[0][i][0] = 5.0f
+                val encodedExercise = when (exerciseType) {
+                    "back rows" -> 0.0F
+                    "bench press" -> 1.0F
+                    "bicep curl" -> 2.0F
+                    "chest fly" -> 3.0F
+                    "hammer curl" -> 4.0F
+                    "lat pulldown" -> 5.0F
+                    "shoulder press" -> 6.0F
+                    "tricep pushdown" -> 7.0F
+                    else -> 0.0F
+                }
+
+                dataArray[0][i][0] = encodedExercise
 
                 // Duration (scaled)
                 dataArray[0][i][1] = durationScaler.scale(duration.toFloat())
@@ -202,7 +191,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 dataArray[0][i][3] = years_trained_scaler.scale(numericYearsTrained.toFloat())
 
                 // Sex (encoded)
-                dataArray[0][i][4] = if (sex == "Male") 1.0f else 0.0f
+                dataArray[0][i][4] = if (sex == "Male") 2.0f else 1.0f
 
                 // Load (scaled)
                 dataArray[0][i][5] = load_scaler.scale(inputLoad.toFloat())
@@ -211,7 +200,8 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 dataArray[0][i][6] = age_scaler.scale(age.toFloat())
 
                 // Set (currentSet)
-                dataArray[0][i][7] = currentSet.toFloat()
+                val adjustedSet = currentSet.coerceIn(1, 6) - 1
+                dataArray[0][i][7] = adjustedSet.toFloat()
 
                 // HeartRate (scaled)
                 dataArray[0][i][8] = hrScaler.scale(0f)
@@ -261,7 +251,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         val inputShape = interpreter.getInputTensor(0).shape()
         println("inputShape = ")
         println(inputShape[0]) // returns 1 (the x value of the sequences used in my model)
-        println(inputShape[1]) // returns 6672 (the number of rows of my pandas dataframe)
+        println(inputShape[1]) // returns 7193 (the number of rows of my pandas dataframe)
         println(inputShape[2]) // returns 15 (which is the number of columns of my pandas dataframe)
         val byteBuffer = ByteBuffer.allocateDirect(4 * inputShape[1] * inputShape[2])
 
@@ -272,21 +262,15 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         }
 
         val outputShape = interpreter.getOutputTensor(0).shape()
-        val output = Array(outputShape[0]) { FloatArray(outputShape[1]) }
+        // Assuming outputShape[1] is 1, as per the error message
+        val output = Array(1) { FloatArray(outputShape[1]) }
 
+        // Adjust the interpreter.run call accordingly
         interpreter.run(dataArray, output)
 
-        // Use the output
-        output[0].forEach { println(it) }
-
-        val predictedClassIndex = output[0].withIndex().maxByOrNull { it.value }?.index ?: -1
-        val predictedClass = when(predictedClassIndex) {
-            0 -> "Low"
-            1 -> "Moderate"
-            2 -> "High"
-            else -> "Unknown"
-        }
-        println("Predicted class is: $predictedClass")
+        // The predicted value can be accessed as follows, based on your model's output
+        val predictedValue = output[0][0]
+        println("Predicted value is: $predictedValue")
 
 
         // Close interpreter and delegate when done
@@ -743,12 +727,12 @@ private class SparkGraphAdapter(private val data: List<String>) : SparkAdapter()
     override fun getY(index: Int) = getItem(index)
 }
 
-data class Scaler(val mean: Float, val var_: Float, val scale: Float) {
+data class Scaler(val maxAbs: Float) {
     fun scale(value: Float): Float {
-        return (value - mean) / scale
+        return value / maxAbs
     }
-
 }
+
 
 fun encodeExerciseSelected(exercise: String): Float {
     return when(exercise) {
