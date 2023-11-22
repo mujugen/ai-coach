@@ -449,78 +449,80 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         }
     }
 
-
     private fun processMessage(message: String) {
-        if (message == "Go") {
-            if(!exerciseStarted){
-                runOnUiThread{clickGoBtn()}
-
-            }
-        }
-        if (message == "Stop") {
-            if(exerciseStarted){
-                runOnUiThread{clickGoBtn()}
-            }
-        }
-        if (message.startsWith("DateTime:")) {
-            val sensorDataParts = message.split("DateTime:", "HeartRate:", "Velocity:", "Rotation:")
-            val timeIndice = sensorDataParts[1].trim().removeSuffix(",")
-            val heartRate = sensorDataParts[2].trim().removeSuffix(",")
-            val velocity = sensorDataParts[3].trim().split(",").map { it.trim() }
-            val rotation = sensorDataParts[4].trim().split(",").map { it.trim() }
-
-
-            val velocityX = velocity[0]
-            val velocityY = velocity[1]
-            val velocityZ = velocity[2]
-            val rotationX = rotation[0]
-            val rotationY = rotation[1]
-            val rotationZ = rotation[2]
-
-
-
-            if(exerciseStarted == true) {
-                timeIndiceArray.add(timeIndice)
-                if(heartRate.toFloat() == 0.0f && lastNonZeroHeartRate != "0.0") {
-                    heartRateArray.add(lastNonZeroHeartRate)
-                    heartRateArrayGraph.add(lastNonZeroHeartRate)
-                } else {
-                    heartRateArray.add(heartRate)
-                    heartRateArrayGraph.add(heartRate)
-                    lastNonZeroHeartRate = heartRate
-                }
-                velocityXArray.add(toStandardNotation(velocityX.toFloat()))
-                velocityYArray.add(toStandardNotation(velocityY.toFloat()))
-                velocityZArray.add(toStandardNotation(velocityZ.toFloat()))
-                rotationXArray.add(toStandardNotation(rotationX.toFloat()))
-                rotationYArray.add(toStandardNotation(rotationY.toFloat()))
-                rotationZArray.add(toStandardNotation(rotationZ.toFloat()))
-                when (exerciseType) {
-                    "Bench Press" -> movementArrayGraph.add(rotationZ)
-                    "Back Rows" ->  movementArrayGraph.add(rotationY)
-                    "Tricep Pushdown" ->  movementArrayGraph.add(rotationY)
-                    "Bicep Curl" ->  movementArrayGraph.add(rotationY)
-                    "Lat Pulldown" ->  movementArrayGraph.add(rotationZ)
-                    "Hammer Curl" ->  movementArrayGraph.add(rotationZ)
-                    "Shoulder Press" ->  movementArrayGraph.add(velocityX)
-                    "Chest Fly" ->  movementArrayGraph.add(rotationY)
-                }
-
-                messageCount++
-
-
-
-
-            }
-        }
-
-    if (messageCount % 20 == 0) {
-        messageCount = 0
-        uiHandler.post {
-            updateGraph()
+        when {
+            message == "Go" -> handleGoMessage()
+            message == "Stop" -> handleStopMessage()
+            message.startsWith("DateTime:") -> handleSensorData(message)
         }
     }
+
+    private fun handleGoMessage() {
+        if (!exerciseStarted) {
+            runOnUiThread { clickGoBtn() }
+        }
     }
+
+    private fun handleStopMessage() {
+        if (exerciseStarted) {
+            runOnUiThread { clickGoBtn() }
+        }
+    }
+
+    private fun handleSensorData(message: String) {
+        val sensorDataParts = message.split("DateTime:", "HeartRate:", "Velocity:", "Rotation:")
+        val timeIndice = sensorDataParts.getOrNull(1)?.trim()?.removeSuffix(",")
+        val heartRate = sensorDataParts.getOrNull(2)?.trim()?.removeSuffix(",")
+        val velocity = sensorDataParts.getOrNull(3)?.trim()?.split(",")?.map { it.trim() }
+        val rotation = sensorDataParts.getOrNull(4)?.trim()?.split(",")?.map { it.trim() }
+
+        // Validate all values
+        if (timeIndice == null || heartRate == null || velocity == null || rotation == null || velocity.size < 3 || rotation.size < 3) {
+            return // Exit if any value is invalid
+        }
+
+        if (exerciseStarted) {
+            processExerciseData(timeIndice, heartRate, velocity, rotation)
+            messageCount++
+            if (messageCount % 8 == 0) {
+                messageCount = 0
+                uiHandler.post { updateGraph() }
+            }
+        }
+    }
+
+    private fun processExerciseData(timeIndice: String, heartRate: String, velocity: List<String>, rotation: List<String>) {
+        timeIndiceArray.add(timeIndice)
+        val processedHeartRate = if (heartRate.toFloat() == 0.0f && lastNonZeroHeartRate != "0.0") lastNonZeroHeartRate else heartRate
+        heartRateArray.add(processedHeartRate)
+        heartRateArrayGraph.add(processedHeartRate)
+        if (heartRate.toFloat() != 0.0f) {
+            lastNonZeroHeartRate = heartRate
+        }
+
+        velocityXArray.add(toStandardNotation(velocity[0].toFloat()))
+        velocityYArray.add(toStandardNotation(velocity[1].toFloat()))
+        velocityZArray.add(toStandardNotation(velocity[2].toFloat()))
+        rotationXArray.add(toStandardNotation(rotation[0].toFloat()))
+        rotationYArray.add(toStandardNotation(rotation[1].toFloat()))
+        rotationZArray.add(toStandardNotation(rotation[2].toFloat()))
+
+        updateMovementGraph(rotation, velocity)
+    }
+
+    private fun updateMovementGraph(rotation: List<String>, velocity: List<String>) {
+        when (exerciseType) {
+            "Bench Press", "Lat Pulldown", "Hammer Curl" -> movementArrayGraph.add(rotation[2])
+            "Back Rows", "Tricep Pushdown", "Bicep Curl", "Chest Fly" -> movementArrayGraph.add(rotation[1])
+            "Shoulder Press" -> movementArrayGraph.add(velocity[0])
+        }
+    }
+
+    private fun toStandardNotation(value: Float): String {
+        val formatter = DecimalFormat("0.#####") // Up to 5 decimal places
+        return formatter.format(value)
+    }
+
 
     private fun clickGoBtn(){
         binding.goBtn.performClick()
@@ -531,10 +533,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         binding.movementGraph.adapter = SparkGraphAdapter(movementArrayGraph.toList())
     }
 
-    private fun toStandardNotation(value: Float): String {
-        val formatter = DecimalFormat("0.#####") // Up to 5 decimal places, modify as needed
-        return formatter.format(value)
-    }
 
     private fun connectToSmartwatch() {
         // Check if there are already connected nodes (smartwatches)
@@ -701,10 +699,18 @@ class MaxSizeArrayLarge<T>() {
 private class SparkGraphAdapter(private val data: List<String>) : SparkAdapter() {
     override fun getCount() = data.size
 
-    override fun getItem(index: Int) = data[index].toFloat()
+    override fun getItem(index: Int): Float {
+        val item = data.getOrNull(index) ?: return 0f
+        return try {
+            item.toFloat()
+        } catch (e: NumberFormatException) {
+            0f
+        }
+    }
 
     override fun getY(index: Int) = getItem(index)
 }
+
 
 data class Scaler(val maxAbs: Float) {
     fun scale(value: Float): Float {

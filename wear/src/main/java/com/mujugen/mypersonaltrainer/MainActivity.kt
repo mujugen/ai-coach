@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
             }
             if (exerciseStarted) {
-                handler.postDelayed(this, 10)
+                handler.postDelayed(this, 50)
             }
         }
     }
