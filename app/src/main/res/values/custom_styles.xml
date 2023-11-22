@@ -6,11 +6,11 @@
 <style name="MySparkViewStyle">
     <item name="spark_lineColor">@android:color/holo_orange_light</item>
     <item name="spark_lineWidth">3dp</item>
-    <item name="spark_cornerRadius">10dp</item>
+    <item name="spark_cornerRadius">50dp</item>
     <item name="spark_fill">false</item>
     <item name="spark_baseLineColor">#456789</item>
     <item name="spark_baseLineWidth">5dp</item>
-    <item name="spark_animateChanges">true</item>
+    <item name="spark_animateChanges">false</item>
 </style>
 
 <style name="NumberPickerStyle">
@@ -19,10 +19,10 @@
 <style name="MySparkViewStyleTwo">
     <item name="spark_lineColor">@android:color/holo_blue_light</item>
     <item name="spark_lineWidth">3dp</item>
-    <item name="spark_cornerRadius">10dp</item>
+    <item name="spark_cornerRadius">50dp</item>
     <item name="spark_fill">false</item>
     <item name="spark_baseLineColor">#456789</item>
     <item name="spark_baseLineWidth">5dp</item>
-    <item name="spark_animateChanges">true</item>
+    <item name="spark_animateChanges">false</item>
 </style>
 </resources>

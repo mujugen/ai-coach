@@ -2,24 +2,22 @@ package com.mujugen.mypersonaltrainer
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.ambient.AmbientModeSupport.AmbientCallback
 import com.mujugen.mypersonaltrainer.databinding.ActivityMainBinding
 import com.google.android.gms.wearable.*
-import java.nio.charset.StandardCharsets
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.WindowManager
-import java.text.DecimalFormat
+import androidx.annotation.RequiresApi
 import java.util.Date
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -214,16 +212,32 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     private inner class MyAmbientCallback : AmbientCallback() {
         override fun onEnterAmbient(ambientDetails: Bundle) {
             super.onEnterAmbient(ambientDetails)
+            // Adjust UI for ambient mode
+            // Ensure dataSenderRunnable is running
+            if (exerciseStarted) {
+                handler.post(dataSenderRunnable)
+            }
         }
 
+        @RequiresApi(Build.VERSION_CODES.Q)
         override fun onUpdateAmbient() {
             super.onUpdateAmbient()
+            // Trigger data sending process if not running continuously
+            if (!handler.hasCallbacks(dataSenderRunnable) && exerciseStarted) {
+                handler.post(dataSenderRunnable)
+            }
         }
 
         override fun onExitAmbient() {
             super.onExitAmbient()
+            // Restore full-color, interactive UI
+            // Ensure dataSenderRunnable continues running after exiting ambient mode
+            if (exerciseStarted) {
+                handler.post(dataSenderRunnable)
+            }
         }
     }
+
 
     override fun onDestroy() {
         messageClient.removeListener(this)

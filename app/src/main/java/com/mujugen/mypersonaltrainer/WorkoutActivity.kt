@@ -4,14 +4,12 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
@@ -19,18 +17,12 @@ import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Node
 import com.google.android.gms.wearable.Wearable
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.mujugen.mypersonaltrainer.databinding.ActivityWorkoutBinding
-import com.mujugen.mypersonaltrainer.ml.Model1
 import com.robinhood.spark.SparkAdapter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
-import org.tensorflow.lite.gpu.GpuDelegate
-import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.text.DecimalFormat
@@ -39,7 +31,7 @@ import java.util.ArrayDeque
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import kotlin.random.Random
+import java.util.concurrent.Executors
 
 
 class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedListener {
@@ -55,7 +47,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     private val rotationYArray = MaxSizeArrayLarge<String>()
     private val rotationZArray = MaxSizeArrayLarge<String>()
     private val timeIndiceArray = MaxSizeArrayLarge<String>()
-    private var sensorData: String = ""
     private var lastNonZeroHeartRate = "0.0"
     private lateinit var buttonClickAnimation: Animation
     private val heartRateArrayGraph = MaxSizeArray<String>()
@@ -66,7 +57,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     private var connectionStatus = false
     private var inputReps = "0"
     private var inputLoad = "0"
-    private var predictedRPE = "0"
     private var recommendedLoad = "0"
     private lateinit var fadeInAnimation: Animation
 
@@ -80,25 +70,27 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     private var highestAllTime = 0
     private var highestAllTimeExercise = ""
 
-    val hrScaler = Scaler(181F)
-    val velocityXScaler = Scaler(62.49824F)
-    val velocityYScaler = Scaler(59.13199F)
-    val velocityZScaler = Scaler(53.77856F)
-    val rotationXScaler = Scaler(33.74542F)
-    val rotationYScaler = Scaler(14.00836F)
-    val rotationZScaler = Scaler(16.70961F)
-    val durationScaler = Scaler(120199F)
-    val reps_scaler = Scaler(40F)
-    val years_trained_scaler = Scaler(3F)
-    val load_scaler = Scaler(100F)
-    val age_scaler = Scaler(45F)
+    private val messageProcessor = Executors.newSingleThreadExecutor()
+    private val uiHandler = Handler(Looper.getMainLooper())
+
+    private val hrScaler = Scaler(181F)
+    private val velocityXScaler = Scaler(62.49824F)
+    private val velocityYScaler = Scaler(59.13199F)
+    private val velocityZScaler = Scaler(53.77856F)
+    private val rotationXScaler = Scaler(33.74542F)
+    private val rotationYScaler = Scaler(14.00836F)
+    private val rotationZScaler = Scaler(16.70961F)
+    private val durationScaler = Scaler(120199F)
+    private val reps_scaler = Scaler(40F)
+    private val years_trained_scaler = Scaler(3F)
+    private val load_scaler = Scaler(100F)
+    private val age_scaler = Scaler(45F)
 
 
-    fun runModel(): Float {
+    private fun runModel(): Float {
         val dataArray = Array(1) { Array(7193) { FloatArray(15) } }
 
         val arraySize = heartRateArray.toList().size
-        println(exerciseType)
         for (i in 0 until 7193) {
             if(i<arraySize){
                 // Exercise Selected (replace 5.0f with actual data if dynamic)
@@ -218,21 +210,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             }
 
         }
-        println("Exercise Selected ${dataArray[0][0][0]}")
-        println("Duration ${dataArray[0][0][1]}")
-        println("Reps ${dataArray[0][0][2]}")
-        println("Years Trained ${dataArray[0][0][3]}")
-        println("Sex ${dataArray[0][0][4]}")
-        println("Load ${dataArray[0][0][5]}")
-        println("Age ${dataArray[0][0][6]}")
-        println("Set ${dataArray[0][0][7]}")
-        println("HeartRate ${dataArray[0][0][8]}")
-        println("VelocityX ${dataArray[0][0][9]}")
-        println("VelocityY ${dataArray[0][0][10]}")
-        println("VelocityZ ${dataArray[0][0][11]}")
-        println("RotationX ${dataArray[0][0][12]}")
-        println("RotationY ${dataArray[0][0][13]}")
-        println("RotationZ ${dataArray[0][0][14]}")
         // Load model
         val assetManager = assets
         val modelStream = assetManager.open("model1.tflite")
@@ -249,10 +226,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
         // Set up input and output buffers
         val inputShape = interpreter.getInputTensor(0).shape()
-        println("inputShape = ")
-        println(inputShape[0]) // returns 1 (the x value of the sequences used in my model)
-        println(inputShape[1]) // returns 7193 (the number of rows of my pandas dataframe)
-        println(inputShape[2]) // returns 15 (which is the number of columns of my pandas dataframe)
         val byteBuffer = ByteBuffer.allocateDirect(4 * inputShape[1] * inputShape[2])
 
         for (i in 0 until inputShape[1]) {
@@ -270,7 +243,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
         // The predicted value can be accessed as follows, based on your model's output
         val predictedValue = output[0][0]
-        println("Predicted value is: $predictedValue")
 
 
         // Close interpreter and delegate when done
@@ -307,7 +279,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             duration = 0L
             if (lastPressedTime != 0L) {
                 duration = currentTime - lastPressedTime
-                println("Duration between presses: $duration ms")
             }
 
             lastPressedTime = currentTime
@@ -333,8 +304,8 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 binding.popup.visibility = View.VISIBLE
                 binding.popup.startAnimation(fadeInAnimation)
                 binding.setInputPage.visibility = View.VISIBLE
-                binding.mainLayout.isClickable = false;
-                binding.goBtn.isClickable = false;
+                binding.mainLayout.isClickable = false
+                binding.goBtn.isClickable = false
 
                 exerciseStarted = false
 
@@ -356,16 +327,15 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 // Display a toast when there's no input
                 Toast.makeText(this@WorkoutActivity, "Please input workout details", Toast.LENGTH_SHORT).show()
             } else {
-                    binding.setInputPage.visibility = View.GONE
-                    binding.loadingPage.startAnimation(fadeInAnimation)
-                    binding.loadingPage.visibility = View.VISIBLE
+                binding.setInputPage.visibility = View.GONE
+                binding.loadingPage.startAnimation(fadeInAnimation)
+                binding.loadingPage.visibility = View.VISIBLE
 
 
 
 
                 runBlocking {  lifecycleScope.launch {
                     try {
-                        val preferences = dataStore.data.first()
                         if (inputLoad.toInt() > highestLoadOfSelectedExercise) {
                             when (exerciseType) {
                                 "Bench Press" -> dataStore.edit { preferences -> preferences[stringPreferencesKey("highest_bench_press")] = inputLoad}
@@ -412,17 +382,16 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                             }
                         }
 
-                        }catch (e: Exception) {
-                        println("Error loading data: ${e.message}")
+                    }catch (e: Exception) {
                     }
-                    } }
-                    hideKeyboard()
+                } }
+                hideKeyboard()
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     calculateResults()
                 }, 1000)
 
-                }
+            }
 
         }
 
@@ -432,8 +401,8 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             binding.popup.visibility = View.GONE
             currentSet += 1
             binding.setText.text = "Set $currentSet"
-            binding.mainLayout.isClickable = true;
-            binding.goBtn.isClickable = true;
+            binding.mainLayout.isClickable = true
+            binding.goBtn.isClickable = true
         }
 
 
@@ -442,12 +411,9 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
 
 
 
-    fun calculateResults(){
-        println("Reps: $inputReps, Load: $inputLoad, Exercised Selected: $exerciseType, Duration: $duration, Set: $currentSet, Sex: $sex, Age: $age, Experience: $yearsTrained, HeartRate: $heartRateArray, VelocityX: $velocityXArray, VelocityY: $velocityYArray, VelocityZ: $velocityZArray, RotationX: $rotationXArray, RotationY: $rotationYArray, RotationZ: $rotationZArray")
+    private fun calculateResults(){
         val targetRPE = 7.0 // target RPE is now a double for precision
-        println("running model")
         val predictedRPE = runModel() // assuming this returns a double from 0 to 10
-        println("finished running model")
         val RPEDifference = targetRPE - predictedRPE
 
         // Adjust load based on the RPE difference
@@ -469,27 +435,31 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
     }
 
 
-    fun hideKeyboard() {
+    private fun hideKeyboard() {
         val view = currentFocus ?: binding.root
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
 
-    var messageCount = 0
+    private var messageCount = 0
     override fun onMessageReceived(messageEvent: MessageEvent) {
-        val message = String(messageEvent.data)
-        println("Received message: $message")
+        messageProcessor.execute {
+            processMessage(String(messageEvent.data))
+        }
+    }
+
+
+    private fun processMessage(message: String) {
         if (message == "Go") {
-            println("Go")
             if(!exerciseStarted){
-                binding.goBtn.performClick()
+                runOnUiThread{clickGoBtn()}
+
             }
         }
         if (message == "Stop") {
-            println("Stop")
             if(exerciseStarted){
-                binding.goBtn.performClick()
+                runOnUiThread{clickGoBtn()}
             }
         }
         if (message.startsWith("DateTime:")) {
@@ -500,23 +470,21 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             val rotation = sensorDataParts[4].trim().split(",").map { it.trim() }
 
 
-            val velocityX = velocity[0].toString()
-            val velocityY = velocity[1].toString()
-            val velocityZ = velocity[2].toString()
-            val rotationX = rotation[0].toString()
-            val rotationY = rotation[1].toString()
-            val rotationZ = rotation[2].toString()
+            val velocityX = velocity[0]
+            val velocityY = velocity[1]
+            val velocityZ = velocity[2]
+            val rotationX = rotation[0]
+            val rotationY = rotation[1]
+            val rotationZ = rotation[2]
 
 
 
             if(exerciseStarted == true) {
                 timeIndiceArray.add(timeIndice)
                 if(heartRate.toFloat() == 0.0f && lastNonZeroHeartRate != "0.0") {
-                    binding.hrText.text = "$lastNonZeroHeartRate"
                     heartRateArray.add(lastNonZeroHeartRate)
                     heartRateArrayGraph.add(lastNonZeroHeartRate)
                 } else {
-                    binding.hrText.text = "$heartRate"
                     heartRateArray.add(heartRate)
                     heartRateArrayGraph.add(heartRate)
                     lastNonZeroHeartRate = heartRate
@@ -536,25 +504,39 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                     "Hammer Curl" ->  movementArrayGraph.add(rotationZ)
                     "Shoulder Press" ->  movementArrayGraph.add(velocityX)
                     "Chest Fly" ->  movementArrayGraph.add(rotationY)
-                    }
+                }
 
                 messageCount++
-                if (messageCount % 20 == 0) {
-                    messageCount = 0
 
-                    binding.hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
-                    binding.movementGraph.adapter = SparkGraphAdapter(movementArrayGraph.toList())
-                }
+
+
+
             }
         }
+
+    if (messageCount % 20 == 0) {
+        messageCount = 0
+        uiHandler.post {
+            updateGraph()
+        }
+    }
     }
 
-    fun toStandardNotation(value: Float): String {
+    private fun clickGoBtn(){
+        binding.goBtn.performClick()
+    }
+    private fun updateGraph() {
+        binding.hrText.text = lastNonZeroHeartRate
+        binding.hrGraph.adapter = SparkGraphAdapter(heartRateArrayGraph.toList())
+        binding.movementGraph.adapter = SparkGraphAdapter(movementArrayGraph.toList())
+    }
+
+    private fun toStandardNotation(value: Float): String {
         val formatter = DecimalFormat("0.#####") // Up to 5 decimal places, modify as needed
         return formatter.format(value)
     }
 
-    fun connectToSmartwatch() {
+    private fun connectToSmartwatch() {
         // Check if there are already connected nodes (smartwatches)
         Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodes ->
             if (nodes.isNotEmpty()) {
@@ -572,7 +554,7 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
         }
     }
 
-    fun goToPreviousActivity() {
+    private fun goToPreviousActivity() {
         Toast.makeText(this, "Failed to connect to smartwatch", Toast.LENGTH_SHORT).show()
         finish()  // End the current activity and return to the previous one
     }
@@ -584,7 +566,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             val byteMessage = message.toByteArray()
             // Send the message to the connected node (smartwatch)
             messageClient.sendMessage(node.id, "/message_path", byteMessage)
-            println("sent to $node.id")
         }
     }
 
@@ -630,8 +611,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                     "Chest Fly" ->  preferences[stringPreferencesKey("daily_chest_fly_sets_left")]?.toInt() ?: 8
                     else -> 0
                 }
-                println("setsLeftOfSelectedExercise = $setsLeftOfSelectedExercise")
-                println("exerciseType = $exerciseType")
                 highestAllTime = preferences[stringPreferencesKey("highest_all_time")]?.toInt() ?: 0
                 highestAllTimeExercise = preferences[stringPreferencesKey("highest_all_time_exercise")] ?: ""
 
@@ -640,7 +619,6 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
                 val birthday = preferences[stringPreferencesKey("birthday")] ?: "2000 1 13"
                 age = calculateAge(birthday).toString()
             } catch (e: Exception) {
-                println("Error loading data: ${e.message}")
             }
         }
     }
@@ -661,7 +639,9 @@ fun calculateAge(birthday: String): Int {
 
         // Calculate the age
         val calendar = Calendar.getInstance()
-        calendar.time = birthDate
+        if (birthDate != null) {
+            calendar.time = birthDate
+        }
         val birthYear = calendar.get(Calendar.YEAR)
 
         calendar.time = currentDate
@@ -691,7 +671,6 @@ class MaxSizeArray<T>() {
     fun toList(): List<T> {
         return deque.toList()
     }
-    fun toArray(): Array<Any?> = deque.toArray()
 
     override fun toString(): String = deque.toString()
 }
@@ -713,13 +692,6 @@ class MaxSizeArrayLarge<T>() {
         return list.toList()
     }
 
-    fun toArray(): Array<Any?> = list.toArray()
-
-    fun joinToString(separator: String = ";"): String {
-        return list
-            .filter { it.toString().isNotBlank() }
-            .joinToString(separator) { it.toString().replace(",", "").replace("\n", "").trim() }
-    }
 
     override fun toString(): String = list.toString()
 
@@ -739,38 +711,3 @@ data class Scaler(val maxAbs: Float) {
         return value / maxAbs
     }
 }
-
-
-fun encodeExerciseSelected(exercise: String): Float {
-    return when(exercise) {
-        "back rows" -> 0.0F
-        "bench press" -> 1.0F
-        "bicep curl" -> 2.0F
-        "chest fly" -> 3.0F
-        "hammer curl" -> 4.0F
-        "lat pulldown" -> 5.0F
-        "shoulder press" -> 6.0F
-        "tricep pushdown" -> 7.0F
-        else -> throw IllegalArgumentException("Invalid Exercise Selected: $exercise")
-    }
-}
-
-fun encodeSex(sex: String): Float {
-    return when(sex) {
-        "female" -> 0.0F
-        "male" -> 1.0F
-        else -> throw IllegalArgumentException("Invalid Sex: $sex")
-    }
-}
-
-fun encodeSet(set: Int): Float {
-    return when(set) {
-        1 -> 0.0F
-        2 -> 1.0F
-        3 -> 2.0F
-        4 -> 3.0F
-        5 -> 4.0F
-        else -> 5.0F
-    }
-}
-
