@@ -8,6 +8,10 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.preferences.core.edit
@@ -403,6 +407,15 @@ class WorkoutActivity : AppCompatActivity(), MessageClient.OnMessageReceivedList
             binding.setText.text = "Set $currentSet"
             binding.mainLayout.isClickable = true
             binding.goBtn.isClickable = true
+        }
+
+        binding.infoButton.setOnClickListener {
+            binding.popupInfo.visibility = View.VISIBLE
+            binding.popup1.visibility = View.VISIBLE
+        }
+        binding.infoNextBtn1.setOnClickListener {
+            binding.popupInfo.visibility = View.GONE
+            binding.popup1.visibility = View.GONE
         }
 
 
