@@ -20,6 +20,7 @@ import java.util.Date
 import java.util.Locale
 import android.graphics.Color
 import android.graphics.Typeface
+import android.widget.FrameLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.NumberPicker
 import androidx.core.content.res.ResourcesCompat
@@ -108,6 +109,13 @@ class DailyPage : Fragment() {
         val dailyPageVolumeBar5 = view.findViewById<View>(R.id.dailyPageVolumeBar5)
         val dailyPageVolumeBar6 = view.findViewById<View>(R.id.dailyPageVolumeBar6)
         val dailyPageVolumeBar7 = view.findViewById<View>(R.id.dailyPageVolumeBar7)
+        val infoButton = view.findViewById<TextView>(R.id.infoButton)
+        val popup = view.findViewById<FrameLayout>(R.id.popup)
+        val popup1 = view.findViewById<LinearLayout>(R.id.popup1)
+        val popup2 = view.findViewById<LinearLayout>(R.id.popup2)
+        val weightBoxDemo = view.findViewById<LinearLayout>(R.id.weightBoxDemo)
+        val infoNextBtn1 = view.findViewById<Button>(R.id.infoNextBtn1)
+        val infoNextBtn2 = view.findViewById<Button>(R.id.infoNextBtn2)
 
         val currentDayOfWeek = SimpleDateFormat("EEEE", Locale.US).format(currentDate)
 
@@ -168,6 +176,23 @@ class DailyPage : Fragment() {
         weightBox.setOnLongClickListener {
             showWeightPicker()
             true
+        }
+
+        infoButton.setOnClickListener {
+            popup.visibility = View.VISIBLE
+            popup1.visibility = View.VISIBLE
+        }
+
+        infoNextBtn1.setOnClickListener {
+            popup1.visibility = View.GONE
+            popup2.visibility = View.VISIBLE
+            weightBoxDemo.visibility = View.VISIBLE
+        }
+
+        infoNextBtn2.setOnClickListener {
+            popup2.visibility = View.GONE
+            weightBoxDemo.visibility = View.GONE
+            popup.visibility = View.GONE
         }
 
     }

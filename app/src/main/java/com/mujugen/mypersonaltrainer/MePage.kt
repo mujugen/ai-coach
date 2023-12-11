@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
@@ -74,6 +77,21 @@ class MePage : Fragment() {
             binding.profilePicture.setImageResource(R.drawable.female_profile)
         }else{
             binding.profilePicture.setImageResource(R.drawable.male_profile)
+        }
+
+        val infoButton = view.findViewById<TextView>(R.id.infoButton)
+        val popup = view.findViewById<FrameLayout>(R.id.popup)
+        val popup1 = view.findViewById<LinearLayout>(R.id.popup1)
+        val infoNextBtn1 = view.findViewById<Button>(R.id.infoNextBtn1)
+
+        infoButton.setOnClickListener {
+            popup.visibility = View.VISIBLE
+            popup1.visibility = View.VISIBLE
+        }
+
+        infoNextBtn1.setOnClickListener {
+            popup.visibility = View.GONE
+            popup1.visibility = View.GONE
         }
     }
 

@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.datastore.preferences.core.edit
@@ -169,6 +170,39 @@ class GoalsPage : Fragment() {
             } catch (e: NumberFormatException) {
             }
         }
+
+        val infoButton = view.findViewById<TextView>(R.id.infoButton)
+        val popup = view.findViewById<FrameLayout>(R.id.popup)
+        val popup1 = view.findViewById<LinearLayout>(R.id.popup1)
+        val popup2 = view.findViewById<LinearLayout>(R.id.popup2)
+        val popup3 = view.findViewById<LinearLayout>(R.id.popup3)
+        val infoNextBtn1 = view.findViewById<Button>(R.id.infoNextBtn1)
+        val infoNextBtn2 = view.findViewById<Button>(R.id.infoNextBtn2)
+        val infoNextBtn3 = view.findViewById<Button>(R.id.infoNextBtn3)
+        val setGoalBtnDemo = view.findViewById<Button>(R.id.setGoalBtnDemo)
+
+        infoButton.setOnClickListener {
+            popup.visibility = View.VISIBLE
+            popup1.visibility = View.VISIBLE
+        }
+
+        infoNextBtn1.setOnClickListener {
+            popup1.visibility = View.GONE
+            popup2.visibility = View.VISIBLE
+            setGoalBtnDemo.visibility = View.VISIBLE
+        }
+        infoNextBtn2.setOnClickListener {
+            popup2.visibility = View.GONE
+            setGoalBtnDemo.visibility = View.GONE
+            popup3.visibility = View.VISIBLE
+        }
+
+        infoNextBtn3.setOnClickListener {
+            popup3.visibility = View.GONE
+            popup.visibility = View.GONE
+        }
+
+
 
     }
 
